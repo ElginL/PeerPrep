@@ -4,7 +4,7 @@ import { fetchAllQuestions } from "../api/questions";
 import AddQuestionModal from './AddQuestionModal';
 
 const QuestionsNav = ({ setQuestions }) => {
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
 
     const allBtnHandler = async () => {
         setQuestions(await fetchAllQuestions());
