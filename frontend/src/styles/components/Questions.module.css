@@ -13,6 +13,16 @@
     padding-bottom: 10px;
 }
 
+.question-link {
+    text-decoration: none;
+    color: white;
+}
+
+.question-link:hover {
+    color: rgb(47, 162, 200);
+    transition: color 0.5s;
+}
+
 .id-column {
     width: 5%;
 }

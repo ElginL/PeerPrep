@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import QuestionsNav from "./QuestionsNav";
+import { Link } from 'react-router-dom';
 import { fetchAllQuestions } from "../api/questions";
 import styles from '../styles/components/Questions.module.css';
 
@@ -36,8 +37,9 @@ const Questions = () => {
                             <tr key={question.id}>
                                 <td className={styles["id-column"]}>{question.id}</td>
                                 <td className={styles["title-column"]}>
-                                    
-                                    {question.title}
+                                    <Link to={`/questions/${question.id}`} className={styles["question-link"]}>
+                                        {question.title}
+                                    </Link>
                                 </td>
                                 <td className={styles["category-column"]}>{question.category}</td>
                                 <td className={styles["complexity-column"]}>{question.complexity}</td>

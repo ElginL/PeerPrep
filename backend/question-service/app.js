@@ -20,10 +20,25 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 
+// Fetch a question by id
+app.get('/questions/:id', (req, res) => {
+    const id = req.params.id;
+    for (const question of questions) {
+        if (question.id == id) {
+            res.json(question);
+            return;
+        }
+    }
+
+    res.send("Question id does not exist")
+});
+
+// Fetch all questions
 app.get('/', (req, res) => {
     res.json(questions);
 });
 
+// Add a question
 app.post('/', (req, res) => {
     const newQuestion = req.body;
     console.log(newQuestion);
