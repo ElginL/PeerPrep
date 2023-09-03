@@ -1,0 +1,46 @@
+.container {
+    padding: 100px;
+}
+
+.questions-table {
+    width: 100%;
+    padding-top: 10px;
+}
+
+.questions-table th {
+    color: grey;
+    text-align: left;
+    padding-bottom: 10px;
+}
+
+.question-link {
+    text-decoration: none;
+    color: white;
+}
+
+.question-link:hover {
+    color: rgb(47, 162, 200);
+    transition: color 0.5s;
+}
+
+.id-column {
+    width: 5%;
+}
+
+.title-column {
+    width: 40%;;
+}
+
+.category-column {
+    width: 40%;
+}
+
+.complexity-column {
+    width: 20%;
+}
+
+.horizontal-line {
+    height: 1px;
+    border: none;
+    background-color: grey;
+}
