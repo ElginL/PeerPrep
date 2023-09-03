@@ -35,7 +35,10 @@ const Questions = () => {
                         questions && questions.map(question => (
                             <tr key={question.id}>
                                 <td className={styles["id-column"]}>{question.id}</td>
-                                <td className={styles["title-column"]}>{question.title}</td>
+                                <td className={styles["title-column"]}>
+                                    
+                                    {question.title}
+                                </td>
                                 <td className={styles["category-column"]}>{question.category}</td>
                                 <td className={styles["complexity-column"]}>{question.complexity}</td>
                             </tr>
