@@ -1,0 +1,36 @@
+.container {
+    padding: 100px;
+}
+
+.questions-table {
+    width: 100%;
+    padding-top: 10px;
+}
+
+.questions-table th {
+    color: grey;
+    text-align: left;
+    padding-bottom: 10px;
+}
+
+.id-column {
+    width: 5%;
+}
+
+.title-column {
+    width: 40%;;
+}
+
+.category-column {
+    width: 40%;
+}
+
+.complexity-column {
+    width: 20%;
+}
+
+.horizontal-line {
+    height: 1px;
+    border: none;
+    background-color: grey;
+}

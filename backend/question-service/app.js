@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 
 const app = express();
 
@@ -11,6 +12,13 @@ const questions = [
 
 // middleware to parse json
 app.use(express.json());
+
+// enable cors for http://localhost:3000
+const corsOption = {
+    origin: 'http://localhost:3000',
+    methods: 'GET, POST'
+};
+app.use(cors(corsOption));
 
 app.get('/', (req, res) => {
     res.json(questions);

@@ -1,8 +1,12 @@
 import Navbar from "../components/Navbar";
+import Questions from "../components/Questions";
 
 const Home = () => {
     return (
-        <Navbar />
+        <div>
+            <Navbar />
+            <Questions />
+        </div>
     );
 };
 
