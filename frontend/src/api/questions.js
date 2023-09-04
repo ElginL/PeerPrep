@@ -23,7 +23,26 @@ const fetchQuestionById = async (id) => {
     }
 };
 
+const addQuestion = async (title, category, complexity, description) => {
+    const questionToAdd = {
+        title,
+        category,
+        complexity,
+        description
+    };
+
+    try {
+        const response = await axios.post(baseUrl, questionToAdd);
+
+        console.log(response);
+    } catch (error) {
+        console.log("Error when trying to post: ", error);
+    }
+
+};
+
 export {
     fetchAllQuestions,
-    fetchQuestionById
+    fetchQuestionById,
+    addQuestion
 };

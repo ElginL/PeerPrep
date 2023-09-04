@@ -4,14 +4,35 @@ import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { addQuestion } from '../api/questions';
 
 const AddQuestionModal = ({ isVisible, setIsVisible }) => {
     const containerStyle = isVisible ? "container-visible" : "container-not-visible";
 
     const [description, setDescription] = useState(EditorState.createEmpty());
+    const [title, setTitle] = useState("");
+    const [category, setCategory] = useState("");
+    const [complexity, setComplexity] = useState("Easy");
 
     const onDescriptionChange = (description) => {
         setDescription(description);
+    };
+
+    const onTitleChange = e => {
+        setTitle(e.target.value);
+    };
+
+    const onCategoryChange = e => {
+        setCategory(e.target.value);
+    };
+
+    const onComplexityChange = e => {
+        setComplexity(e.target.value);
+    };
+
+    const submitHandler = async () => {
+        const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
+        await addQuestion(title, category, complexity, stringifiedDescription);
     };
 
     const modalRef = useRef(null);
@@ -24,7 +45,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
     }, [description]);
 
     // console.log(draftToHtml(convertToRaw(description.getCurrentContent())));
-
+    
     return (
         <div className={styles[containerStyle]} onClick={() => setIsVisible(false)}>
             <div className={styles["form-container"]} onClick={e => e.stopPropagation()} ref={modalRef}>
@@ -32,15 +53,32 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                 <form className={styles["form"]}>
                     <div className={styles["input-container"]}>
                         <label htmlFor="title">Title:</label>
-                        <input type="text" placeholder="New Title" name="title" id="title" />
+                        <input 
+                            type="text" 
+                            placeholder="New Title" 
+                            name="title" 
+                            id="title" 
+                            onChange={onTitleChange} 
+                        />
                     </div>
                     <div className={styles["input-container"]}>
                         <label htmlFor="category">Category:</label>
-                        <input type="text" placeholder="Category (e.g. Binary Search)" name="category" id="category" />
+                        <input 
+                            type="text" 
+                            placeholder="Category (e.g. Binary Search)" 
+                            name="category" 
+                            id="category" 
+                            onChange={onCategoryChange} 
+                        />
                     </div>
                     <div className={styles["input-container"]}>
                         <label htmlFor="complexity">Complexity:</label>
-                        <select name="complexity" id="complexity" className={styles["complexity-container"]}>
+                        <select 
+                            name="complexity" 
+                            id="complexity" 
+                            className={styles["complexity-container"]}
+                            onChange={onComplexityChange}
+                        >
                             <option value="Easy">Easy</option>
                             <option value="Medium">Medium</option>
                             <option value="Hard">Hard</option>
@@ -55,6 +93,9 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             onEditorStateChange={onDescriptionChange}
                         />
                     </div>
+                    <button className={styles["submit-btn"]} onClick={submitHandler}>
+                        Submit
+                    </button>
                 </form>
             </div>
         </div>

@@ -85,3 +85,13 @@
     flex-direction: column;
     flex-grow: 1;
 }
+
+.submit-btn {
+    margin-left: auto;
+    background-color: #ff4081;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}

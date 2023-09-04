@@ -26,9 +26,10 @@ const QuestionPage = () => {
                 <h1>{question.id}. {question.title}</h1>
                 <h3>{question.complexity}</h3>
                 <h3>{question.category}</h3>
-                <p>
+                {/* <p>
                     {question.description}
-                </p>
+                </p> */}
+                <div dangerouslySetInnerHTML={{ __html: question.description }} />
             </div>
         </div>
     );
