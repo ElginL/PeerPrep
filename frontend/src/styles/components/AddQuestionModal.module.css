@@ -19,7 +19,9 @@
 
 .form-container {
     width: 80%;
-    height: 70%;
+    height: 85%;
+    max-height: 85%;
+    overflow-y: scroll;
     background-color: white;
     border-radius: 10px;
     color: black;
@@ -34,15 +36,18 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    min-height: 85%;
 }
 
-.input-container {
+.input-container,
+.description-container {
     display: flex;
     flex-direction: column;
     gap: 3px;
 }
 
-.input-container label {
+.input-container label,
+.description-container label {
     font-size: 1.1rem;
 }
 
@@ -51,7 +56,32 @@
     border-radius: 5px;
 }
 
-.input-container input:focus {
+.input-container input:focus,
+.complexity-container:focus {
     outline: none;
     border: 2px solid #007bff;
+}
+
+.complexity-container {
+    padding: 5px;
+}
+
+.complexity-container option {
+    font-size: 1rem;
+}
+
+.description-container {
+    flex-grow: 1;
+}
+
+.description-editor {
+    border: 1px solid grey;
+    justify-self: stretch;
+    flex-grow: 1;
+}
+
+.description-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }

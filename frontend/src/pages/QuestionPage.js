@@ -17,7 +17,7 @@ const QuestionPage = () => {
         };
 
         fetchQuestion(id);
-    }, []);
+    }, [id]);
 
     return (
         <div>
