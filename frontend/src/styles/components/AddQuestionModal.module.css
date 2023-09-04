@@ -95,3 +95,7 @@
     color: white;
     cursor: pointer;
 }
+
+.error-msg {
+    color: red;
+}

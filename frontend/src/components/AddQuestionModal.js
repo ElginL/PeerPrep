@@ -13,6 +13,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState("");
     const [complexity, setComplexity] = useState("Easy");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onDescriptionChange = (description) => {
         setDescription(description);
@@ -30,8 +31,16 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
         setComplexity(e.target.value);
     };
 
-    const submitHandler = async () => {
+    const submitHandler = async e => {
+        
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
+        
+        if (stringifiedDescription.trim() === "<p></p>" || title.trim().length === 0 || category.trim().length === 0) {
+            e.preventDefault();
+            setErrorMessage("Submit failed. All fields must be filled");
+            return;
+        }
+
         await addQuestion(title, category, complexity, stringifiedDescription);
     };
 
@@ -43,8 +52,6 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
             });
         }
     }, [description]);
-
-    // console.log(draftToHtml(convertToRaw(description.getCurrentContent())));
     
     return (
         <div className={styles[containerStyle]} onClick={() => setIsVisible(false)}>
@@ -93,6 +100,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             onEditorStateChange={onDescriptionChange}
                         />
                     </div>
+                    <p className={styles["error-msg"]}>{errorMessage}</p>
                     <button className={styles["submit-btn"]} onClick={submitHandler}>
                         Submit
                     </button>
