@@ -4,6 +4,8 @@
     box-shadow: 0 0 10px rgb(0, 0, 0);
     display: flex;
     justify-content: space-between;
+    position: fixed;
+    width: 100%;
 }
 
 .header {
@@ -28,4 +30,5 @@
     list-style: none;
     gap: 30px;
     font-size: 1.25rem;
+    padding: 0;
 }
