@@ -27,7 +27,7 @@ app.get('/questions/:id', (req, res) => {
     const id = req.params.id;
     for (const question of questions) {
         if (question.id == id) {
-            res.json(question);
+            res.status(200).json(question);
             return;
         }
     }
@@ -37,7 +37,7 @@ app.get('/questions/:id', (req, res) => {
 
 // Fetch all questions
 app.get('/', (req, res) => {
-    res.json(questions);
+    res.status(200).json(questions);
 });
 
 // Add a question
@@ -46,11 +46,22 @@ app.post('/', (req, res) => {
         id: counter++,
         ...req.body 
     };
-    
-    console.log(newQuestion);
+
+    // check question duplicate
+    for (const question of questions) {
+        if (question.title === newQuestion.title) {
+            res.status(400).send("Question with this title already exists");
+            return;
+        }
+
+        if (question.description === newQuestion.description) {
+            res.status(400).send("Question with this description already exists");
+            return;
+        }
+    }
 
     questions.push(newQuestion);
-    res.send("New question is saved");
+    res.status(201).send("New question is saved");
 });
 
 app.listen(3001, () => {

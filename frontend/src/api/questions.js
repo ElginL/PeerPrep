@@ -34,9 +34,15 @@ const addQuestion = async (title, category, complexity, description) => {
     try {
         const response = await axios.post(baseUrl, questionToAdd);
 
-        console.log(response);
+        return {
+            message: response.data,
+            status: response.status
+        };
     } catch (error) {
-        console.log("Error when trying to post: ", error);
+        return {
+            message: error.response.data,
+            status: error.response.status
+        };
     }
 
 };

@@ -32,16 +32,26 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
     };
 
     const submitHandler = async e => {
-        
+        e.preventDefault();
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
         
         if (stringifiedDescription.trim() === "<p></p>" || title.trim().length === 0 || category.trim().length === 0) {
-            e.preventDefault();
             setErrorMessage("Submit failed. All fields must be filled");
             return;
         }
 
-        await addQuestion(title, category, complexity, stringifiedDescription);
+        const response = await addQuestion(title, category, complexity, stringifiedDescription);
+        if (response.status !== 201) {
+            setErrorMessage(response.message);
+            return;
+        }
+        
+        setIsVisible(false);
+        setErrorMessage("");
+        setTitle("");
+        setDescription(EditorState.createEmpty());
+        setCategory("");
+        setComplexity("Easy")
     };
 
     const modalRef = useRef(null);
@@ -65,6 +75,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             placeholder="New Title" 
                             name="title" 
                             id="title" 
+                            value={title}
                             onChange={onTitleChange} 
                         />
                     </div>
@@ -74,7 +85,8 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             type="text" 
                             placeholder="Category (e.g. Binary Search)" 
                             name="category" 
-                            id="category" 
+                            id="category"
+                            value={category} 
                             onChange={onCategoryChange} 
                         />
                     </div>
@@ -84,6 +96,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             name="complexity" 
                             id="complexity" 
                             className={styles["complexity-container"]}
+                            value={complexity}
                             onChange={onComplexityChange}
                         >
                             <option value="Easy">Easy</option>
@@ -100,7 +113,9 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             onEditorStateChange={onDescriptionChange}
                         />
                     </div>
-                    <p className={styles["error-msg"]}>{errorMessage}</p>
+                    { errorMessage &&
+                        <p className={styles["error-msg"]}>{errorMessage}</p>
+                    }
                     <button className={styles["submit-btn"]} onClick={submitHandler}>
                         Submit
                     </button>

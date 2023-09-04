@@ -6,6 +6,7 @@ import styles from '../styles/components/Questions.module.css';
 
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
+    const [addFormVisible, setAddFormVisible] = useState(false);
 
     useEffect(() => {
         const getQuestions = async () => {
@@ -14,11 +15,13 @@ const Questions = () => {
         };
 
         getQuestions();
-    }, []);
+    }, [addFormVisible]);
 
     return (
         <div className={styles["container"]}>
-            <QuestionsNav 
+            <QuestionsNav
+                addFormVisible={addFormVisible}
+                setAddFormVisible={setAddFormVisible}
                 setQuestions={setQuestions} 
             />
             <hr className={styles["horizontal-line"]} />
