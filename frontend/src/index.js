@@ -1,9 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './styles/global.module.css';
-import UnauthenticatedRoutes from './routes/UnauthenticatedRoutes';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./styles/global.module.css";
+import UnauthenticatedRoutes from "./routes/UnauthenticatedRoutes";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <UnauthenticatedRoutes />
