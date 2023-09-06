@@ -47,8 +47,21 @@ const addQuestion = async (title, category, complexity, description) => {
 
 };
 
+const deleteQuestionsByIds = async (ids) => {
+    try {
+        const response = await axios.delete(baseUrl, { 
+            data: { ids } 
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error when trying to delete questions by ids: ", error);
+    }
+}
+
 export {
     fetchAllQuestions,
     fetchQuestionById,
-    addQuestion
+    addQuestion,
+    deleteQuestionsByIds
 };

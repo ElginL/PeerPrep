@@ -1,5 +1,5 @@
 .container {
-  padding: 100px;
+  padding: 175px 100px 100px 100px;
 }
 
 .questions-table {
@@ -38,6 +38,11 @@
 
 .complexity-column {
   width: 20%;
+}
+
+.delete-column {
+  display: flex;
+  justify-content: center;
 }
 
 .easy-complexity {

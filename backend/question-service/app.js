@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const app = express();
 
-const questions = [
+let questions = [
     { id: 1, title: "Reverse a string", category: "Strings, Algorithms", complexity: "Easy",
         description: "Write a function that reverses a string. The input string is given as an array of characters s." },
     { id: 2, title: "Linked List Cycle Detection", category: "Data Structures, Algorithms", complexity: "Easy", description: "Another long description" },
@@ -18,7 +18,7 @@ app.use(express.json());
 // enable cors for http://localhost:3000
 const corsOption = {
     origin: 'http://localhost:3000',
-    methods: 'GET, POST'
+    methods: 'GET, POST, DELETE'
 };
 app.use(cors(corsOption));
 
@@ -64,6 +64,15 @@ app.post('/', (req, res) => {
     res.status(201).send("New question is saved");
 });
 
+// delete questions
+app.delete('/', (req, res) => {
+    const deleteIds = [...req.body.ids];
+
+    questions = questions.filter(question => !deleteIds.includes(question.id));
+
+    res.status(204).send("Questions deleted successfully");
+});
+
 app.listen(3001, () => {
     console.log('Server is running on http://localhost:3001')
-})
+});
