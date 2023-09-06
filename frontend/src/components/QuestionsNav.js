@@ -6,6 +6,7 @@ const QuestionsNav = ({
     addFormVisible, 
     setAddFormVisible, 
     setQuestions,
+    setDeleteSelections,
     deleteQuestionsHandler,
     deleteCheckboxVisible,
     setDeleteCheckboxVisible 
@@ -20,6 +21,11 @@ const QuestionsNav = ({
             questions.filter((question) => question.complexity === complexity)
         );
     };
+
+    const cancelBtnHandler = () => {
+        setDeleteCheckboxVisible(false);
+        setDeleteSelections([]);
+    }
 
     return (
         <div>
@@ -70,7 +76,7 @@ const QuestionsNav = ({
                     </li>
                     { deleteCheckboxVisible &&
                         <li>
-                            <button onClick={async () => setDeleteCheckboxVisible(false)}>
+                            <button onClick={cancelBtnHandler}>
                                 Cancel
                             </button>
                         </li>

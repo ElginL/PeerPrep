@@ -17,7 +17,7 @@ const Questions = () => {
         };
         
         getQuestions();
-    }, [addFormVisible]);
+    }, [deleteSelections, addFormVisible]);
 
     const handleCheckbox = (deleteId) => {
         if (deleteSelections.includes(deleteId)) {
@@ -29,7 +29,8 @@ const Questions = () => {
 
     const deleteQuestionsHandler = async () => {
         await deleteQuestionsByIds(deleteSelections);
-        window.location.reload();
+        setDeleteSelections([]);
+        setDeleteCheckboxVisible(false);
     };
 
     return (
@@ -41,6 +42,7 @@ const Questions = () => {
                 deleteQuestionsHandler={deleteQuestionsHandler}
                 deleteCheckboxVisible={deleteCheckboxVisible}
                 setDeleteCheckboxVisible={setDeleteCheckboxVisible}
+                setDeleteSelections={setDeleteSelections}
             />
             <hr className={styles["horizontal-line"]} />
             <table className={styles["questions-table"]}>
