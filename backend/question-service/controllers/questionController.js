@@ -1,59 +1,44 @@
-let questions = [
-    { id: 1, title: "Reverse a string", category: "Strings, Algorithms", complexity: "Easy",
-        description: "Write a function that reverses a string. The input string is given as an array of characters s." },
-    { id: 2, title: "Linked List Cycle Detection", category: "Data Structures, Algorithms", complexity: "Easy", description: "Another long description" },
-    { id: 3, title: "Rotate Image", category: "Arrays, Algorithms", complexity: "Medium", description: "hello world description" },
-    { id: 4, title: "N-Queen Problem", category: "Algorithms", complexity: "Hard", description: "The N queen problem description" }
-];
-let counter = 5;
+const Question = require('../models/Question');
 
-const getQuestionById = (req, res) => {
+const getQuestionById = (req, res, next) => {
     const id = req.params.id;
-    for (const question of questions) {
-        if (question.id == id) {
+
+    Question.findById(id)
+        .then(question => {
+            if (!question) {
+                return res.status(404).json({ error: 'Cannot find question' });
+            }
+            
             res.status(200).json(question);
-            return;
-        }
-    }
-
-    res.send("Question id does not exist");
+        }).catch(err => next(err));
 };
 
-const getAllQuestions = (req, res) => {
-    res.status(200).json(questions);
+const getAllQuestions = (req, res, next) => {
+    Question.find()
+        .then(questions => res.status(200).json(questions))
+        .catch(err => next(err));
 };
 
-const addQuestion = (req, res) => {
-    const newQuestion = {
-        id: counter++,
-        ...req.body 
-    };
+const addQuestion = (req, res, next) => {
+    const newQuestion = new Question(req.body);
 
-    // check question duplicate
-    for (const question of questions) {
-        if (question.title === newQuestion.title) {
-            res.status(400).send("Question with this title already exists");
-            return;
-        }
-
-        if (question.description === newQuestion.description) {
-            res.status(400).send("Question with this description already exists");
-            return;
-        }
-    }
-
-    questions.push(newQuestion);
-    res.status(201).send("New question is saved");
+    newQuestion.save()
+        .then(question => {
+            console.log('Question saved successfully: ' + question);
+            req.status(201).send("Question saved successfully");
+        })
+        .catch(err => next(err));
 };
 
-const deleteQuestion = (req, res) => {
-    const deleteIds = [...req.body.ids];
+const deleteQuestion = (req, res, next) => {
+    const deleteIds = req.body.ids;
 
-    questions = questions.filter(question => !deleteIds.includes(question.id));
-
-    res.status(204).send("Questions deleted successfully");
+    Question.deleteMany({ _id: { $in: deleteIds }})
+        .then(result => {
+            res.status(204).send(`${result.deletedCount} questions were deleted successfully`);
+        })
+        .catch(err => next(err));
 };
-
 
 module.exports = {
     getQuestionById,

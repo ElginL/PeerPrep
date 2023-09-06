@@ -5,7 +5,8 @@ const baseUrl = 'http://localhost:3001';
 const fetchAllQuestions = async () => {
     try {
         const questions = await axios.get(baseUrl)
-
+        
+        console.log(questions.data);
         return questions.data;
 
     } catch (error) {

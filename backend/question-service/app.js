@@ -4,19 +4,6 @@ const questionRoute = require('./routes/questionRoute');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const app = express();
-
-app.use(express.json());
-
-app.use("/", questionRoute);
-
-// enable cors for http://localhost:3000
-const corsOption = {
-    origin: 'http://localhost:3000',
-    methods: 'GET, POST, DELETE'
-};
-app.use(cors(corsOption));
-
 // db connection
 mongoose.connect(
     process.env.MONGODB_URL,
@@ -30,6 +17,27 @@ const db = mongoose.connection;
 db.on('error', console.error.bind("connection error: "));
 db.once('open', function() {
     console.log("Connected successfully");
+});
+
+// server
+const app = express();
+
+app.use(express.json());
+
+// enable cors for http://localhost:3000
+const corsOption = {
+    origin: 'http://localhost:3000',
+    methods: 'GET, POST, DELETE'
+};
+app.use(cors(corsOption));
+app.options('*', cors(corsOption));
+
+// routes
+app.use("/", questionRoute);
+
+
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({ msg: err });
 });
 
 app.listen(3001, () => {
