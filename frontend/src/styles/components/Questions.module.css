@@ -1,58 +1,59 @@
 .container {
-    padding: 100px;
+  padding: 100px;
 }
 
 .questions-table {
-    width: 100%;
-    padding-top: 10px;
+  width: 100%;
+  padding-top: 10px;
+  margin: auto;
 }
 
 .questions-table th {
-    color: grey;
-    text-align: left;
-    padding-bottom: 10px;
+  color: grey;
+  text-align: left;
+  padding-bottom: 10px;
 }
 
 .question-link {
-    text-decoration: none;
-    color: white;
+  text-decoration: none;
+  color: white;
 }
 
 .question-link:hover {
-    color: rgb(47, 162, 200);
-    transition: color 0.5s;
+  color: rgb(47, 162, 200);
+  transition: color 0.5s;
 }
 
 .id-column {
-    width: 5%;
+  width: 5%;
 }
 
 .title-column {
-    width: 40%;;
+  width: 40%;
 }
 
 .category-column {
-    width: 40%;
+  width: 40%;
 }
 
 .complexity-column {
-    width: 20%;
+  width: 20%;
 }
 
 .easy-complexity {
-    color: #03c3ac;
+  color: #03c3ac;
 }
 
 .medium-complexity {
-    color: orange;
+  color: darkorange;
 }
 
 .hard-complexity {
-    color: red;
+  color: red;
 }
 
 .horizontal-line {
-    height: 1px;
-    border: none;
-    background-color: grey;
+  height: 1px;
+  border: none;
+  background-color: grey;
 }
