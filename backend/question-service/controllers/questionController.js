@@ -25,7 +25,7 @@ const addQuestion = (req, res, next) => {
     newQuestion.save()
         .then(question => {
             console.log('Question saved successfully: ' + question);
-            req.status(201).send("Question saved successfully");
+            res.status(201).send("Question saved successfully");
         })
         .catch(err => next(err));
 };

@@ -22,7 +22,9 @@ const validateQuestion = () => {
         (req, res, next) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
+                console.log(errors.array());
+                errorMessage = errors.array().map(err => err.msg).join(", ");
+                return res.status(400).json({ msg: errorMessage });
             }
 
             next();

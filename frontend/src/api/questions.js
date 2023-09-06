@@ -6,7 +6,6 @@ const fetchAllQuestions = async () => {
     try {
         const questions = await axios.get(baseUrl)
         
-        console.log(questions.data);
         return questions.data;
 
     } catch (error) {
@@ -41,7 +40,7 @@ const addQuestion = async (title, category, complexity, description) => {
         };
     } catch (error) {
         return {
-            message: error.response.data,
+            message: error.response.data.msg,
             status: error.response.status
         };
     }

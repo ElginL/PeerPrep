@@ -37,7 +37,7 @@ app.use("/", questionRoute);
 
 
 app.use((err, req, res, next) => {
-    res.status(err.status || 500).json({ msg: err });
+    res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });
 });
 
 app.listen(3001, () => {

@@ -48,7 +48,6 @@ const Questions = () => {
             <table className={styles["questions-table"]}>
                 <thead>
                     <tr>
-                        <th className={styles["id-column"]}>Id</th>
                         <th className={styles["title-column"]}>Title</th>
                         <th className={styles["category-column"]}>Category</th>
                         <th className={styles["complexity-column"]}>Complexity</th>
@@ -61,11 +60,10 @@ const Questions = () => {
                 <tbody>
                     {questions &&
                         questions.map((question) => (
-                            <tr key={question.id}>
-                                <td className={styles["id-column"]}>{question.id}</td>
+                            <tr key={question._id}>
                                 <td className={styles["title-column"]}>
                                     <Link
-                                        to={`/questions/${question.id}`}
+                                        to={`/questions/${question._id}`}
                                         className={styles["question-link"]}
                                     >
                                         {question.title}
@@ -83,7 +81,7 @@ const Questions = () => {
                                     { deleteCheckboxVisible &&
                                         <input
                                             type="checkbox"
-                                            onChange={() => handleCheckbox(question.id)}
+                                            onChange={() => handleCheckbox(question._id)}
                                         />
                                     }
                                 </td>

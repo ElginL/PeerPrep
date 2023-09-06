@@ -1,5 +1,5 @@
 .container {
-  padding: 175px 100px 100px 100px;
+  padding: 200px 250px 100px 250px;
 }
 
 .questions-table {
@@ -24,16 +24,12 @@
   transition: color 0.5s;
 }
 
-.id-column {
-  width: 5%;
-}
-
 .title-column {
-  width: 40%;
+  width: 45%;
 }
 
 .category-column {
-  width: 40%;
+  width: 45%;
 }
 
 .complexity-column {
