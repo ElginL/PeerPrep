@@ -24,7 +24,7 @@ const QuestionPage = () => {
         <div>
             <Navbar />
             <div className={styles["container"]}>
-                <h1>{question.id}. {question.title}</h1>
+                <h1>{question.title}</h1>
                 <h3>{question.complexity}</h3>
                 <h3>{question.category}</h3>
                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.description) }} />

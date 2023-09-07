@@ -5,7 +5,7 @@ const baseUrl = 'http://localhost:3001';
 const fetchAllQuestions = async () => {
     try {
         const questions = await axios.get(baseUrl)
-
+        
         return questions.data;
 
     } catch (error) {
@@ -40,15 +40,28 @@ const addQuestion = async (title, category, complexity, description) => {
         };
     } catch (error) {
         return {
-            message: error.response.data,
+            message: error.response.data.msg,
             status: error.response.status
         };
     }
 
 };
 
+const deleteQuestionsByIds = async (ids) => {
+    try {
+        const response = await axios.delete(baseUrl, { 
+            data: { ids } 
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error when trying to delete questions by ids: ", error);
+    }
+}
+
 export {
     fetchAllQuestions,
     fetchQuestionById,
-    addQuestion
+    addQuestion,
+    deleteQuestionsByIds
 };
