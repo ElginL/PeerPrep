@@ -7,6 +7,8 @@ userRouter.get('/', (req, res, next) => {
     res.json({ "messsage": "Hello "});
 });
 
-userRouter.post('/', validateUser(), userController.createUser);
+userRouter.post('/register', validateUser(), userController.createUser);
+
+userRouter.post('/login', userController.loginUser);
 
 module.exports = userRouter;
