@@ -1,4 +1,8 @@
-const { addUserInDb, getUserByUsername } = require('../db/repositories/userRepo');
+const { 
+    addUserInDb, 
+    getUserByUsername, 
+    deleteUserByUsername 
+} = require('../db/repositories/userRepo');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -50,9 +54,22 @@ const loginUser = async (req, res, next) => {
     } catch (e) {
         return next(e);
     }
-}
+};
+
+const deleteUser = async (req, res, next) => {
+    try {
+        if (await deleteUserByUsername(req.body.username)) {
+            res.status(200).json({ msg: "User successfully deleted" });
+        } else {
+            res.status(404).json({ msg: "Delete failed, user not found" });
+        }
+    } catch (e) {
+        next(e);
+    }
+};
 
 module.exports = {
     createUser,
-    loginUser
+    loginUser,
+    deleteUser
 };

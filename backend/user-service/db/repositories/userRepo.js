@@ -15,9 +15,26 @@ const getUserByUsername = async username => {
     }
 
     return user;
-}
+};
+
+const deleteUserByUsername = async username => {
+    try {
+        const user = await getUserByUsername(username);
+
+        if (user == null) {
+            return false;
+        }
+
+        await user.destroy();
+        
+        return true;
+    } catch (e) {
+        throw new Error(e);
+    }
+};
 
 module.exports = {
     addUserInDb,
-    getUserByUsername
+    getUserByUsername,
+    deleteUserByUsername
 };

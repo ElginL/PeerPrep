@@ -11,4 +11,6 @@ userRouter.post('/register', validateUser(), userController.createUser);
 
 userRouter.post('/login', userController.loginUser);
 
+userRouter.delete('/deregister', userController.deleteUser);
+
 module.exports = userRouter;
