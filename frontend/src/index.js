@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/global.module.css";
-import UnauthenticatedRoutes from "./routes/UnauthenticatedRoutes";
+import AuthenticatedRoutes from "./routes/AuthenticatedRoutes";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <UnauthenticatedRoutes />
+    <AuthenticatedRoutes />
   </React.StrictMode>
 );
