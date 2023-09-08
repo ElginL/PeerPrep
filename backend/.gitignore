@@ -1,2 +1,5 @@
 /question-service/node_modules
 /question-service/.env
+
+/user-service/node_modules
+/user-service/.env
