@@ -11,18 +11,28 @@ const validateUser = () => {
                 }
             }),
         body('password').notEmpty().withMessage("Password is required"),
-        (req, res, next) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                errorMessage = errors.array().map(err => err.msg).join(", ");
-                return res.status(400).json({ msg: errorMessage });
-            }
-
-            next();
-        }
+        handleErrors
     ];
 };
 
+const validateNewPassword = () => {
+    return [
+        body('newPassword').notEmpty().withMessage("Password is required"),
+        handleErrors
+    ];
+};
+
+const handleErrors = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        errorMessage = errors.array().map(err => err.msg).join(", ");
+        return res.status(400).json({ msg: errorMessage });
+    }
+
+    next();
+}
+
 module.exports = {
-    validateUser
+    validateUser,
+    validateNewPassword
 };

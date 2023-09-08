@@ -1,7 +1,8 @@
 const { 
     addUserInDb, 
     getUserByUsername, 
-    deleteUserByUsername 
+    deleteUserByUsername,
+    updateUserPassword
 } = require('../db/repositories/userRepo');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -68,8 +69,31 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
+const updatePassword = (req, res, next) => {
+    const { username, newPassword } = req.body;
+
+    bcrypt.hash(newPassword, 10, async (err, hash) => {
+        if (err) {
+            return next(err);
+        }
+
+        try {
+            if (await updateUserPassword(username, hash)) {
+                return res.status(201).json({
+                    msg: "Update password successful"
+                });
+            }
+
+            return res.status(404).json({ msg: "Update password failed, user not found" });
+        } catch (e) {
+            next(e);
+        }
+    });
+};
+
 module.exports = {
     createUser,
     loginUser,
-    deleteUser
+    deleteUser,
+    updatePassword
 };

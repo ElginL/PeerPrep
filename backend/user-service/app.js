@@ -21,7 +21,6 @@ app.use('/', userRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.log("Hello")
     res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });
 });
 
