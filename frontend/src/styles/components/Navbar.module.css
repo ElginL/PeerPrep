@@ -32,3 +32,16 @@
     font-size: 1.25rem;
     padding: 0;
 }
+
+.nav-links button {
+    color: white;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.nav-links button:hover {
+    color: rgb(47, 162, 200);
+    transition: color 0.5s;
+}
