@@ -8,7 +8,7 @@ const UserProfile = () => {
             <h2 className={styles["username"]}>
                 {localStorage.getItem('username')}
             </h2>
-            <Link to="/" className={styles["edit-profile-btn"]}>
+            <Link to="/profile" className={styles["edit-profile-btn"]}>
                 Edit Profile
             </Link>
         </div>

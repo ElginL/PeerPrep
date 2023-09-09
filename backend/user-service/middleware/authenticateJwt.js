@@ -14,6 +14,9 @@ const authenticateJwt = (req, res, next) => {
             return res.status(401).json({ msg: 'Authentication failed: invalid token' });
         }
 
+        req.username = user.username;
+        req.isManager = user.isManager;
+
         next();
     })
 };

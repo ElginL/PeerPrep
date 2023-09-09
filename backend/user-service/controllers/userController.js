@@ -59,7 +59,7 @@ const loginUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
     try {
-        if (await deleteUserByUsername(req.body.username)) {
+        if (await deleteUserByUsername(req.username)) {
             res.status(200).json({ msg: "User successfully deleted" });
         } else {
             res.status(404).json({ msg: "Delete failed, user not found" });

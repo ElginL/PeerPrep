@@ -30,6 +30,12 @@ const setAuthenticationHeader = () => {
     };
 };
 
+const deregisterUser = () => {
+    return axios.delete(baseUrl + '/deregister', setAuthenticationHeader())
+        .then(res => ({ status: res.status }))
+        .catch(error => ({ status: error.response.status }));
+};
+
 const isLoggedIn = async () => {
     try {
         await axios.get(baseUrl + '/verifytoken', setAuthenticationHeader());
@@ -44,5 +50,6 @@ const isLoggedIn = async () => {
 export {
     loginUser,
     isLoggedIn,
-    registerUser
+    registerUser,
+    deregisterUser
 };

@@ -3,25 +3,16 @@ import ReactDOM from "react-dom/client";
 import "./styles/global.module.css";
 import AuthenticatedRoutes from "./routes/AuthenticatedRoutes";
 import UnauthenticatedRoutes from "./routes/UnauthenticatedRoutes";
-import { isLoggedIn } from "./api/users";
 
-const App = () => {
-  const [authenticated, setAuthenticated] = useState(false);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+const token = localStorage.getItem('sessionToken');
 
-  useEffect(() => {
-    isLoggedIn().then(res => setAuthenticated(res))
-  }, []);
-
-  return (
-    <React.StrictMode>
+root.render(
+  <React.StrictMode>
     {
-      authenticated
+      token
         ? <AuthenticatedRoutes />
         : <UnauthenticatedRoutes />
     }
-    </React.StrictMode>
-  )
-}
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+  </React.StrictMode>
+);
