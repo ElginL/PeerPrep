@@ -49,7 +49,7 @@ const loginUser = async (req, res, next) => {
                     isManager: dbUser.isManager,
                 }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
     
-                res.status(200).json({ token, status: 200 });
+                res.status(200).json({ token });
             })
             .catch(e => next(e));
     } catch (e) {

@@ -9,7 +9,18 @@ const loginUser = (username, password) => {
     };
 
     return axios.post(baseUrl + "/login", credentials)
-        .then(response => ({ token: response.data.token, status: response.data.status }))
+        .then(response => ({ token: response.data.token, status: response.status }))
+        .catch(error => ({ message: error.response.data.msg, status: error.response.status }));
+};
+
+const registerUser = (username, password) => {
+    const credentials = {
+        username,
+        password
+    };
+
+    return axios.post(baseUrl + '/register', credentials)
+        .then(response => ({ message: response.data.msg, status: response.status }))
         .catch(error => ({ message: error.response.data.msg, status: error.response.status }));
 };
 
@@ -32,5 +43,6 @@ const isLoggedIn = async () => {
 
 export {
     loginUser,
-    isLoggedIn
+    isLoggedIn,
+    registerUser
 };
