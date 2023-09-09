@@ -42,7 +42,6 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
 
         const response = await addQuestion(title, category, complexity, stringifiedDescription);
         if (response.status !== 201) {
-            console.log(response);
             setErrorMessage(response.message);
             return;
         }

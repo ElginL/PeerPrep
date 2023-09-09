@@ -44,4 +44,10 @@
 .question-link {
   text-decoration: none;
   color: white;
+  text-align: center;
+}
+
+.error-msg {
+  color: red;
+  font-size: 0.8rem;
 }

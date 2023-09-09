@@ -8,6 +8,8 @@ userRouter.post('/register', validateUser(), userController.createUser);
 
 userRouter.post('/login', userController.loginUser);
 
+userRouter.get('/verifytoken', authenticateJwt, userController.success);
+
 userRouter.put('/update/password', authenticateJwt, validateNewPassword(), userController.updatePassword);
 
 userRouter.delete('/deregister', authenticateJwt, userController.deleteUser);

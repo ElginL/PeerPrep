@@ -41,7 +41,7 @@ const loginUser = async (req, res, next) => {
         bcrypt.compare(password, dbUser.password)
             .then(isCorrect => {
                 if (!isCorrect) {
-                    res.status(401).json({ msg: "Username or password is invalid" });
+                    return res.status(401).json({ msg: "Username or password is invalid" });
                 }
     
                 const token = jwt.sign({ 
@@ -49,7 +49,7 @@ const loginUser = async (req, res, next) => {
                     isManager: dbUser.isManager,
                 }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
     
-                res.status(200).json({ token });
+                res.status(200).json({ token, status: 200 });
             })
             .catch(e => next(e));
     } catch (e) {
@@ -91,9 +91,14 @@ const updatePassword = (req, res, next) => {
     });
 };
 
+const success = (req, res, next) => {
+    return res.send("success");
+};
+
 module.exports = {
     createUser,
     loginUser,
     deleteUser,
-    updatePassword
+    updatePassword,
+    success
 };

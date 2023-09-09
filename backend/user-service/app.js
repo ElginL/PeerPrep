@@ -12,7 +12,8 @@ app.use(express.json());
 // enable cors for http://localhost:3000
 const corsOption = {
     origin: 'http://localhost:3000',
-    methods: 'GET, POST, DELETE'
+    methods: 'GET, POST, DELETE',
+    credentials: true
 };
 app.use(cors(corsOption));
 
