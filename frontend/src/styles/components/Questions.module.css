@@ -1,5 +1,10 @@
 .container {
-  padding: 200px 250px 100px 250px;
+  background-color: #232323;
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.9) 2px 2px 4px;
+  border-radius: 20px;
+  align-self: stretch;
+  flex-grow: 1;
 }
 
 .questions-table {
