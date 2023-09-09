@@ -18,6 +18,7 @@ const LogIn = () => {
     }
 
     localStorage.setItem('sessionToken', res.token);
+    localStorage.setItem('username', res.username);
     window.location.reload();
   }
 

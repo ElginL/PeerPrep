@@ -9,7 +9,7 @@ const loginUser = (username, password) => {
     };
 
     return axios.post(baseUrl + "/login", credentials)
-        .then(response => ({ token: response.data.token, status: response.status }))
+        .then(response => ({ token: response.data.token, username: response.data.username, status: response.status }))
         .catch(error => ({ message: error.response.data.msg, status: error.response.status }));
 };
 
