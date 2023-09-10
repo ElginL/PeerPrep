@@ -1,7 +1,8 @@
 const { 
     addUserInDb, 
     getUserByUsername, 
-    deleteUserByUsername 
+    deleteUserByUsername,
+    updateUserPassword
 } = require('../db/repositories/userRepo');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -40,7 +41,7 @@ const loginUser = async (req, res, next) => {
         bcrypt.compare(password, dbUser.password)
             .then(isCorrect => {
                 if (!isCorrect) {
-                    res.status(401).json({ msg: "Username or password is invalid" });
+                    return res.status(401).json({ msg: "Username or password is invalid" });
                 }
     
                 const token = jwt.sign({ 
@@ -48,7 +49,7 @@ const loginUser = async (req, res, next) => {
                     isManager: dbUser.isManager,
                 }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
     
-                res.status(200).json({ token });
+                res.status(200).json({ token, username: dbUser.username });
             })
             .catch(e => next(e));
     } catch (e) {
@@ -58,7 +59,7 @@ const loginUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
     try {
-        if (await deleteUserByUsername(req.body.username)) {
+        if (await deleteUserByUsername(req.username)) {
             res.status(200).json({ msg: "User successfully deleted" });
         } else {
             res.status(404).json({ msg: "Delete failed, user not found" });
@@ -68,8 +69,36 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
+const updatePassword = (req, res, next) => {
+    const { username, newPassword } = req.body;
+
+    bcrypt.hash(newPassword, 10, async (err, hash) => {
+        if (err) {
+            return next(err);
+        }
+
+        try {
+            if (await updateUserPassword(username, hash)) {
+                return res.status(201).json({
+                    msg: "Update password successful"
+                });
+            }
+
+            return res.status(404).json({ msg: "Update password failed, user not found" });
+        } catch (e) {
+            next(e);
+        }
+    });
+};
+
+const success = (req, res, next) => {
+    return res.send("success");
+};
+
 module.exports = {
     createUser,
     loginUser,
-    deleteUser
+    deleteUser,
+    updatePassword,
+    success
 };

@@ -1,41 +1,66 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../styles/components/Authentication.module.css";
+import { loginUser } from "../api/users";
 
 const LogIn = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const logInButtonHandler = async e => {
+    e.preventDefault();
+
+    const res = await loginUser(username, password);
+    if (res.status != 200) {
+      setErrorMessage(res.message);
+      return;
+    }
+
+    localStorage.setItem('sessionToken', res.token);
+    localStorage.setItem('username', res.username);
+    window.location.reload();
+  }
+
   return (
     <div className={styles["container"]}>
       <div className={styles["form-container"]}>
         <h1 className={styles["header"]}>Log In</h1>
-        <div className={styles["form"]}>
+        <form className={styles["form"]}>
           <input
-            type="username"
+            type="text"
             name="username"
             placeholder="Username"
+            onChange={e => setUsername(e.target.value)}
             className={styles["input"]}
           />
           <input
             type="password"
             name="password"
             placeholder="Password"
+            onChange={e => setPassword(e.target.value)}
             className={styles["input"]}
           />
-          <button className={styles["submit-button"]} type="submit">
+          {
+            errorMessage && (
+              <p className={styles["error-msg"]}>{errorMessage}</p>
+            )
+          }
+          <button className={styles["submit-button"]} onClick={logInButtonHandler}>
             Log In
           </button>
-          <button className={styles["submit-button"]} type="submit">
-            <Link to="/signup" className={styles["question-link"]}>
-              Dont' have an account?{" "}
-              <text
-                style={{
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                }}
-              >
-                Sign Up!
-              </text>
-            </Link>
-          </button>
-        </div>
+          <Link to="/signup" className={`${styles["submit-button"]} ${styles["question-link"]}`}>
+            Dont' have an account?{" "}
+            <span
+              style={{
+                color: "#FFFFFF",
+                fontWeight: "bold",
+              }}
+            >
+              Sign Up!
+            </span>
+          </Link>
+        </form>
       </div>
     </div>
   );

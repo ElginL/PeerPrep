@@ -33,8 +33,26 @@ const deleteUserByUsername = async username => {
     }
 };
 
+const updateUserPassword = async (username, newPasswordHash) => {
+    try {
+        const user = await getUserByUsername(username);
+
+        if (user == null) {
+            return false;
+        }
+
+        user.password = newPasswordHash;
+
+        await user.save();
+        return true;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
+
 module.exports = {
     addUserInDb,
     getUserByUsername,
-    deleteUserByUsername
+    deleteUserByUsername,
+    updateUserPassword
 };

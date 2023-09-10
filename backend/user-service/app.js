@@ -12,7 +12,8 @@ app.use(express.json());
 // enable cors for http://localhost:3000
 const corsOption = {
     origin: 'http://localhost:3000',
-    methods: 'GET, POST, DELETE'
+    methods: 'GET, POST, DELETE',
+    credentials: true
 };
 app.use(cors(corsOption));
 
@@ -21,7 +22,6 @@ app.use('/', userRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    console.log("Hello")
     res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });
 });
 
