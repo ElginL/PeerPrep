@@ -1,9 +1,29 @@
-const socketIo = require('socket.io');
-
-let io;
+const { instrument } = require('@socket.io/admin-ui')
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const waitingListRepo = require('../db/repositories/waitingListRepo');
+const roomRepo = require('../db/repositories/RoomRepo');
 
 const initializeWebSocket = server => {
-    io = socketIo(server);
+    const io = require('socket.io')(server, {
+        cors: {
+            origin: ['http://localhost:3000', 'https://admin.socket.io'],
+            credentials: true
+        },
+    });
+
+    io.use((socket, next) => {
+        const token = socket.handshake.query.token;
+
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+            if (err) {
+                return next(new Error('Authentication Error'));
+            }
+
+            socket.username = decoded.username;
+            next();
+        });
+    })
 
     io.on('connection', socket => {
         console.log(`User connected: ${socket.id}`);
@@ -11,18 +31,27 @@ const initializeWebSocket = server => {
         socket.on('disconnect', () => {
             console.log(`User disconnected: ${socket.id}`);
         });
+
+        socket.on('joinQueue', async queueComplexity => {
+            const otherUser = await waitingListRepo.getByComplexity(queueComplexity);
+
+            // No other user queuing for that complexity yet.
+            if (otherUser == null) {
+                waitingListRepo.addEntry(socket.username, socket.id, queueComplexity);
+                return;
+            }
+
+            roomRepo.addEntry(socket.username, socket.id, otherUser.username, otherUser.socketId);
+
+            io.to(otherUser.socketId).emit('matchfound', socket.username);
+            io.to(socket.id).emit('matchfound', otherUser.username);
+        });
     });
+
+    instrument(io, { auth: false });
 };
 
-const getSocketIoInstance = () => {
-    if (!io) {
-        throw new Error('Socket.io has not been initialized');
-    }
-
-    return io;
-}
 
 module.exports = {
     initializeWebSocket,
-    getSocketIoInstance,
 };

@@ -11,6 +11,10 @@ const WaitingList = sq.define("WaitingList", {
         type: DataTypes.STRING,
         allowNull: false
     },
+    complexity: {
+        type: DataTypes.ENUM(['Easy', 'Medium', 'Hard']),
+        allowNull: false
+    }
 });
 
 WaitingList.sync({ force: true })

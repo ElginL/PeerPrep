@@ -12,7 +12,7 @@ const LogIn = () => {
     e.preventDefault();
 
     const res = await loginUser(username, password);
-    if (res.status != 200) {
+    if (res.status !== 200) {
       setErrorMessage(res.message);
       return;
     }

@@ -1,10 +1,27 @@
 const WaitingList = require('../models/WaitingList');
 
-const addUsernameAndSocketId = (username, password) => {
+const addEntry = (username, socketId, complexity) => {
     WaitingList.create({
         username,
-        password
+        socketId,
+        complexity
     });
+};
+
+const getByComplexity = async complexity => {
+    try {
+        const res = await WaitingList.findOne({ where: { complexity }});
+        
+        if (res == null) {
+            return null;
+        }
+
+        await res.destroy();
+    
+        return res;
+    } catch (error) {
+        console.error("Error:", error);
+    }
 };
 
 const getByUsername = async username => {
@@ -34,7 +51,8 @@ const deleteByUsername = async username => {
 };
 
 module.exports = {
-    addUsernameAndSocketId,
+    addEntry,
     getByUsername,
-    deleteByUsername
+    deleteByUsername,
+    getByComplexity
 };

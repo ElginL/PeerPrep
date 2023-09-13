@@ -8,7 +8,7 @@ const DeregisterAccount = () => {
     const deregisterBtnHandler = async () => {
         const res = await deregisterUser();
         
-        if (res.status == 200) {
+        if (res.status === 200) {
             localStorage.removeItem('sessionToken');
             navigate("/");
             window.location.reload();
