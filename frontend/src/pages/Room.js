@@ -12,6 +12,7 @@ const Room = () => {
 
     const doc = new Y.Doc();
 
+    // QUERY BACKEND HERE FOR ROOM CODE TO REPLACE "test-room"
     const provider = new WebrtcProvider("test-room", doc);
 
     const type = doc.getText("monaco");
