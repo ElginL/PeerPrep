@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/global.module.css";
 import AuthenticatedRoutes from "./routes/AuthenticatedRoutes";

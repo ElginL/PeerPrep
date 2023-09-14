@@ -3,3 +3,6 @@
 
 /user-service/node_modules
 /user-service/.env
+
+/matching-service/node_modules
+/matching-service/.env
