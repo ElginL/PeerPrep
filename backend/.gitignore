@@ -6,3 +6,6 @@
 
 /matching-service/node_modules
 /matching-service/.env
+
+/collaboration-service/node_modules
+/collaboration-service/.env
