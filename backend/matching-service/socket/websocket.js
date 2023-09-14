@@ -1,5 +1,6 @@
 const { instrument } = require('@socket.io/admin-ui')
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const waitingListRepo = require('../db/repositories/waitingListRepo');
 const roomRepo = require('../db/repositories/RoomRepo');
@@ -30,6 +31,7 @@ const initializeWebSocket = server => {
 
         socket.on('disconnect', () => {
             console.log(`User disconnected: ${socket.id}`);
+            roomRepo.deleteByUsername(socket.username);
         });
 
         socket.on('joinQueue', async queueComplexity => {
@@ -41,7 +43,7 @@ const initializeWebSocket = server => {
                 return;
             }
 
-            roomRepo.addEntry(socket.username, socket.id, otherUser.username, otherUser.socketId);
+            roomRepo.addEntry(socket.username, otherUser.username, uuidv4());
 
             io.to(otherUser.socketId).emit('matchfound', socket.username);
             io.to(socket.id).emit('matchfound', otherUser.username);

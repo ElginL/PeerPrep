@@ -1,33 +1,40 @@
 const Room = require('../models/Room');
+const { Op } = require('sequelize');
 
-const addEntry = (username1, socketId1, username2, socketId2) => {
+const addEntry = (username1, username2, roomId) => {
     Room.create({
         username1,
-        socketId1,
         username2,
-        socketId2
+        roomId
     });
 };
 
-const getByUsernames = async (username1, username2) => {
-    const user = await WaitingList.findByPk(username1, username2);
+const getByUsername = async (username) => {
+    const room = await Room.findOne({
+        where: {
+            [Op.or]: [
+                { username1: username },
+                { username2: username }
+            ]
+        }
+    });
 
-    if (user == null) {
+    if (room == null) {
         return null;
     }
 
-    return user;
+    return room;
 };
 
-const deleteByUsernames = async (username1, username2) => {
+const deleteByUsername = async (username) => {
     try {
-        const row = await getByUsernames(username1, username2);
+        const room = await getByUsername(username);
 
-        if (row == null) {
+        if (room == null) {
             return false;
         }
 
-        await row.destroy();
+        await room.destroy();
         
         return true;
     } catch (e) {
@@ -37,6 +44,6 @@ const deleteByUsernames = async (username1, username2) => {
 
 module.exports = {
     addEntry,
-    getByUsernames,
-    deleteByUsernames
+    getByUsername,
+    deleteByUsername
 };

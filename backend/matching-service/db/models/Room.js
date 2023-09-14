@@ -5,18 +5,16 @@ const Room = sq.define("Room", {
     username1: {
         type: DataTypes.STRING,
         allowNull: false,
-        primaryKey: true
-    },
-    socketId1: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        primaryKey: true,
+        unique: true
     },
     username2: {
         type: DataTypes.STRING,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        unique: true
     },
-    socketId2: {
+    roomId: {
         type: DataTypes.STRING,
         allowNull: false,
     },
