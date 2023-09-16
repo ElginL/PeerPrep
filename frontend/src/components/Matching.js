@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import RetryModal from './RetryModal';
+import MatchFoundModal from './MatchFoundModal';
 import styles from '../styles/components/Matching.module.css';
 import { connectMatchingSocket, socket } from '../sockets/matchingServiceSocket';
 
@@ -11,15 +12,17 @@ const Matching = () => {
     const [seconds, setSeconds] = useState(maxQueueTime);
     const [timerRunning, setTimerRunning] = useState(false);
     const [retryModalVisible, setRetryModalVisible] = useState(false);
+    const [matchFoundModalVisible, setMatchFoundModalVisible] = useState(false);
 
-    const noMatchFoundHandler = () => {
+    const noMatchFoundHandler = (disconnectSocket) => {
         setTimerRunning(false);
         setSeconds(maxQueueTime);
         setButtonsDisabled(false);
         
-        setRetryModalVisible(true);
-
-        socket.disconnect();
+        if (disconnectSocket) {
+            setRetryModalVisible(true);
+            socket.disconnect();
+        }
     }
 
     useEffect(() => {
@@ -28,7 +31,7 @@ const Matching = () => {
             interval = setInterval(() => {
                 setSeconds(prevSeconds => {
                     if (prevSeconds === 0) {
-                        noMatchFoundHandler();
+                        noMatchFoundHandler(true);
                         clearInterval(interval);
                     }
 
@@ -38,12 +41,6 @@ const Matching = () => {
         }
 
         return () => {
-            console.log("Run");
-            // unintended effect, temporary fix.
-            // if (socket) {
-            //     socket.disconnect();
-            // }
-
             if (interval) {
                 clearInterval(interval);
             }
@@ -52,6 +49,9 @@ const Matching = () => {
 
     const matchFoundHandler = matchedUsername => {
         setButtonsDisabled(false);
+        noMatchFoundHandler(false);
+
+        setMatchFoundModalVisible(true);
 
         console.log("matched with: ", matchedUsername);
     }
@@ -91,10 +91,14 @@ const Matching = () => {
                 )
             }
             <RetryModal 
-                retryModalVisible={retryModalVisible} 
-                setRetryModalVisible={setRetryModalVisible}
+                isVisible={retryModalVisible} 
+                setIsVisible={setRetryModalVisible}
                 queueComplexity={queueComplexity}
                 retryButtonHandler={clickHandler}
+            />
+            <MatchFoundModal
+                isVisible={matchFoundModalVisible}
+                setIsVisible={setMatchFoundModalVisible}
             />
         </div>
     );
