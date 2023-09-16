@@ -1,9 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import RetryModal from './RetryModal';
 import styles from '../styles/components/Matching.module.css';
-import connectMatchingSocket from '../sockets/matchingServiceSocket';
+import { connectMatchingSocket, socket } from '../sockets/matchingServiceSocket';
+
+const maxQueueTime = 10;
 
 const Matching = () => {
     const [buttonsDisabled, setButtonsDisabled] = useState(false);
+    const [queueComplexity, setQueueComplexity] = useState("");
+    const [seconds, setSeconds] = useState(maxQueueTime);
+    const [timerRunning, setTimerRunning] = useState(false);
+    const [retryModalVisible, setRetryModalVisible] = useState(false);
+
+    const noMatchFoundHandler = () => {
+        setTimerRunning(false);
+        setSeconds(maxQueueTime);
+        setButtonsDisabled(false);
+        
+        setRetryModalVisible(true);
+
+        socket.disconnect();
+    }
+
+    useEffect(() => {
+        let interval;
+        if (timerRunning) {
+            interval = setInterval(() => {
+                setSeconds(prevSeconds => {
+                    if (prevSeconds === 0) {
+                        noMatchFoundHandler();
+                        clearInterval(interval);
+                    }
+
+                    return prevSeconds - 1
+                });
+            }, 1000);
+        }
+
+        return () => {
+            console.log("Run");
+            // unintended effect, temporary fix.
+            // if (socket) {
+            //     socket.disconnect();
+            // }
+
+            if (interval) {
+                clearInterval(interval);
+            }
+        }
+    }, [timerRunning])
 
     const matchFoundHandler = matchedUsername => {
         setButtonsDisabled(false);
@@ -15,9 +60,12 @@ const Matching = () => {
         if (buttonsDisabled) {
             return;
         }
+        
+        setTimerRunning(true);
+        setQueueComplexity(queueComplexity);
 
-        setButtonsDisabled(true);
         connectMatchingSocket(queueComplexity, localStorage.getItem('sessionToken'), matchFoundHandler);
+        setButtonsDisabled(true);
     };
 
     return (
@@ -34,6 +82,20 @@ const Matching = () => {
                     Queue Hard
                 </button>
             </div>
+            {
+                timerRunning && (
+                    <div className={styles["timer-container"]}>
+                        <p>Finding {queueComplexity} match...</p>
+                        <p className={styles["seconds"]}>{seconds} seconds remaining</p>
+                    </div>
+                )
+            }
+            <RetryModal 
+                retryModalVisible={retryModalVisible} 
+                setRetryModalVisible={setRetryModalVisible}
+                queueComplexity={queueComplexity}
+                retryButtonHandler={clickHandler}
+            />
         </div>
     );
 };
