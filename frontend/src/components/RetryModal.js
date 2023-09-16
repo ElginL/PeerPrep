@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import styles from '../styles/components/RetryModal.module.css';
 
 const RetryModal = ({ 
@@ -12,6 +13,16 @@ const RetryModal = ({
         retryButtonHandler(queueComplexity);
         setIsVisible(false);
     }
+
+    useEffect(() => {
+        if (isVisible) {
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+    }, [isVisible]);
 
     return (
         <div className={styles[containerStyle]} onClick={() => setIsVisible(false)}>
