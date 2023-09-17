@@ -32,6 +32,7 @@ const initializeWebSocket = server => {
         socket.on('disconnect', () => {
             console.log(`User disconnected: ${socket.id}`);
             roomRepo.deleteByUsername(socket.username);
+            waitingListRepo.deleteByUsername(socket.username);
         });
 
         socket.on('joinQueue', async queueComplexity => {

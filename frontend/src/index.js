@@ -3,16 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./styles/global.module.css";
 import AuthenticatedRoutes from "./routes/AuthenticatedRoutes";
 import UnauthenticatedRoutes from "./routes/UnauthenticatedRoutes";
+import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const token = localStorage.getItem('sessionToken');
 
 root.render(
   <React.StrictMode>
-    {
-      token
-        ? <AuthenticatedRoutes />
-        : <UnauthenticatedRoutes />
-    }
+    <RecoilRoot>
+      {
+        token
+          ? <AuthenticatedRoutes />
+          : <UnauthenticatedRoutes />
+      }
+    </RecoilRoot>
   </React.StrictMode>
 );

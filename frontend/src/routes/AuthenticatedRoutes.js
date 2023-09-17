@@ -4,6 +4,7 @@ import HomePage from "../pages/Home";
 import QuestionPage from "../pages/QuestionPage";
 import EditProfile from "../pages/EditProfile";
 import Room from "../pages/Room";
+import TimeManager from "../components/TimeManager";
 
 const AuthenticatedRoutes = () => {
   return (
@@ -14,6 +15,7 @@ const AuthenticatedRoutes = () => {
         <Route path="/profile" element={<EditProfile />} />
         <Route path="/testroom" element={<Room />} />
       </Routes>
+      <TimeManager />
     </Router>
   );
 };

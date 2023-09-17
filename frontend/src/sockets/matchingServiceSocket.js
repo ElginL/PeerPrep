@@ -1,30 +1,40 @@
-import io from 'socket.io-client';
+import socketIOClient from 'socket.io-client';
 
 const matchingServiceURL = 'http://localhost:3003';
 
-const connectMatchingSocket = (queueComplexity, token, matchFoundHandler) => {
-    const socket = io(matchingServiceURL, {
+let socket;
+
+const createSocketConnection = (token) => {
+    socket = socketIOClient(matchingServiceURL, {
         query: { token }
     });
+};
 
+const handleSocketEvents = (queueComplexity, matchFoundHandler) => {
     socket.on('connect', () => {
         console.log('WebSocket connection established');
 
+        // Join the queue with the specified complexity
         socket.emit('joinQueue', queueComplexity);
     });
 
-    socket.on('matchfound', matchedUser => {
+    socket.on('matchfound', (matchedUser) => {
         matchFoundHandler(matchedUser);
     });
 
-    socket.on('connect_error', err => {
-        console.error('Websocket connection error: ', err);
+    socket.on('connect_error', (err) => {
+        console.error('WebSocket connection error:', err);
     });
 
     socket.on('disconnect', () => {
         console.log('WebSocket disconnected');
         socket.close();
-    })
+    });
 };
 
-export default connectMatchingSocket;
+export const connectMatchingSocket = (queueComplexity, token, matchFoundHandler) => {
+    createSocketConnection(token);
+    handleSocketEvents(queueComplexity, matchFoundHandler);
+};
+
+export { socket }

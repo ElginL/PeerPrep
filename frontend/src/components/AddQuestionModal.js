@@ -54,6 +54,16 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
         setComplexity("Easy")
     };
 
+    useEffect(() => {
+        if (isVisible) {
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+    }, [isVisible]);
+
     const modalRef = useRef(null);
     useEffect(() => {
         if (modalRef.current) {

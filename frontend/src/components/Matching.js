@@ -1,12 +1,29 @@
-import { useState } from 'react';
 import styles from '../styles/components/Matching.module.css';
-import connectMatchingSocket from '../sockets/matchingServiceSocket';
+import { connectMatchingSocket, socket } from '../sockets/matchingServiceSocket';
+import { useRecoilState } from 'recoil';
+import { 
+    secondsState, 
+    timerRunningState, 
+    matchFoundModalVisibleState,
+    queueComplexityState,
+    buttonsDisabledState
+} from '../recoil/atom';
+
+const maxQueueTime = 10;
 
 const Matching = () => {
-    const [buttonsDisabled, setButtonsDisabled] = useState(false);
+    const [buttonsDisabled, setButtonsDisabled] = useRecoilState(buttonsDisabledState);
+    const [queueComplexity, setQueueComplexity] = useRecoilState(queueComplexityState);
+    const [seconds, setSeconds] = useRecoilState(secondsState);
+    const [timerRunning, setTimerRunning] = useRecoilState(timerRunningState);
+    const [_, setMatchFoundModalVisible] = useRecoilState(matchFoundModalVisibleState);
 
     const matchFoundHandler = matchedUsername => {
         setButtonsDisabled(false);
+        setTimerRunning(false);
+        setSeconds(maxQueueTime);
+
+        setMatchFoundModalVisible(true);
 
         console.log("matched with: ", matchedUsername);
     }
@@ -15,9 +32,12 @@ const Matching = () => {
         if (buttonsDisabled) {
             return;
         }
+        
+        setTimerRunning(true);
+        setQueueComplexity(queueComplexity);
 
-        setButtonsDisabled(true);
         connectMatchingSocket(queueComplexity, localStorage.getItem('sessionToken'), matchFoundHandler);
+        setButtonsDisabled(true);
     };
 
     return (
@@ -34,6 +54,14 @@ const Matching = () => {
                     Queue Hard
                 </button>
             </div>
+            {
+                timerRunning && (
+                    <div className={styles["timer-container"]}>
+                        <p>Finding {queueComplexity} match...</p>
+                        <p className={styles["seconds"]}>{seconds} seconds remaining</p>
+                    </div>
+                )
+            }
         </div>
     );
 };
