@@ -2,10 +2,9 @@ import { useEffect } from 'react';
 import styles from '../styles/components/MatchFoundModal.module.css';
 import { useNavigate } from 'react-router-dom';
 
-
 const MatchFoundModal = ({ 
-    isVisible, 
-    setIsVisible,
+    isVisible,
+    setIsVisible
 }) => {
     const navigate = useNavigate();
 
@@ -16,7 +15,10 @@ const MatchFoundModal = ({
             document.body.style.overflow = 'hidden';
             document.documentElement.style.overflow = 'hidden';
 
-            setTimeout(() => navigate('/testroom'), 3000);
+            setTimeout(() => {
+                setIsVisible(false);
+                navigate('/testroom')
+            }, 3000);
 
         } else {
             document.body.style.overflow = 'auto';

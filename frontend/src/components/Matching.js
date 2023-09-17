@@ -1,55 +1,27 @@
-import { useState, useEffect } from 'react';
-import RetryModal from './RetryModal';
-import MatchFoundModal from './MatchFoundModal';
 import styles from '../styles/components/Matching.module.css';
 import { connectMatchingSocket, socket } from '../sockets/matchingServiceSocket';
+import { useRecoilState } from 'recoil';
+import { 
+    secondsState, 
+    timerRunningState, 
+    matchFoundModalVisibleState,
+    queueComplexityState,
+    buttonsDisabledState
+} from '../recoil/atom';
 
 const maxQueueTime = 10;
 
 const Matching = () => {
-    const [buttonsDisabled, setButtonsDisabled] = useState(false);
-    const [queueComplexity, setQueueComplexity] = useState("");
-    const [seconds, setSeconds] = useState(maxQueueTime);
-    const [timerRunning, setTimerRunning] = useState(false);
-    const [retryModalVisible, setRetryModalVisible] = useState(false);
-    const [matchFoundModalVisible, setMatchFoundModalVisible] = useState(false);
-
-    const noMatchFoundHandler = (disconnectSocket) => {
-        setTimerRunning(false);
-        setSeconds(maxQueueTime);
-        setButtonsDisabled(false);
-        
-        if (disconnectSocket) {
-            setRetryModalVisible(true);
-            socket.disconnect();
-        }
-    }
-
-    useEffect(() => {
-        let interval;
-        if (timerRunning) {
-            interval = setInterval(() => {
-                setSeconds(prevSeconds => {
-                    if (prevSeconds === 0) {
-                        noMatchFoundHandler(true);
-                        clearInterval(interval);
-                    }
-
-                    return prevSeconds - 1
-                });
-            }, 1000);
-        }
-
-        return () => {
-            if (interval) {
-                clearInterval(interval);
-            }
-        }
-    }, [timerRunning])
+    const [buttonsDisabled, setButtonsDisabled] = useRecoilState(buttonsDisabledState);
+    const [queueComplexity, setQueueComplexity] = useRecoilState(queueComplexityState);
+    const [seconds, setSeconds] = useRecoilState(secondsState);
+    const [timerRunning, setTimerRunning] = useRecoilState(timerRunningState);
+    const [_, setMatchFoundModalVisible] = useRecoilState(matchFoundModalVisibleState);
 
     const matchFoundHandler = matchedUsername => {
         setButtonsDisabled(false);
-        noMatchFoundHandler(false);
+        setTimerRunning(false);
+        setSeconds(maxQueueTime);
 
         setMatchFoundModalVisible(true);
 
@@ -90,16 +62,6 @@ const Matching = () => {
                     </div>
                 )
             }
-            <RetryModal 
-                isVisible={retryModalVisible} 
-                setIsVisible={setRetryModalVisible}
-                queueComplexity={queueComplexity}
-                retryButtonHandler={clickHandler}
-            />
-            <MatchFoundModal
-                isVisible={matchFoundModalVisible}
-                setIsVisible={setMatchFoundModalVisible}
-            />
         </div>
     );
 };
