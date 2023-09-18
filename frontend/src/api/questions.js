@@ -2,9 +2,15 @@ import axios from 'axios';
 
 const baseUrl = 'http://localhost:3001';
 
+const setAuthenticationHeader = () => {
+    return {
+        headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('credentials')).sessionToken}`}
+    };
+};
+
 const fetchAllQuestions = async () => {
     try {
-        const questions = await axios.get(baseUrl)
+        const questions = await axios.get(baseUrl, setAuthenticationHeader())
         
         return questions.data;
 
@@ -15,7 +21,7 @@ const fetchAllQuestions = async () => {
 
 const fetchQuestionById = async (id) => {
     try {
-        const question = await axios.get(baseUrl + `/questions/${id}`);
+        const question = await axios.get(baseUrl + `/questions/${id}`, setAuthenticationHeader());
 
         return question.data;
     } catch (error) {
@@ -32,7 +38,7 @@ const addQuestion = async (title, category, complexity, description) => {
     };
 
     try {
-        const response = await axios.post(baseUrl, questionToAdd);
+        const response = await axios.post(baseUrl, questionToAdd, setAuthenticationHeader());
 
         return {
             message: response.data,
@@ -51,7 +57,7 @@ const deleteQuestionsByIds = async (ids) => {
     try {
         const response = await axios.delete(baseUrl, { 
             data: { ids } 
-        });
+        }, setAuthenticationHeader());
 
         return response.data;
     } catch (error) {
@@ -63,5 +69,6 @@ export {
     fetchAllQuestions,
     fetchQuestionById,
     addQuestion,
-    deleteQuestionsByIds
+    deleteQuestionsByIds,
+    setAuthenticationHeader
 };
