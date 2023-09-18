@@ -17,8 +17,7 @@ const LogIn = () => {
       return;
     }
 
-    localStorage.setItem('sessionToken', res.token);
-    localStorage.setItem('username', res.username);
+    localStorage.setItem('credentials', JSON.stringify({'sessionToken': res.token, 'username': res.username, 'isManager': res.isManager}))
     window.location.reload();
   }
 

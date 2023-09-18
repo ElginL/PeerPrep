@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const signOutHandler = () => {
-        localStorage.removeItem('sessionToken');
+        localStorage.removeItem('credentials');
         window.location.reload();
     }
 

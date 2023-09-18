@@ -56,7 +56,7 @@ const loginUser = async (req, res, next) => {
           { expiresIn: "1h" }
         );
 
-        res.status(200).json({ token, username: dbUser.username });
+        res.status(200).json({ token, username: dbUser.username, isManager: dbUser.isManager });
       })
       .catch((e) => next(e));
   } catch (e) {

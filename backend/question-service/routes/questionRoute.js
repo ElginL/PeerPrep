@@ -1,18 +1,19 @@
 const express = require('express');
 const questionRouter = express.Router();
 const questionController = require('../controllers/questionController');
+const { authenticateJwt, authenticateManager} = require('../middleware/authenticateJwt');
 const { validateQuestion } = require('../middleware/QuestionValidator');
 
 // Fetch a question by id
-questionRouter.get('/questions/:id', questionController.getQuestionById);
+questionRouter.get('/questions/:id', authenticateJwt, questionController.getQuestionById);
 
 // Fetch all questions
-questionRouter.get('/', questionController.getAllQuestions);
+questionRouter.get('/', authenticateJwt, questionController.getAllQuestions);
 
 // Add a question
-questionRouter.post('/', validateQuestion(), questionController.addQuestion);
+questionRouter.post('/', authenticateJwt, authenticateManager, validateQuestion(), questionController.addQuestion);
 
 // delete questions
-questionRouter.delete('/', questionController.deleteQuestion);
+questionRouter.delete('/', authenticateJwt, authenticateManager, questionController.deleteQuestion);
 
 module.exports = questionRouter;
