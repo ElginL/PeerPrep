@@ -36,7 +36,7 @@ const Matching = () => {
         setTimerRunning(true);
         setQueueComplexity(queueComplexity);
 
-        connectMatchingSocket(queueComplexity, localStorage.getItem('sessionToken'), matchFoundHandler);
+        connectMatchingSocket(queueComplexity, JSON.parse(localStorage.getItem('credentials')).sessionToken, matchFoundHandler);
         setButtonsDisabled(true);
     };
 

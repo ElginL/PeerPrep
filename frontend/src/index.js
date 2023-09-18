@@ -6,7 +6,7 @@ import UnauthenticatedRoutes from "./routes/UnauthenticatedRoutes";
 import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const token = localStorage.getItem('sessionToken');
+const token = JSON.parse(localStorage.getItem('credentials'));
 
 root.render(
   <React.StrictMode>

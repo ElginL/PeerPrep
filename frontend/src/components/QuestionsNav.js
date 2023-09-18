@@ -61,27 +61,32 @@ const QuestionsNav = ({
                         </button>
                     </li>
                 </ul>
-                <ul className={styles["right-buttons-container"]}>
-                    <li>
-                        <button onClick={async () => setAddFormVisible(true)}>
-                            Add
-                        </button>
-                    </li>
-                    <li>
-                        {
-                            !deleteCheckboxVisible
-                                ? <button onClick={async () => setDeleteCheckboxVisible(true)}>Delete</button>
-                                : <button onClick={async () => deleteQuestionsHandler()}>Confirm</button> 
-                        }
-                    </li>
-                    { deleteCheckboxVisible &&
-                        <li>
-                            <button onClick={cancelBtnHandler}>
-                                Cancel
-                            </button>
-                        </li>
-                    }
-                </ul>
+                {
+                    localStorage.getItem('credentials') && JSON.parse(localStorage.getItem('credentials')).isManager && (
+                        <ul className={styles["right-buttons-container"]}>
+                            <li>
+                                <button onClick={async () => setAddFormVisible(true)}>
+                                    Add
+                                </button>
+                            </li>
+                            <li>
+                                {
+                                    !deleteCheckboxVisible
+                                        ? <button onClick={async () => setDeleteCheckboxVisible(true)}>Delete</button>
+                                        : <button onClick={async () => deleteQuestionsHandler()}>Confirm</button> 
+                                }
+                            </li>
+                            { 
+                                deleteCheckboxVisible &&
+                                <li>
+                                    <button onClick={cancelBtnHandler}>
+                                        Cancel
+                                    </button>
+                                </li>
+                            }
+                        </ul>   
+                    )
+                }
             </nav>
             <AddQuestionModal
                 isVisible={addFormVisible}

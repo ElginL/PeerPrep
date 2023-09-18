@@ -9,7 +9,7 @@ const loginUser = (username, password) => {
     };
 
     return axios.post(baseUrl + "/login", credentials)
-        .then(response => ({ token: response.data.token, username: response.data.username, status: response.status }))
+        .then(response => ({ token: response.data.token, username: response.data.username, isManager: response.data.isManager, status: response.status }))
         .catch(error => ({ message: error.response.data.msg, status: error.response.status }));
 };
 
@@ -26,7 +26,7 @@ const registerUser = (username, password) => {
 
 const setAuthenticationHeader = () => {
     return {
-        headers: { Authorization: `Bearer ${localStorage.getItem('sessionToken')}`}
+        headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('credentials')).sessionToken}`}
     };
 };
 
