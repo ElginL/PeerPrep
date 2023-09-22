@@ -35,7 +35,7 @@ const loginUser = async (req, res, next) => {
     const dbUser = await getUserByUsername(username);
 
     if (!dbUser) {
-      res.status(401).json({ msg: "Username or password is invalid" });
+      return res.status(401).json({ msg: "Username or password is invalid" });
     }
 
     bcrypt
