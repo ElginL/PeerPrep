@@ -22,7 +22,7 @@ const ChangePassword = () => {
 
   const handleChange = async () => {
     if (passwordsMatch) {
-      const res = changePassword(newPassword);
+      changePassword(currentPassword, newPassword);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -73,7 +73,6 @@ const ChangePassword = () => {
 
       <button
         onClick={handleChange}
-        disabled={!passwordsMatch}
         className={styles["change-password-button"]}
       >
         Change Password

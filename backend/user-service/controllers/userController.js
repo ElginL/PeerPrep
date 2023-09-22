@@ -104,10 +104,6 @@ const updatePassword = (req, res, next) => {
   });
 };
 
-const success = (req, res, next) => {
-  return res.send("success");
-};
-
 module.exports = {
   createUser,
   loginUser,

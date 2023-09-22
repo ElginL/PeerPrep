@@ -57,16 +57,6 @@ const deregisterUser = () => {
     .catch((error) => ({ status: error.response.status }));
 };
 
-const isLoggedIn = async () => {
-  try {
-    await axios.get(baseUrl + "/verifytoken", setAuthenticationHeader());
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
 const changePassword = async (password) => {
   try {
     const headers = setAuthenticationHeader();
@@ -81,4 +71,10 @@ const changePassword = async (password) => {
     console.log(e);
   }
 };
-export { loginUser, isLoggedIn, registerUser, deregisterUser, changePassword };
+
+export { 
+  loginUser, 
+  registerUser, 
+  deregisterUser, 
+  changePassword 
+};
