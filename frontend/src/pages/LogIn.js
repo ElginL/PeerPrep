@@ -21,7 +21,12 @@ const LogIn = () => {
       return;
     }
 
-    localStorage.setItem('credentials', JSON.stringify({'sessionToken': res.token, 'username': res.username, 'isManager': res.isManager}))
+    localStorage.setItem('credentials', JSON.stringify({
+      'sessionToken': res.token, 
+      'username': res.username, 
+      'isManager': res.isManager
+    }));
+    
     setIsLoggedIn(true);
   }
 
