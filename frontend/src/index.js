@@ -6,16 +6,10 @@ import UnauthenticatedRoutes from "./routes/UnauthenticatedRoutes";
 import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const token = JSON.parse(localStorage.getItem('credentials'));
+const token = JSON.parse(localStorage.getItem("credentials"));
 
 root.render(
-  <React.StrictMode>
     <RecoilRoot>
-      {
-        token
-          ? <AuthenticatedRoutes />
-          : <UnauthenticatedRoutes />
-      }
+        {token ? <AuthenticatedRoutes /> : <UnauthenticatedRoutes />}
     </RecoilRoot>
-  </React.StrictMode>
 );

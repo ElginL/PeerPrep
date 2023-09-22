@@ -1,13 +1,16 @@
-const express = require("express");
-const app = express();
-const http = require("http");
 const { Server } = require("socket.io");
-const ACTIONS = require("./src/Actions");
-
-const server = http.createServer(app);
-const io = new Server(server);
+const express = require("express");
+const http = require("http");
+const ACTIONS = require("./Actions");
 const PORT = process.env.PORT || 3004;
 
+// server
+const app = express();
+const server = http.createServer(app);
+
+app.use(express.json());
+
+io = new Server(server);
 const userSocketMap = {};
 
 function getAllConnectedClients(roomId) {
@@ -23,6 +26,8 @@ function getAllConnectedClients(roomId) {
 
 io.on("connection", (socket) => {
     socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
+        console.log(`User connected: ${username}`);
+
         userSocketMap[socket.id] = username;
         socket.join(roomId);
         const clients = getAllConnectedClients(roomId);
