@@ -1,9 +1,8 @@
+const { Server } = require("socket.io");
 const express = require("express");
 const http = require("http");
-const cors = require("cors");
-
-// TODO: SYNC TO DATABASE AND RETRIEVE ROOM ID
-// testDbConnection();
+const ACTIONS = require("./Actions");
+const PORT = process.env.PORT || 3004;
 
 // server
 const app = express();
@@ -11,13 +10,61 @@ const server = http.createServer(app);
 
 app.use(express.json());
 
-// enable cors for http://localhost:3000
-const corsOption = {
-  origin: "http://localhost:3000",
-  methods: "GET, POST, DELETE",
-};
-app.use(cors(corsOption));
+io = new Server(server);
+const userSocketMap = {};
 
-server.listen(3004, () => {
-  console.log("Server is running on http://localhost:3004");
+function getAllConnectedClients(roomId) {
+    return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
+        (socketId) => {
+            return {
+                socketId,
+                username: userSocketMap[socketId],
+            };
+        }
+    );
+}
+
+io.on("connection", (socket) => {
+    socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
+        console.log(`User connected: ${username}`);
+
+        userSocketMap[socket.id] = username;
+        socket.join(roomId);
+        const clients = getAllConnectedClients(roomId);
+        clients.forEach(({ socketId }) => {
+            io.to(socketId).emit(ACTIONS.JOINED, {
+                clients,
+                username,
+                socketId: socket.id,
+            });
+        });
+    });
+
+    socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
+        socket.in(roomId).emit(ACTIONS.CODE_CHANGE, {
+            code,
+        });
+    });
+
+    socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
+        io.to(socketId).emit(ACTIONS.CODE_CHANGE, {
+            code,
+        });
+    });
+
+    socket.on("disconnecting", () => {
+        const rooms = [...socket.rooms];
+        rooms.forEach((roomId) => {
+            socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
+                socketId: socket.id,
+                username: userSocketMap[socket.id],
+            });
+        });
+        delete userSocketMap[socket.id];
+        socket.leave();
+    });
+});
+
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
 });
