@@ -1,41 +1,131 @@
-import { useRef } from "react";
-import Editor from "@monaco-editor/react";
-import * as Y from "yjs";
-import { WebrtcProvider } from "y-webrtc";
-import { MonacoBinding } from "y-monaco";
+import React, { useState, useEffect, useRef } from "react";
+import ACTIONS from "../api/actions";
+import Client from "../components/Client";
+import Editor from "../components/Editor";
+import { createSocketConnection } from "../sockets/collaborationServiceSocket";
+import {
+    useLocation,
+    useNavigate,
+    Navigate,
+    useParams,
+} from "react-router-dom";
+import styles from "../styles/pages/Room.module.css";
 
 const Room = () => {
-  const editorRef = useRef(null);
+    const socketRef = useRef(null);
+    const codeRef = useRef(null);
+    const location = useLocation();
+    const { roomId } = useParams();
+    const reactNavigator = useNavigate();
+    const [clients, setClients] = useState([]);
 
-  function handleEditorDidMount(editor, monaco) {
-    editorRef.current = editor;
+    useEffect(() => {
+        const init = async () => {
+            socketRef.current = createSocketConnection();
+            socketRef.current.on("connect_error", (err) => handleErrors(err));
+            socketRef.current.on("connect_failed", (err) => handleErrors(err));
 
-    const doc = new Y.Doc();
+            function handleErrors(e) {
+                console.log("socket error", e);
+                reactNavigator("/");
+            }
 
-    // QUERY BACKEND HERE FOR ROOM CODE TO REPLACE "test-room"
-    const provider = new WebrtcProvider("test-room", doc);
+            console.log(socketRef.current);
 
-    const type = doc.getText("monaco");
+            socketRef.current.emit(ACTIONS.JOIN, {
+                roomId,
+                username: location.state?.username,
+            });
 
-    const binding = new MonacoBinding(
-      type,
-      editorRef.current.getModel(),
-      new Set([editorRef.current]),
-      provider.awareness
+            socketRef.current.on(
+                ACTIONS.JOINED,
+                ({ clients, username, socketId }) => {
+                    if (username !== location.state?.username) {
+                        console.log(`${username} joined the room.`);
+                    }
+                    setClients(clients);
+                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                        code: codeRef.current,
+                        socketId,
+                    });
+                }
+            );
+
+            socketRef.current.on(
+                ACTIONS.DISCONNECTED,
+                ({ socketId, username }) => {
+                    console.log(`${username} left the room.`);
+                    setClients((prevClients) =>
+                        prevClients.filter(
+                            (client) => client.socketId !== socketId
+                        )
+                    );
+                }
+            );
+        };
+
+        if (socketRef.current === null) {
+            init();
+        }
+    }, []);
+
+    async function copyRoomId() {
+        try {
+            await navigator.clipboard.writeText(roomId);
+            console.log("Room ID copied to clipboard!");
+        } catch (error) {
+            console.log("Failed to copy room ID to clipboard!");
+            console.log(error);
+        }
+    }
+
+    function leaveRoom() {
+        reactNavigator("/");
+        socketRef.current.disconnect();
+    }
+
+    if (!location.state) {
+        return <Navigate to="/" />;
+    }
+
+    return (
+        <div className={styles["mainWrap"]}>
+            <div className={styles["aside"]}>
+                <div className={styles["asideInner"]}>
+                    <h3>Connected</h3>
+                    <div className={styles["clientsList"]}>
+                        {clients.map((client) => (
+                            <Client
+                                key={client.socketId}
+                                username={client.username}
+                            />
+                        ))}
+                    </div>
+                </div>
+                <button
+                    className={`${styles["btn"]} ${styles["copyBtn"]}`}
+                    onClick={copyRoomId}
+                >
+                    Copy Room ID
+                </button>
+                <button
+                    className={`${styles["btn"]} ${styles["leaveBtn"]}`}
+                    onClick={leaveRoom}
+                >
+                    Leave Room
+                </button>
+            </div>
+            <div>
+                <Editor
+                    socketRef={socketRef}
+                    roomId={roomId}
+                    onCodeChange={(code) => {
+                        codeRef.current = code;
+                    }}
+                />
+            </div>
+        </div>
     );
-  }
-
-  return (
-    <div>
-      <Editor
-        height="100vh"
-        width="100vh"
-        theme="vs-dark"
-        onMount={handleEditorDidMount}
-        language="python"
-      />
-    </div>
-  );
 };
 
 export default Room;
