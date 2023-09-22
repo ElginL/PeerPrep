@@ -6,7 +6,7 @@ import {
     queueComplexityState, 
     buttonsDisabledState, 
     matchFoundModalVisibleState 
-} from '../recoil/atom';
+} from '../recoil/TimeManagerAtom';
 import { connectMatchingSocket, socket } from '../sockets/matchingServiceSocket';
 import RetryModal from '../components/RetryModal';
 import MatchFoundModal from '../components/MatchFoundModal';
@@ -17,7 +17,7 @@ const TimerManager = () => {
     const intervalRef = useRef(null);
     const timeoutRef = useRef(null);
 
-    const [_, setSeconds] = useRecoilState(secondsState);
+    const setSeconds = useRecoilState(secondsState)[1];
     const [timerRunning, setTimerRunning] = useRecoilState(timerRunningState);
     const [matchFoundModalVisible, setMatchFoundModalVisible] = useRecoilState(matchFoundModalVisibleState);
     const [queueComplexity, setQueueComplexity] = useRecoilState(queueComplexityState);

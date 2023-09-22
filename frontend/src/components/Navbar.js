@@ -1,14 +1,17 @@
 import styles from '../styles/components/Navbar.module.css';
 import Logo from '../assets/logo.png';
 import { useNavigate, Link } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { isLoggedInState } from '../recoil/UserAtom';
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
 
     const signOutHandler = () => {
-        localStorage.removeItem('credentials');
+        setIsLoggedIn(false);
         navigate("/")
-        window.location.reload();
+        localStorage.removeItem('credentials');
     }
 
     return (

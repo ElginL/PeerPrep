@@ -1,5 +1,5 @@
 import styles from '../styles/components/Matching.module.css';
-import { connectMatchingSocket, socket } from '../sockets/matchingServiceSocket';
+import { connectMatchingSocket } from '../sockets/matchingServiceSocket';
 import { useRecoilState } from 'recoil';
 import { 
     secondsState, 
@@ -7,7 +7,7 @@ import {
     matchFoundModalVisibleState,
     queueComplexityState,
     buttonsDisabledState
-} from '../recoil/atom';
+} from '../recoil/TimeManagerAtom';
 
 const maxQueueTime = 10;
 
@@ -16,7 +16,7 @@ const Matching = () => {
     const [queueComplexity, setQueueComplexity] = useRecoilState(queueComplexityState);
     const [seconds, setSeconds] = useRecoilState(secondsState);
     const [timerRunning, setTimerRunning] = useRecoilState(timerRunningState);
-    const [_, setMatchFoundModalVisible] = useRecoilState(matchFoundModalVisibleState);
+    const setMatchFoundModalVisible = useRecoilState(matchFoundModalVisibleState)[1];
 
     const matchFoundHandler = matchedUsername => {
         setButtonsDisabled(false);

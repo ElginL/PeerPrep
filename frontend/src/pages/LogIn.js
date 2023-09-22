@@ -2,8 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../styles/components/Authentication.module.css";
 import { loginUser } from "../api/users";
+import { useRecoilState } from 'recoil';
+import { isLoggedInState } from '../recoil/UserAtom';
 
 const LogIn = () => {
+  const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -18,7 +22,7 @@ const LogIn = () => {
     }
 
     localStorage.setItem('credentials', JSON.stringify({'sessionToken': res.token, 'username': res.username, 'isManager': res.isManager}))
-    window.location.reload();
+    setIsLoggedIn(true);
   }
 
   return (
