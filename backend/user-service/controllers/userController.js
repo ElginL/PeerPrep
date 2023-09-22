@@ -120,9 +120,16 @@ const updatePassword = async (req, res, next) => {
   });
 };
 
+const getUsername = (req, res, next) => {
+  return res.status(200).json({
+    username: req.username
+  });
+};
+
 module.exports = {
   createUser,
   loginUser,
   deleteUser,
   updatePassword,
+  getUsername
 };

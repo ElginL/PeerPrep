@@ -7,6 +7,8 @@ const {
 } = require("../middleware/userValidator");
 const authenticateJwt = require("../middleware/authenticateJwt");
 
+userRouter.get("/username", authenticateJwt, userController.getUsername);
+
 userRouter.post("/register", validateUser(), userController.createUser);
 
 userRouter.post("/login", userController.loginUser);

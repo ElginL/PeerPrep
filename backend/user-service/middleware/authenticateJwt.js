@@ -18,7 +18,7 @@ const authenticateJwt = (req, res, next) => {
         req.isManager = user.isManager;
 
         next();
-    })
+    });
 };
 
 module.exports = authenticateJwt;

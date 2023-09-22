@@ -82,9 +82,20 @@ const changePassword = async (oldPassword, newPassword) => {
   }
 };
 
+const getUsername = async () => {
+  try {
+    const res = await axios.get(baseUrl + '/username', setAuthenticationHeader());
+
+    return res.data.username;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export { 
   loginUser, 
   registerUser, 
-  deregisterUser, 
-  changePassword 
+  deregisterUser,
+  changePassword,
+  getUsername
 };
