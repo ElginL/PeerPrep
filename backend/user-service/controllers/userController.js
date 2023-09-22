@@ -83,7 +83,6 @@ const deleteUser = async (req, res, next) => {
 const updatePassword = (req, res, next) => {
   const { newPassword } = req.body;
   const username = req.username;
-  console.log(newPassword);
   bcrypt.hash(newPassword, 10, async (err, hash) => {
     if (err) {
       return next(err);

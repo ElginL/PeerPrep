@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles/components/ChangePassword.module.css";
 import { changePassword } from "../api/users";
+
 const ChangePassword = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -34,7 +35,6 @@ const ChangePassword = () => {
     <div className={styles["change-password-main"]}>
       <h2>Change Password</h2>
       <hr />
-
       <div className={styles["password-fields"]}>
         <label htmlFor="current-password">Current Password</label>
         <input

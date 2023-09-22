@@ -72,14 +72,13 @@ const changePassword = async (password) => {
     const headers = setAuthenticationHeader();
     const response = await axios.put(
       baseUrl + "/update/password",
-      { newPassword: password },
+      { 
+        newPassword: password,
+      },
       headers
     );
-    alert(response.data.msg);
-    return true;
   } catch (e) {
     console.log(e);
-    return false;
   }
 };
 export { loginUser, isLoggedIn, registerUser, deregisterUser, changePassword };
