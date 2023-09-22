@@ -53,7 +53,7 @@ const loginUser = async (req, res, next) => {
             isManager: dbUser.isManager,
           },
           process.env.JWT_SECRET_KEY,
-          { expiresIn: "1h" }
+          // { expiresIn: "1h" }
         );
 
         res.status(200).json({
@@ -80,8 +80,24 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-const updatePassword = (req, res, next) => {
-  const { newPassword } = req.body;
+const updatePassword = async (req, res, next) => {
+  const { oldPassword, newPassword } = req.body;
+
+  // check old password correctness
+  const dbUser = await getUserByUsername(req.username);
+
+  try {
+    const isCorrect = await bcrypt.compare(oldPassword, dbUser.password);
+
+    if (!isCorrect) {
+      return res
+      .status(401)
+      .json({ msg: "Your old password is incorrect" });
+    }
+  } catch (e) {
+    return next(e);
+  }
+
   const username = req.username;
   bcrypt.hash(newPassword, 10, async (err, hash) => {
     if (err) {
@@ -90,7 +106,7 @@ const updatePassword = (req, res, next) => {
 
     try {
       if (await updateUserPassword(username, hash)) {
-        return res.status(201).json({
+        return res.status(200).json({
           msg: "Update password successful",
         });
       }
@@ -109,5 +125,4 @@ module.exports = {
   loginUser,
   deleteUser,
   updatePassword,
-  success,
 };

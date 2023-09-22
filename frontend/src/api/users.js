@@ -57,18 +57,28 @@ const deregisterUser = () => {
     .catch((error) => ({ status: error.response.status }));
 };
 
-const changePassword = async (password) => {
+const changePassword = async (oldPassword, newPassword) => {
   try {
-    const headers = setAuthenticationHeader();
     const response = await axios.put(
       baseUrl + "/update/password",
       { 
-        newPassword: password,
+        oldPassword,
+        newPassword
       },
-      headers
+      setAuthenticationHeader()
     );
-  } catch (e) {
-    console.log(e);
+
+    console.log(response);
+
+    return {
+      message: response.data.msg,
+      status: response.status,
+    }
+  } catch (error) {
+    return {
+      message: error.response.data.msg,
+      status: error.response.status
+    };
   }
 };
 
