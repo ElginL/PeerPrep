@@ -8,10 +8,8 @@ const EditProfile = () => {
     <div>
       <Navbar />
       <div className={styles["container"]}>
-        <DeregisterAccount />
-      </div>
-      <div>
         <ChangePassword />
+        <DeregisterAccount />
       </div>
     </div>
   );

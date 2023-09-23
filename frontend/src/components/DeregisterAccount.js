@@ -1,17 +1,20 @@
 import styles from '../styles/components/DeregisterAccount.module.css';
 import { deregisterUser } from '../api/users';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { isLoggedInState } from '../recoil/UserAtom';
 
 const DeregisterAccount = () => {
     const navigate = useNavigate();
-    
+    const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
+
     const deregisterBtnHandler = async () => {
         const res = await deregisterUser();
         
         if (res.status === 200) {
-            localStorage.removeItem('sessionToken');
-            navigate("/");
-            window.location.reload();
+            setIsLoggedIn(false);
+            navigate("/")
+            localStorage.removeItem('credentials');
         }
     }
 

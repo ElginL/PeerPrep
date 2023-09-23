@@ -1,5 +1,8 @@
 .container {
-  padding: 200px 250px 100px 250px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .header {
@@ -10,6 +13,7 @@
 .form-container {
   display: flex;
   flex-direction: column;
+  width: 75%;
 }
 
 .form {

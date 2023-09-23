@@ -57,29 +57,45 @@ const deregisterUser = () => {
     .catch((error) => ({ status: error.response.status }));
 };
 
-const isLoggedIn = async () => {
+const changePassword = async (oldPassword, newPassword) => {
   try {
-    await axios.get(baseUrl + "/verifytoken", setAuthenticationHeader());
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
-const changePassword = async (password) => {
-  try {
-    const headers = setAuthenticationHeader();
     const response = await axios.put(
       baseUrl + "/update/password",
-      { newPassword: password },
-      headers
+      { 
+        oldPassword,
+        newPassword
+      },
+      setAuthenticationHeader()
     );
-    alert(response.data.msg);
-    return true;
-  } catch (e) {
-    console.log(e);
-    return false;
+
+    console.log(response);
+
+    return {
+      message: response.data.msg,
+      status: response.status,
+    }
+  } catch (error) {
+    return {
+      message: error.response.data.msg,
+      status: error.response.status
+    };
   }
 };
-export { loginUser, isLoggedIn, registerUser, deregisterUser, changePassword };
+
+const getUsername = async () => {
+  try {
+    const res = await axios.get(baseUrl + '/username', setAuthenticationHeader());
+
+    return res.data.username;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export { 
+  loginUser, 
+  registerUser, 
+  deregisterUser,
+  changePassword,
+  getUsername
+};
