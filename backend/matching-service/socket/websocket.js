@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const waitingListRepo = require('../db/repositories/waitingListRepo');
+const roomRepo = require('../db/repositories/RoomRepo');
 
 const initializeWebSocket = server => {
     const io = require('socket.io')(server, {
@@ -44,8 +45,9 @@ const initializeWebSocket = server => {
                 return;
             }
 
-            const sharedRoomId = otherUser.roomId
+            const sharedRoomId = otherUser.roomId;
             socket.join(sharedRoomId);
+            roomRepo.addEntry(socket.username, otherUser.username, sharedRoomId);
             io.to(sharedRoomId).emit('matchfound', sharedRoomId);
         });
     });
