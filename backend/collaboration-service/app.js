@@ -4,6 +4,10 @@ const http = require("http");
 const ACTIONS = require("./Actions");
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const { testDbConnection } = require('./db/db');
+const roomRepo = require('./db/repositories/RoomRepo');
+
+testDbConnection();
 
 // server
 const app = express();
@@ -44,10 +48,18 @@ io.use((socket, next) => {
     });
 });
 
+io.use(async (socket, next) => {
+    if (await roomRepo.getByUsername(socket.username) == null) {
+        return next(new Error('Not authorized to enter room'));
+    }
+
+    next();
+});
+
 io.on("connection", (socket) => {
     socket.on(ACTIONS.JOIN, ({ roomId }) => {
         const clients = getAllConnectedClients(roomId);
-        console.log(typeof clients);
+
         if (clients.length >= 2) {
             io.to(socket.id).emit(ACTIONS.JOIN_FAILED);
             return;
@@ -58,6 +70,7 @@ io.on("connection", (socket) => {
         userSocketMap[socket.id] = socket.username;
         socket.join(roomId);
         clients.push({ socketId: socket.id, username: socket.username });
+
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
                 clients,
@@ -91,7 +104,14 @@ io.on("connection", (socket) => {
         socket.leave();
     });
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
+        const room = await roomRepo.getByUsername(socket.username);
+        const usernames = Object.values(userSocketMap);
+
+        if (!usernames.includes(room.username1) && !usernames.includes(room.username2)) {
+            roomRepo.deleteByUsername(socket.username);
+        }
+
         console.log(`User disconnected: ${socket.id}`);
     });
 });
