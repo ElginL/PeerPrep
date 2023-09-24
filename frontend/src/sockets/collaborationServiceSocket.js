@@ -1,15 +1,14 @@
-import { io } from "socket.io-client";
+import socketIOClient from "socket.io-client";
 
-const matchingServiceURL = "http://localhost:3004";
+const collaborationServiceURL = "http://localhost:3004";
 
-let socket;
-
-export const createSocketConnection = () => {
-    socket = io(matchingServiceURL, {
+export const createSocketConnection = (token, roomId) => {
+    const socket = socketIOClient(collaborationServiceURL, {
         "force new connection": true,
         reconnectionAttempts: "Infinity",
         timeout: 10000,
         transports: ["websocket"],
+        query: { token, roomId }
     });
 
     return socket;

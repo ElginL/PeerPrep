@@ -57,6 +57,17 @@ footer a {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    margin-bottom: 20px;
+}
+
+.join-room-btn {
+    color: orange;
+    text-decoration: none;
+}
+
+.join-room-btn:hover {
+    color: rgb(195, 133, 18);
+    transition: all 0.3s ease-in-out;
 }
 
 .joinBtn,
@@ -72,20 +83,19 @@ footer a {
 }
 
 .createInfo {
-    margin: 0 auto;
-    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .createNewBtn {
     color: #4aed88;
     text-decoration: none;
-    border-bottom: 1px solid #4aed88;
     transition: all 0.3s ease-in-out;
 }
 
 .createNewBtn:hover {
     color: #2b824c;
-    border-bottom: 1px solid #2b824c;
 }
 
 .mainWrap {

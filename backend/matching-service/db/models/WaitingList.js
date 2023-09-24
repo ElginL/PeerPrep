@@ -7,14 +7,14 @@ const WaitingList = sq.define("WaitingList", {
         allowNull: false,
         primaryKey: true
     },
-    socketId: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
     complexity: {
         type: DataTypes.ENUM(['Easy', 'Medium', 'Hard']),
         allowNull: false
-    }
+    },
+    roomId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
 });
 
 WaitingList.sync({ force: true })

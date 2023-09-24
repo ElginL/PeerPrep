@@ -1,10 +1,10 @@
 const WaitingList = require('../models/WaitingList');
 
-const addEntry = (username, socketId, complexity) => {
+const addEntry = (username, complexity, roomId) => {
     WaitingList.create({
         username,
-        socketId,
-        complexity
+        complexity,
+        roomId
     });
 };
 

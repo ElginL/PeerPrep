@@ -24,30 +24,31 @@ const initializeWebSocket = server => {
             socket.username = decoded.username;
             next();
         });
-    })
+    });
 
     io.on('connection', socket => {
         console.log(`User connected: ${socket.id}`);
 
         socket.on('disconnect', () => {
             console.log(`User disconnected: ${socket.id}`);
-            roomRepo.deleteByUsername(socket.username);
             waitingListRepo.deleteByUsername(socket.username);
         });
-
+        
         socket.on('joinQueue', async queueComplexity => {
             const otherUser = await waitingListRepo.getByComplexity(queueComplexity);
 
             // No other user queuing for that complexity yet.
             if (otherUser == null) {
-                waitingListRepo.addEntry(socket.username, socket.id, queueComplexity);
+                const roomId = uuidv4();
+                socket.join(roomId);
+                waitingListRepo.addEntry(socket.username, queueComplexity, roomId);
                 return;
             }
 
-            roomRepo.addEntry(socket.username, otherUser.username, uuidv4());
-
-            io.to(otherUser.socketId).emit('matchfound', socket.username);
-            io.to(socket.id).emit('matchfound', otherUser.username);
+            const sharedRoomId = otherUser.roomId;
+            socket.join(sharedRoomId);
+            await roomRepo.addEntry(sharedRoomId);
+            io.to(sharedRoomId).emit('matchfound', sharedRoomId);
         });
     });
 

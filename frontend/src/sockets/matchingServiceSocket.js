@@ -18,8 +18,9 @@ const handleSocketEvents = (queueComplexity, matchFoundHandler) => {
         socket.emit('joinQueue', queueComplexity);
     });
 
-    socket.on('matchfound', (matchedUser) => {
-        matchFoundHandler(matchedUser);
+    socket.on('matchfound', roomId => {
+        socket.disconnect();
+        matchFoundHandler(roomId);
     });
 
     socket.on('connect_error', (err) => {
@@ -37,4 +38,4 @@ export const connectMatchingSocket = (queueComplexity, token, matchFoundHandler)
     handleSocketEvents(queueComplexity, matchFoundHandler);
 };
 
-export { socket }
+export { socket };
