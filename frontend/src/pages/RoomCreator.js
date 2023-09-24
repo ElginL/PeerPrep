@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import styles from "../styles/pages/TempRoomJoiner.module.css";
 import { createRoom } from "../api/collaboration";
 
-const TempRoomJoiner = () => {
+const RoomCreator = () => {
     const navigate = useNavigate();
     const [roomId, setRoomId] = useState("");
     const [username, setUsername] = useState("");
@@ -77,4 +77,4 @@ const TempRoomJoiner = () => {
     );
 };
 
-export default TempRoomJoiner;
+export default RoomCreator;
