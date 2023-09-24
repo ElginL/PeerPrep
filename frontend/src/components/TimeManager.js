@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 import { 
     secondsState, 
     timerRunningState, 
@@ -14,6 +15,8 @@ import MatchFoundModal from '../components/MatchFoundModal';
 const maxQueueTime = 10;
 
 const TimerManager = () => {
+    const navigate = useNavigate();
+
     const intervalRef = useRef(null);
     const timeoutRef = useRef(null);
 
@@ -24,14 +27,19 @@ const TimerManager = () => {
     const [buttonsDisabled, setButtonsDisabled] = useRecoilState(buttonsDisabledState);
     const [retryModalVisible, setRetryModalVisible] = useState(false);
 
-    const matchFoundHandler = matchedUsername => {
+    const matchFoundHandler = (roomId) => {
         setButtonsDisabled(false);
         setTimerRunning(false);
         setSeconds(maxQueueTime);
 
         setMatchFoundModalVisible(true);
 
-        console.log("matched with: ", matchedUsername);
+        setTimeout(() => {
+            setMatchFoundModalVisible(false);
+            navigate(`/editor/${roomId}`, { username: JSON.parse(localStorage.getItem('credentials')).username });
+        }, 3000);
+
+        console.log("matched, joining room: ", roomId);
     }
 
     const noMatchFoundHandler = () => {
@@ -51,7 +59,11 @@ const TimerManager = () => {
         setTimerRunning(true);
         setQueueComplexity(queueComplexity);
 
-        connectMatchingSocket(queueComplexity, JSON.parse(localStorage.getItem('credentials')).sessionToken, matchFoundHandler);
+        connectMatchingSocket(
+            queueComplexity, 
+            JSON.parse(localStorage.getItem('credentials')).sessionToken, 
+            matchFoundHandler,
+        );
         setButtonsDisabled(true);
     };
 
@@ -84,7 +96,6 @@ const TimerManager = () => {
         />
         <MatchFoundModal
             isVisible={matchFoundModalVisible}
-            setIsVisible={setMatchFoundModalVisible}
         />
     </div>
   );

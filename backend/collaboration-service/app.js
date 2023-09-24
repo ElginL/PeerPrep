@@ -1,8 +1,9 @@
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io");
 const express = require("express");
 const http = require("http");
 const ACTIONS = require("./Actions");
-const PORT = process.env.PORT || 3004;
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 // server
 const app = express();
@@ -10,7 +11,13 @@ const server = http.createServer(app);
 
 app.use(express.json());
 
-io = new Server(server);
+const io = require('socket.io')(server, {
+    cors: {
+        origin: ['http://localhost:3000'],
+        credentials: true
+    },
+});
+
 const userSocketMap = {};
 
 function getAllConnectedClients(roomId) {
@@ -24,17 +31,37 @@ function getAllConnectedClients(roomId) {
     );
 }
 
-io.on("connection", (socket) => {
-    socket.on(ACTIONS.JOIN, ({ roomId, username }) => {
-        console.log(`User connected: ${username}`);
+io.use((socket, next) => {
+    const token = socket.handshake.query.token;
 
-        userSocketMap[socket.id] = username;
-        socket.join(roomId);
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return next(new Error('Authentication Error'));
+        }
+
+        socket.username = decoded.username;
+        next();
+    });
+});
+
+io.on("connection", (socket) => {
+    socket.on(ACTIONS.JOIN, ({ roomId }) => {
         const clients = getAllConnectedClients(roomId);
+        console.log(typeof clients);
+        if (clients.length >= 2) {
+            io.to(socket.id).emit(ACTIONS.JOIN_FAILED);
+            return;
+        }
+
+        console.log(`${socket.username} connected to room ${roomId}`);
+
+        userSocketMap[socket.id] = socket.username;
+        socket.join(roomId);
+        clients.push({ socketId: socket.id, username: socket.username });
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
                 clients,
-                username,
+                username: socket.username,
                 socketId: socket.id,
             });
         });
@@ -63,8 +90,13 @@ io.on("connection", (socket) => {
         delete userSocketMap[socket.id];
         socket.leave();
     });
+
+    socket.on('disconnect', () => {
+        console.log(`User disconnected: ${socket.id}`);
+    });
 });
 
+const PORT = process.env.PORT || 3004
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });

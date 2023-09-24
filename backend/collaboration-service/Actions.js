@@ -5,6 +5,7 @@ const ACTIONS = {
     CODE_CHANGE: "code-change",
     SYNC_CODE: "sync-code",
     LEAVE: "leave",
+    JOIN_FAILED: "join-fail"
 };
 
 module.exports = ACTIONS;
