@@ -6,6 +6,7 @@ import EditProfile from "../pages/EditProfile";
 import TempRoomJoiner from "../pages/TempRoomJoiner";
 import TimeManager from "../components/TimeManager";
 import Room from "../pages/Room";
+import RoomJoiner from "../pages/RoomJoiner";
 
 const AuthenticatedRoutes = () => {
     return (
@@ -14,7 +15,8 @@ const AuthenticatedRoutes = () => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/questions/:id" element={<QuestionPage />} />
                 <Route path="/profile" element={<EditProfile />} />
-                <Route path="/testroom" element={<TempRoomJoiner />} />
+                <Route path="/createRoom" element={<TempRoomJoiner />} />
+                <Route path="/joinRoom" element={<RoomJoiner /> } />
                 <Route path="/editor/:roomId" element={<Room />} />
             </Routes>
             <TimeManager />

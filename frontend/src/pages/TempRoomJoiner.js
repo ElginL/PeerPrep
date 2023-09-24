@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { v4 as uuidV4 } from "uuid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import styles from "../styles/pages/TempRoomJoiner.module.css";
+import { createRoom } from "../api/collaboration";
 
 const TempRoomJoiner = () => {
     const navigate = useNavigate();
@@ -14,17 +15,18 @@ const TempRoomJoiner = () => {
         setRoomId(id);
     };
 
-    const joinRoom = () => {
+    const createRoomHandler = () => {
         if (!roomId || !username) {
             return;
         }
 
-        navigate(`/editor/${roomId}`, { state: { username } });
+        createRoom(roomId, username)
+            .then(() => navigate(`/editor/${roomId}`));
     };
 
     const handleInputEnter = (e) => {
         if (e.code === "Enter") {
-            joinRoom();
+            createRoomHandler();
         }
     };
 
@@ -32,7 +34,7 @@ const TempRoomJoiner = () => {
         <div className={styles["homePageWrapper"]}>
             <div className={styles["formWrapper"]}>
                 <h4 className={styles["mainLabel"]}>
-                    Paste invitation Room ID
+                    Create Room
                 </h4>
                 <div className={styles["inputGroup"]}>
                     <input
@@ -46,26 +48,28 @@ const TempRoomJoiner = () => {
                     <input
                         className={styles["inputBox"]}
                         type="text"
-                        placeholder="Username"
+                        placeholder="Your Friend's Username"
                         onChange={(e) => setUsername(e.target.value)}
                         value={username}
                         onKeyUp={handleInputEnter}
                     />
                     <button
                         className={`${styles["btn"]} ${styles["joinBtn"]}`}
-                        onClick={joinRoom}
+                        onClick={createRoomHandler}
                     >
-                        Join
+                        Create
                     </button>
-                    <span className="createInfo">
-                        If you don't have an invite, then create a &nbsp;{" "}
+                    <span className={styles["createInfo"]}>
                         <a
                             onClick={createNewRoom}
                             href="/"
                             className={styles["createNewBtn"]}
                         >
-                            new room!
+                            Generate a secure room id
                         </a>
+                        <Link to="/joinRoom" className={styles["join-room-btn"]}>
+                            Join a room
+                        </Link>
                     </span>
                 </div>
             </div>

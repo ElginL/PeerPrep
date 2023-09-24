@@ -26,6 +26,7 @@ const Room = () => {
 
             function handleErrors(e) {
                 console.log("socket error", e);
+                alert("Unauthorized");
                 reactNavigator("/");
             }
 

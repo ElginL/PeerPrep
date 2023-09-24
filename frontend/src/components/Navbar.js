@@ -23,8 +23,8 @@ const Navbar = () => {
             <nav>
                 <ul className={styles["nav-links"]}>
                     <li>
-                        <button>
-                            Find Match
+                        <button onClick={() => navigate('/createRoom')}>
+                            Custom Room
                         </button>
                     </li>
                     <li>
