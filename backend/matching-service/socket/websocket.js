@@ -47,7 +47,7 @@ const initializeWebSocket = server => {
 
             const sharedRoomId = otherUser.roomId;
             socket.join(sharedRoomId);
-            roomRepo.addEntry(socket.username, otherUser.username, sharedRoomId);
+            await roomRepo.addEntry(sharedRoomId);
             io.to(sharedRoomId).emit('matchfound', sharedRoomId);
         });
     });

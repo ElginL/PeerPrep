@@ -1,11 +1,13 @@
 const Room = require('../models/Room');
 
-const addEntry = (username1, username2, roomId) => {
-    Room.create({
-        username1,
-        username2,
-        roomId
-    });
+const addEntry = async (roomId) => {
+    const room = await Room.findByPk(roomId);
+
+    if (!room) {
+        Room.create({
+            roomId
+        });
+    }
 };
 
 module.exports = {

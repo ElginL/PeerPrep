@@ -56,9 +56,13 @@ io.use((socket, next) => {
 });
 
 io.use(async (socket, next) => {
-    if (await roomRepo.getByUsername(socket.username) == null) {
-        return next(new Error('Not authorized to enter room'));
+    const roomId = socket.handshake.query.roomId;
+
+    if (await roomRepo.getByRoomId(roomId) == null) {
+        return next(new Error('Room does not exist'));
     }
+
+    socket.roomId = roomId;
 
     next();
 });
@@ -112,22 +116,19 @@ io.on("connection", (socket) => {
     });
 
     socket.on('disconnect', async () => {
-        const room = await roomRepo.getByUsername(socket.username);
-        const usernames = Object.values(userSocketMap);
-
-        if (!usernames.includes(room.username1) && !usernames.includes(room.username2)) {
-            roomRepo.deleteByUsername(socket.username);
+        if (getAllConnectedClients(socket.roomId).length == 0) {
+            roomRepo.deleteById(socket.roomId);
         }
 
         console.log(`User disconnected: ${socket.id}`);
     });
 });
 
-app.post('/', authenticateJwt, (req, res, next) => {
-    const { roomId, username } = req.body;
+app.post('/', authenticateJwt, async (req, res, next) => {
+    const { roomId } = req.body;
 
     try {
-        roomRepo.addEntry(req.username, username, roomId);
+        await roomRepo.addEntry(roomId);
 
         res.status(201).json({
             msg: "Successfully created"

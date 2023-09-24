@@ -20,7 +20,7 @@ const Room = () => {
         const init = async () => {
             const token = JSON.parse(localStorage.getItem('credentials')).sessionToken;
 
-            socketRef.current = createSocketConnection(token);
+            socketRef.current = createSocketConnection(token, roomId);
             socketRef.current.on("connect_error", (err) => handleErrors(err));
             socketRef.current.on("connect_failed", (err) => handleErrors(err));
 
@@ -36,7 +36,10 @@ const Room = () => {
 
             socketRef.current.on(
                 ACTIONS.JOIN_FAILED,
-                () => console.log("Full capacity reached") // need to maybe add a modal here
+                () => {
+                    alert("Full capacity reached");
+                    reactNavigator('/');
+                }
             );
 
             socketRef.current.on(

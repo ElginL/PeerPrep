@@ -12,10 +12,9 @@ const setAuthenticationHeader = () => {
   };
 };
 
-const createRoom = (roomId, username) => {
+const createRoom = (roomId) => {
   const newRoom = {
     roomId,
-    username,
   };
 
   return axios

@@ -1,23 +1,18 @@
 const Room = require('../models/Room');
-const { Op } = require('sequelize');
 
-const addEntry = (username1, username2, roomId) => {
-    Room.create({
-        username1,
-        username2,
-        roomId
-    });
+const addEntry = async (roomId) => {
+    const room = await Room.findByPk(roomId);
+
+    if (!room) {
+        Room.create({
+            roomId
+        });
+    }
+
 };
 
-const getByUsername = async (username) => {
-    const room = await Room.findOne({
-        where: {
-            [Op.or]: [
-                { username1: username },
-                { username2: username }
-            ]
-        }
-    });
+const getByRoomId = async (roomId) => {
+    const room = await Room.findByPk(roomId);
 
     if (room == null) {
         return null;
@@ -26,9 +21,9 @@ const getByUsername = async (username) => {
     return room;
 };
 
-const deleteByUsername = async (username) => {
+const deleteById = async (roomId) => {
     try {
-        const room = await getByUsername(username);
+        const room = await getByRoomId(roomId);
 
         if (room == null) {
             return false;
@@ -44,6 +39,6 @@ const deleteByUsername = async (username) => {
 
 module.exports = {
     addEntry,
-    getByUsername,
-    deleteByUsername
+    getByRoomId,
+    deleteById
 };
