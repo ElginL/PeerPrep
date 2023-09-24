@@ -6,17 +6,16 @@ const Room = sq.define("Room", {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
-        unique: true
     },
     username2: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
-        unique: true
     },
     roomId: {
         type: DataTypes.STRING,
         allowNull: false,
+        primaryKey: true
     },
 });
 

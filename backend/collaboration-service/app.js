@@ -1,4 +1,3 @@
-// const { Server } = require("socket.io");
 const express = require("express");
 const http = require("http");
 const ACTIONS = require("./Actions");
@@ -6,6 +5,8 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const { testDbConnection } = require('./db/db');
 const roomRepo = require('./db/repositories/RoomRepo');
+const authenticateJwt = require('./middleware/authenticateJwt');
+const cors = require('cors');
 
 testDbConnection();
 
@@ -14,6 +15,12 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
+const corsOption = {
+    origin: 'http://localhost:3000',
+    methods: 'GET, POST, DELETE, PUT',
+    credentials: true
+};
+app.use(cors(corsOption));
 
 const io = require('socket.io')(server, {
     cors: {
@@ -114,6 +121,25 @@ io.on("connection", (socket) => {
 
         console.log(`User disconnected: ${socket.id}`);
     });
+});
+
+app.post('/', authenticateJwt, (req, res, next) => {
+    const { roomId, username } = req.body;
+
+    try {
+        roomRepo.addEntry(req.username, username, roomId);
+
+        res.status(201).json({
+            msg: "Successfully created"
+        });
+    } catch (e) {
+        next(e);
+    }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });
 });
 
 const PORT = process.env.PORT || 3004
