@@ -3,31 +3,32 @@ import Logo from "../assets/logo.png";
 import { useNavigate, Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { isLoggedInState } from "../recoil/UserAtom";
+import { getUsername } from "../api/users";
+import { useState, useEffect } from "react";
 
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 
-const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Logout"];
 
 const Navbar = () => {
     const navigate = useNavigate();
     const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
+    const [username, setUsername] = useState("");
+    const [anchorElUser, setAnchorElUser] = useState(null);
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    useEffect(() => {
+        getUsername().then((res) => setUsername(res));
+    }, []);
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -37,7 +38,13 @@ const Navbar = () => {
         setAnchorElUser(null);
     };
 
+    const editProfileHandler = () => {
+        setAnchorElUser(null);
+        navigate("/profile");
+    };
+
     const signOutHandler = () => {
+        setAnchorElUser(null);
         setIsLoggedIn(false);
         navigate("/");
         localStorage.removeItem("credentials");
@@ -89,8 +96,7 @@ const Navbar = () => {
                                 sx={{ p: 0 }}
                             >
                                 <Avatar
-                                    // TODO: get username of logged in user
-                                    alt="avatar"
+                                    alt={username}
                                     src="/static/images/avatar/2.jpg"
                                 />
                             </IconButton>
@@ -113,7 +119,7 @@ const Navbar = () => {
                         >
                             <MenuItem
                                 key={settings[0]}
-                                onClick={handleCloseUserMenu}
+                                onClick={editProfileHandler}
                             >
                                 <Typography textAlign="center">
                                     {settings[0]}
