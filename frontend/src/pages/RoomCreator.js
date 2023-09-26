@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import { useNavigate } from "react-router-dom";
-import styles from "../styles/pages/TempRoomJoiner.module.css";
+import styles from "../styles/pages/RoomCreator.module.css";
 import { createRoom } from "../api/collaboration";
 import Navbar from "../components/Navbar";
 
@@ -20,8 +20,7 @@ const RoomCreator = () => {
             return;
         }
 
-        createRoom(roomId)
-            .then(() => navigate(`/editor/${roomId}`));
+        createRoom(roomId).then(() => navigate(`/editor/${roomId}`));
     };
 
     const handleInputEnter = (e) => {
@@ -35,9 +34,7 @@ const RoomCreator = () => {
             <Navbar />
             <div className={styles["homePageWrapper"]}>
                 <div className={styles["formWrapper"]}>
-                    <h4 className={styles["mainLabel"]}>
-                        Enter Room
-                    </h4>
+                    <h4 className={styles["mainLabel"]}>Enter Room</h4>
                     <div className={styles["inputGroup"]}>
                         <input
                             className={styles["inputBox"]}
