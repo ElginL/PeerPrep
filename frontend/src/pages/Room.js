@@ -8,6 +8,7 @@ import {
     useParams,
 } from "react-router-dom";
 import styles from "../styles/pages/Room.module.css";
+import GetRandomQuestion from "./GetRandomQuestion";
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -94,40 +95,45 @@ const Room = () => {
     }
 
     return (
-        <div className={styles["mainWrap"]}>
-            <div className={styles["aside"]}>
-                <div className={styles["asideInner"]}>
-                    <h3>Connected</h3>
-                    <div className={styles["clientsList"]}>
-                        {clients.map((client) => (
-                            <Client
-                                key={client.socketId}
-                                username={client.username}
-                            />
-                        ))}
+        <div>
+            <header className={styles["header"]}>
+                    <div className={styles["asideInner"]}>
+                        <h3>Connected</h3>
+                        <div className={styles["clientsList"]}>
+                            {clients.map((client) => (
+                                <Client
+                                    key={client.socketId}
+                                    username={client.username}
+                                />
+                            ))}
+                        </div>
                     </div>
+                    <button
+                        className={`${styles["btn"]} ${styles["copyBtn"]}`}
+                        onClick={copyRoomId}
+                    >
+                        Copy Room ID
+                    </button>
+                    <button
+                        className={`${styles["btn"]} ${styles["leaveBtn"]}`}
+                        onClick={leaveRoom}
+                    >
+                        Leave Room
+                    </button>
+            </header>
+            <div className={styles["mainWrap"]}>
+                <div className={styles["leftColumn"]}>
+                    <GetRandomQuestion/>
                 </div>
-                <button
-                    className={`${styles["btn"]} ${styles["copyBtn"]}`}
-                    onClick={copyRoomId}
-                >
-                    Copy Room ID
-                </button>
-                <button
-                    className={`${styles["btn"]} ${styles["leaveBtn"]}`}
-                    onClick={leaveRoom}
-                >
-                    Leave Room
-                </button>
-            </div>
-            <div>
-                <Editor
-                    socketRef={socketRef}
-                    roomId={roomId}
-                    onCodeChange={(code) => {
-                        codeRef.current = code;
-                    }}
-                />
+                <div className={styles["rightColumn"]}>
+                    <Editor
+                        socketRef={socketRef}
+                        roomId={roomId}
+                        onCodeChange={(code) => {
+                            codeRef.current = code;
+                        }}
+                    />
+                </div>
             </div>
         </div>
     );
