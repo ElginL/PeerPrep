@@ -40,9 +40,16 @@ const deleteQuestion = (req, res, next) => {
         .catch(err => next(err));
 };
 
+const getRandomQuestion = (req, res, next) => {
+    Question.aggregate([ { $sample: { size:1 } } ])
+        .then(question => res.status(200).json(question[0]))
+        .catch(err => next(err));
+};
+
 module.exports = {
     getQuestionById,
     getAllQuestions,
     addQuestion,
-    deleteQuestion
+    deleteQuestion,
+    getRandomQuestion
 };

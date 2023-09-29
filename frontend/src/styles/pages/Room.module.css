@@ -59,10 +59,20 @@ footer a {
     transition: all 0.3s ease-in-out;
 }
 
+.copyBtn {
+    background: #ffffff;
+    width: 200px;
+    height: 40px;
+    align-items: center;
+    margin-left: auto;
+}
+
 .joinBtn,
 .leaveBtn {
     background: #4aed88;
     width: 100px;
+    height: 40px;
+    align-items: center;
     margin-left: auto;
 }
 
@@ -91,8 +101,15 @@ footer a:hover {
 
 .mainWrap {
     display: grid;
-    grid-template-columns: 230px 1fr;
-    height: 100vh;
+    grid-template-columns: 1fr 1fr;
+    height: calc(100vh - 130px)
+}
+
+.leftColumn, .rightColumn {
+    flex: 1;
+    padding: 20px;
+    background-color: #282a36;
+    border: 1px solid #333232;
 }
 
 .aside {
@@ -133,8 +150,7 @@ footer a:hover {
 }
 
 .leaveBtn {
-    width: 100%;
-    margin-top: 20px;
+    width: 15%;
 }
 
 .CodeMirror {
@@ -142,4 +158,16 @@ footer a:hover {
     font-size: 20px;
     line-height: 1.6;
     padding-top: 20px;
+}
+
+.header {
+    height: 130px;
+    padding: 10px;
+    display: flex;
+    background: #1c1e29;
+    color: #fff;
+}
+
+.question {
+    flex: 2;
 }

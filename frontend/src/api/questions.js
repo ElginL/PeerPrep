@@ -67,10 +67,21 @@ const deleteQuestionsByIds = async (ids) => {
     }
 }
 
+const getRandomQuestion = async () => {
+    try {
+        const randomQuestion = await axios.get(baseUrl + '/random', setAuthenticationHeader())
+        return randomQuestion.data;
+
+    } catch (error) {
+        console.error("Error when trying to fetch question: ", error);
+    }
+};
+
 export {
     fetchAllQuestions,
     fetchQuestionById,
     addQuestion,
     deleteQuestionsByIds,
-    setAuthenticationHeader
+    setAuthenticationHeader,
+    getRandomQuestion
 };
