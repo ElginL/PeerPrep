@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 import { getRandomQuestion } from '../api/questions';
 import DOMPurify from 'dompurify';
+import { getRoomById } from '../api/collaboration';
+import { fetchQuestionById } from '../api/questions';
 
-const GetRandomQuestion = () => {
+const GetRandomQuestion = ({ roomId }) => {
     const [question, setQuestion] = useState({});
 
     useEffect(() => {
         const fetchQuestion = async () => {
-            const res = await getRandomQuestion();
+            // const res = await getRandomQuestion();
+            
+            const room = await getRoomById(roomId);
+            const question = await fetchQuestionById(room.questionId);
 
-            setQuestion(res);
+            setQuestion(question);
         };
 
         fetchQuestion();

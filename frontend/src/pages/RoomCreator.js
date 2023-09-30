@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "../styles/pages/RoomCreator.module.css";
 import { createRoom } from "../api/collaboration";
 import Navbar from "../components/Navbar";
+import { getRandomQuestion } from "../api/questions";
 
 const RoomCreator = () => {
     const navigate = useNavigate();
@@ -15,12 +16,13 @@ const RoomCreator = () => {
         setRoomId(id);
     };
 
-    const createRoomHandler = () => {
+    const createRoomHandler = async () => {
         if (!roomId) {
             return;
         }
 
-        createRoom(roomId).then(() => navigate(`/editor/${roomId}`));
+        const randomQuestion = await getRandomQuestion();
+        createRoom(roomId, randomQuestion._id).then(() => navigate(`/editor/${roomId}`));
     };
 
     const handleInputEnter = (e) => {

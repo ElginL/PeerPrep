@@ -12,9 +12,10 @@ const setAuthenticationHeader = () => {
   };
 };
 
-const createRoom = (roomId) => {
+const createRoom = (roomId, questionId) => {
   const newRoom = {
     roomId,
+    questionId
   };
 
   return axios
@@ -29,6 +30,17 @@ const createRoom = (roomId) => {
     }));
 };
 
+const getRoomById = async roomId => {
+  try {
+    const room = await axios.get(baseUrl + `/${roomId}`, setAuthenticationHeader());
+
+    return room.data;
+  } catch (error) {
+    console.error("Error when trying to fetch room by id: ", error);
+  }
+}
+
 export { 
-    createRoom
+    createRoom,
+    getRoomById
 };

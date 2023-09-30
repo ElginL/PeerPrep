@@ -126,7 +126,7 @@ const Room = () => {
             </header>
             <div className={styles["mainWrap"]}>
                 <div className={styles["leftColumn"]}>
-                    <GetRandomQuestion/>
+                    <GetRandomQuestion roomId={roomId} />
                 </div>
                 <div className={styles["rightColumn"]}>
                     <Editor
