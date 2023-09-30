@@ -87,9 +87,7 @@ footer a:hover {
 }
 
 .mainWrap {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    height: calc(100vh - 130px)
+    display: flex;
 }
 
 .leftColumn, .rightColumn {
@@ -97,6 +95,10 @@ footer a:hover {
     padding: 20px;
     background-color: #282a36;
     border: 1px solid #333232;
+}
+
+.leftColumn {
+    max-width: 50%;
 }
 
 .aside {

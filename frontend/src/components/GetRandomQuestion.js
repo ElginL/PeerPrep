@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { getRoomById } from '../api/collaboration';
 import { fetchQuestionById } from '../api/questions';
+import styles from '../styles/components/GetRandomQuestion.module.css';
 
 const GetRandomQuestion = ({ roomId }) => {
     const [question, setQuestion] = useState({ title: '', complexity: '', category: '' });
@@ -25,7 +26,10 @@ const GetRandomQuestion = ({ roomId }) => {
             <h1>{question.title}</h1>
             <h3>{question.complexity}</h3>
             <h3>{question.category}</h3>
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.description) }} />
+            <div 
+                className={styles["content"]}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.description) }} 
+            />
         </div>
     );
 };

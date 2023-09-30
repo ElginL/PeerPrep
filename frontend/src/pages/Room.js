@@ -8,7 +8,7 @@ import {
     useParams,
 } from "react-router-dom";
 import styles from "../styles/pages/Room.module.css";
-import GetRandomQuestion from "./GetRandomQuestion";
+import GetRandomQuestion from "../components/GetRandomQuestion";
 
 const Room = () => {
     const socketRef = useRef(null);
