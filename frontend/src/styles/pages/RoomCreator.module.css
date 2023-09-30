@@ -92,6 +92,7 @@ footer a {
     color: #4aed88;
     text-decoration: none;
     transition: all 0.3s ease-in-out;
+    cursor: pointer;
 }
 
 .createNewBtn:hover {

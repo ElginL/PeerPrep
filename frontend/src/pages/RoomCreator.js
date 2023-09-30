@@ -51,13 +51,13 @@ const RoomCreator = () => {
                             Enter
                         </button>
                         <span className={styles["createInfo"]}>
-                            <a
+                            <div
                                 onClick={createNewRoom}
                                 href="/"
                                 className={styles["createNewBtn"]}
                             >
                                 Generate a secure room id
-                            </a>
+                            </div>
                         </span>
                     </div>
                 </div>

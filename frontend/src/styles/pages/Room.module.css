@@ -51,7 +51,7 @@ footer a {
 
 .btn {
     border: none;
-    padding: 10px;
+    padding: 10px 25px;
     border-radius: 5px;
     font-size: 16px;
     font-weight: bold;
@@ -61,22 +61,17 @@ footer a {
 
 .copyBtn {
     background: #ffffff;
-    width: 200px;
-    height: 40px;
-    align-items: center;
-    margin-left: auto;
 }
 
-.joinBtn,
+.copyBtn:hover {
+    background: #b5b2b2;
+}
+
 .leaveBtn {
     background: #4aed88;
-    width: 100px;
-    height: 40px;
-    align-items: center;
-    margin-left: auto;
+
 }
 
-.joinBtn:hover,
 .leaveBtn:hover {
     background: #2b824c;
 }
@@ -86,14 +81,6 @@ footer a {
     margin-top: 20px;
 }
 
-.createNewBtn {
-    color: #4aed88;
-    text-decoration: none;
-    border-bottom: 1px solid #4aed88;
-    transition: all 0.3s ease-in-out;
-}
-
-.createNewBtn:hover,
 footer a:hover {
     color: #368654;
     border-color: #368654;
@@ -149,10 +136,6 @@ footer a:hover {
     height: 60px;
 }
 
-.leaveBtn {
-    width: 15%;
-}
-
 .CodeMirror {
     height: 100vh;
     font-size: 20px;
@@ -166,8 +149,14 @@ footer a:hover {
     display: flex;
     background: #1c1e29;
     color: #fff;
+    align-items: center;
 }
 
 .question {
     flex: 2;
+}
+
+.btn-group {
+    display: flex;
+    gap: 20px;
 }

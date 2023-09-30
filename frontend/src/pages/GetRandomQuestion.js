@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { getRandomQuestion } from '../api/questions';
-import styles from '../styles/pages/QuestionPage.module.css';
-import Navbar from '../components/Navbar';
 import DOMPurify from 'dompurify';
 
 const GetRandomQuestion = () => {

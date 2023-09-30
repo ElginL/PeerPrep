@@ -97,17 +97,18 @@ const Room = () => {
     return (
         <div>
             <header className={styles["header"]}>
-                    <div className={styles["asideInner"]}>
-                        <h3>Connected</h3>
-                        <div className={styles["clientsList"]}>
-                            {clients.map((client) => (
-                                <Client
-                                    key={client.socketId}
-                                    username={client.username}
-                                />
-                            ))}
-                        </div>
+                <div className={styles["asideInner"]}>
+                    <h3>Connected</h3>
+                    <div className={styles["clientsList"]}>
+                        {clients.map((client) => (
+                            <Client
+                                key={client.socketId}
+                                username={client.username}
+                            />
+                        ))}
                     </div>
+                </div>
+                <div className={styles["btn-group"]}>
                     <button
                         className={`${styles["btn"]} ${styles["copyBtn"]}`}
                         onClick={copyRoomId}
@@ -120,6 +121,8 @@ const Room = () => {
                     >
                         Leave Room
                     </button>
+
+                </div>
             </header>
             <div className={styles["mainWrap"]}>
                 <div className={styles["leftColumn"]}>

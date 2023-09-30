@@ -87,7 +87,7 @@ const Navbar = () => {
                         }}
                         onClick={() => navigate("/createRoom")}
                     >
-                        Create Room
+                        Custom Room
                     </Button>
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="User options">
