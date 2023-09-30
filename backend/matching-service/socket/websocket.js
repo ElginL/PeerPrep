@@ -47,7 +47,7 @@ const initializeWebSocket = server => {
             const sharedRoomId = otherUser.roomId;
             socket.join(sharedRoomId);
 
-            io.to(socket.id).emit('createRoom', sharedRoomId);
+            io.to(socket.id).emit('createRoom', sharedRoomId, queueComplexity);
             io.to(sharedRoomId).emit('matchfound', sharedRoomId);
         });
     });

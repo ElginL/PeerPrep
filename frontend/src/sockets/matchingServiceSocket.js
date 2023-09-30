@@ -20,8 +20,8 @@ const handleSocketEvents = (queueComplexity, matchFoundHandler) => {
         socket.emit('joinQueue', queueComplexity);
     });
 
-    socket.on('createRoom', async roomId => {
-        const randomQuestion = await getRandomQuestion();
+    socket.on('createRoom', async (roomId, queueComplexity) => {
+        const randomQuestion = await getRandomQuestion(queueComplexity);
 
         await createRoom(roomId, randomQuestion._id);
     });

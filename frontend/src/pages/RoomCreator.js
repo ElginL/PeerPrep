@@ -21,7 +21,7 @@ const RoomCreator = () => {
             return;
         }
 
-        const randomQuestion = await getRandomQuestion();
+        const randomQuestion = await getRandomQuestion('Easy'); // todo: need to set difficulty
         createRoom(roomId, randomQuestion._id).then(() => navigate(`/editor/${roomId}`));
     };
 
