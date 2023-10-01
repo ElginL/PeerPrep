@@ -4,7 +4,7 @@ import { getRoomById } from '../api/collaboration';
 import { fetchQuestionById } from '../api/questions';
 import styles from '../styles/components/GetRandomQuestion.module.css';
 
-const GetRandomQuestion = ({ roomId }) => {
+const RoomQuestion = ({ roomId }) => {
     const [question, setQuestion] = useState({ title: '', complexity: '', category: '' });
 
     useEffect(() => {
@@ -34,4 +34,4 @@ const GetRandomQuestion = ({ roomId }) => {
     );
 };
 
-export default GetRandomQuestion;
+export default RoomQuestion;

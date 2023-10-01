@@ -8,7 +8,7 @@ import {
     useParams,
 } from "react-router-dom";
 import styles from "../styles/pages/Room.module.css";
-import GetRandomQuestion from "../components/GetRandomQuestion";
+import RoomQuestion from "../components/RoomQuestion";
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -126,7 +126,7 @@ const Room = () => {
             </header>
             <div className={styles["mainWrap"]}>
                 <div className={styles["leftColumn"]}>
-                    <GetRandomQuestion roomId={roomId} />
+                    <RoomQuestion roomId={roomId} />
                 </div>
                 <div className={styles["rightColumn"]}>
                     <Editor
