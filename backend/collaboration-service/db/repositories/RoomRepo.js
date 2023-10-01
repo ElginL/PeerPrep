@@ -1,14 +1,14 @@
 const Room = require('../models/Room');
 
-const addEntry = async (roomId) => {
+const addEntry = async (roomId, questionId) => {
     const room = await Room.findByPk(roomId);
 
     if (!room) {
         Room.create({
-            roomId
+            roomId,
+            questionId
         });
     }
-
 };
 
 const getByRoomId = async (roomId) => {

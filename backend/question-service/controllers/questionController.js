@@ -41,9 +41,14 @@ const deleteQuestion = (req, res, next) => {
 };
 
 const getRandomQuestion = (req, res, next) => {
-    Question.aggregate([ { $sample: { size:1 } } ])
-        .then(question => res.status(200).json(question[0]))
-        .catch(err => next(err));
+    const complexity = req.params.complexity;
+
+    Question.aggregate([
+        { $match: { complexity: complexity } },
+        { $sample: { size: 1 } }
+    ])
+    .then(question => res.status(200).json(question[0]))
+    .catch(err => next(err));
 };
 
 module.exports = {

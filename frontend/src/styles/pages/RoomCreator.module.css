@@ -60,21 +60,12 @@ footer a {
     margin-bottom: 20px;
 }
 
-.join-room-btn {
-    color: orange;
-    text-decoration: none;
-}
-
-.join-room-btn:hover {
-    color: rgb(195, 133, 18);
-    transition: all 0.3s ease-in-out;
-}
-
 .joinBtn,
 .leaveBtn {
     background: #4aed88;
     width: 100px;
     margin-left: auto;
+    margin-top: 10px;
 }
 
 .joinBtn:hover,
@@ -92,6 +83,7 @@ footer a {
     color: #4aed88;
     text-decoration: none;
     transition: all 0.3s ease-in-out;
+    cursor: pointer;
 }
 
 .createNewBtn:hover {
@@ -152,4 +144,17 @@ footer a {
     font-size: 20px;
     line-height: 1.6;
     padding-top: 20px;
+}
+
+.complexity-container:focus {
+    outline: none;
+    border: 2px solid #007bff;
+}
+
+.complexity-container {
+    padding: 5px;
+}
+
+.complexity-container option {
+    font-size: 1rem;
 }

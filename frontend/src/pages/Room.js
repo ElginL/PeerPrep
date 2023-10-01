@@ -8,7 +8,7 @@ import {
     useParams,
 } from "react-router-dom";
 import styles from "../styles/pages/Room.module.css";
-import GetRandomQuestion from "./GetRandomQuestion";
+import RoomQuestion from "../components/RoomQuestion";
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -97,17 +97,18 @@ const Room = () => {
     return (
         <div>
             <header className={styles["header"]}>
-                    <div className={styles["asideInner"]}>
-                        <h3>Connected</h3>
-                        <div className={styles["clientsList"]}>
-                            {clients.map((client) => (
-                                <Client
-                                    key={client.socketId}
-                                    username={client.username}
-                                />
-                            ))}
-                        </div>
+                <div className={styles["asideInner"]}>
+                    <h3>Connected</h3>
+                    <div className={styles["clientsList"]}>
+                        {clients.map((client) => (
+                            <Client
+                                key={client.socketId}
+                                username={client.username}
+                            />
+                        ))}
                     </div>
+                </div>
+                <div className={styles["btn-group"]}>
                     <button
                         className={`${styles["btn"]} ${styles["copyBtn"]}`}
                         onClick={copyRoomId}
@@ -120,10 +121,12 @@ const Room = () => {
                     >
                         Leave Room
                     </button>
+
+                </div>
             </header>
             <div className={styles["mainWrap"]}>
                 <div className={styles["leftColumn"]}>
-                    <GetRandomQuestion/>
+                    <RoomQuestion roomId={roomId} />
                 </div>
                 <div className={styles["rightColumn"]}>
                     <Editor

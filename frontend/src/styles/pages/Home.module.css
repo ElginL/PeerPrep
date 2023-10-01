@@ -1,9 +1,9 @@
 .container {
-    padding: 200px 100px 100px 100px;
+    padding: 10% 15% 100px 15%;
     display: flex;
     justify-content: center;
     gap: 30px;
-    min-height: 90vh;
+    min-height: 70vh;
 }
 
 .right-container {

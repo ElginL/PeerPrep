@@ -125,10 +125,10 @@ io.on("connection", (socket) => {
 });
 
 app.post('/', authenticateJwt, async (req, res, next) => {
-    const { roomId } = req.body;
+    const { roomId, questionId } = req.body;
 
     try {
-        await roomRepo.addEntry(roomId);
+        await roomRepo.addEntry(roomId, questionId);
 
         res.status(201).json({
             msg: "Successfully created"
@@ -137,6 +137,18 @@ app.post('/', authenticateJwt, async (req, res, next) => {
         next(e);
     }
 });
+
+app.get('/:roomId', authenticateJwt, async (req, res, next) => {
+    const id = req.params.roomId;
+
+    const room = await roomRepo.getByRoomId(id)
+    
+    if (room == null) {
+        return res.status(404).json({ error: 'Cannot find room' });
+    }
+
+    res.status(200).json(room);
+})
 
 // Error handling middleware
 app.use((err, req, res, next) => {

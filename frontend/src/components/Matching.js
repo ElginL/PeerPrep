@@ -30,7 +30,7 @@ const Matching = () => {
 
         setTimeout(() => {
             setMatchFoundModalVisible(false);
-            navigate(`/editor/${roomId}`, { state: { username: JSON.parse(localStorage.getItem('credentials')).username } })
+            navigate(`/editor/${roomId}`);
         }, 3000);
 
         console.log("matched, joining room: ", roomId);

@@ -67,9 +67,9 @@ const deleteQuestionsByIds = async (ids) => {
     }
 }
 
-const getRandomQuestion = async () => {
+const getRandomQuestion = async complexity => {
     try {
-        const randomQuestion = await axios.get(baseUrl + '/random', setAuthenticationHeader())
+        const randomQuestion = await axios.get(baseUrl + `/random/${complexity}`, setAuthenticationHeader())
         return randomQuestion.data;
 
     } catch (error) {

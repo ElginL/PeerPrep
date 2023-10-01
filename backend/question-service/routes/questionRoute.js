@@ -16,7 +16,7 @@ questionRouter.post('/', authenticateJwt, authenticateManager, validateQuestion(
 // delete questions
 questionRouter.delete('/', authenticateJwt, authenticateManager, questionController.deleteQuestion);
 
-// Get random question
-questionRouter.get('/random', authenticateJwt, questionController.getRandomQuestion);
+// Get random question by complexity
+questionRouter.get('/random/:complexity', authenticateJwt, questionController.getRandomQuestion);
 
 module.exports = questionRouter;

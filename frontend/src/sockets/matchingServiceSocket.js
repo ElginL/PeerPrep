@@ -1,4 +1,6 @@
 import socketIOClient from 'socket.io-client';
+import { createRoom } from '../api/collaboration';
+import { getRandomQuestion } from '../api/questions';
 
 const matchingServiceURL = 'http://localhost:3003';
 
@@ -18,7 +20,13 @@ const handleSocketEvents = (queueComplexity, matchFoundHandler) => {
         socket.emit('joinQueue', queueComplexity);
     });
 
-    socket.on('matchfound', roomId => {
+    socket.on('createRoom', async (roomId, queueComplexity) => {
+        const randomQuestion = await getRandomQuestion(queueComplexity);
+
+        await createRoom(roomId, randomQuestion._id);
+    });
+
+    socket.on('matchfound', async roomId => {
         socket.disconnect();
         matchFoundHandler(roomId);
     });

@@ -7,6 +7,10 @@ const Room = sq.define("Room", {
         allowNull: false,
         primaryKey: true
     },
+    questionId: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
 });
 
 Room.sync({ force: true })
