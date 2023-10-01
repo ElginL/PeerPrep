@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { getRoomById } from '../api/collaboration';
 import { fetchQuestionById } from '../api/questions';
-import styles from '../styles/components/GetRandomQuestion.module.css';
+import styles from '../styles/components/RoomQuestion.module.css';
 
 const RoomQuestion = ({ roomId }) => {
     const [question, setQuestion] = useState({ title: '', complexity: '', category: '' });
