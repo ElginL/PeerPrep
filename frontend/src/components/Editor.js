@@ -53,14 +53,6 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         };
     }, [socketRef.current]);
 
-    const getCodeFromEditor = () => {
-        if (editorRef.current.getValue()) {
-            return editorRef.current.getValue();
-        }
-
-        return "";
-    }
-
     return (
         <div className={styles["container"]}>
             <textarea id="realtimeEditor" />
