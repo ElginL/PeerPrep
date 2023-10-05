@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import styles from "../styles/pages/Room.module.css";
 import RoomQuestion from "../components/RoomQuestion";
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -16,6 +18,8 @@ const Room = () => {
     const { roomId } = useParams();
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
+    
+    const [resultsVisible, setResultsVisible] = useState(false);
 
     useEffect(() => {
         const init = async () => {
@@ -95,40 +99,36 @@ const Room = () => {
     }
 
     return (
-        <div>
-            <header className={styles["header"]}>
-                <div className={styles["asideInner"]}>
-                    <h3>Connected</h3>
-                    <div className={styles["clientsList"]}>
-                        {clients.map((client) => (
-                            <Client
-                                key={client.socketId}
-                                username={client.username}
-                            />
-                        ))}
-                    </div>
+        <div className={styles["container"]}>
+            <nav className={styles["header"]}>
+                <div className={styles["clients-list"]}>
+                    {clients.map((client) => (
+                        <Client
+                            key={client.socketId}
+                            username={client.username}
+                        />
+                    ))}
                 </div>
                 <div className={styles["btn-group"]}>
                     <button
-                        className={`${styles["btn"]} ${styles["copyBtn"]}`}
+                        className={`${styles["btn"]} ${styles["copy-btn"]}`}
                         onClick={copyRoomId}
                     >
                         Copy Room ID
                     </button>
                     <button
-                        className={`${styles["btn"]} ${styles["leaveBtn"]}`}
+                        className={`${styles["btn"]} ${styles["leave-btn"]}`}
                         onClick={leaveRoom}
                     >
                         Leave Room
                     </button>
-
                 </div>
-            </header>
-            <div className={styles["mainWrap"]}>
-                <div className={styles["leftColumn"]}>
+            </nav>
+            <div className={styles["main-wrap"]}>
+                <div className={styles["left-column"]}>
                     <RoomQuestion roomId={roomId} />
                 </div>
-                <div className={styles["rightColumn"]}>
+                <div className={styles["right-column"]}>
                     <Editor
                         socketRef={socketRef}
                         roomId={roomId}
@@ -136,6 +136,29 @@ const Room = () => {
                             codeRef.current = code;
                         }}
                     />
+                    <div className={styles["bottom-section"]}>
+                        <div className={styles["results-bar"]} style={{ display: resultsVisible ? 'block' : 'none' }}>
+                            Results will be here
+                        </div>
+                        <div className={styles["execution-bar"]}>
+                            <p className={styles["results-btn"]} onClick={() => setResultsVisible(!resultsVisible)}>
+                                <span>Results</span>
+                                {
+                                    resultsVisible
+                                        ? <KeyboardArrowDownIcon />
+                                        : <KeyboardArrowUpIcon />
+                                }
+                            </p>
+                            <div className={styles["btn-group"]}>
+                                <button className={styles["run-btn"]}>
+                                    Run
+                                </button>
+                                <button className={styles["submit-btn"]}>
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
