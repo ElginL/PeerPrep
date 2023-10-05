@@ -20,7 +20,13 @@ const questionSchema = new Schema({
     description: {
         type: String,
         required: true
-    }
+    },
+    testCases: [
+        {
+            input: Object,
+            output: Schema.Types.Mixed
+        }
+    ]
 });
 
 const Question = model('Question', questionSchema);
