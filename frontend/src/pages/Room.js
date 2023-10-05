@@ -95,40 +95,36 @@ const Room = () => {
     }
 
     return (
-        <div>
-            <header className={styles["header"]}>
-                <div className={styles["asideInner"]}>
-                    <h3>Connected</h3>
-                    <div className={styles["clientsList"]}>
-                        {clients.map((client) => (
-                            <Client
-                                key={client.socketId}
-                                username={client.username}
-                            />
-                        ))}
-                    </div>
+        <div className={styles["container"]}>
+            <nav className={styles["header"]}>
+                <div className={styles["clients-list"]}>
+                    {clients.map((client) => (
+                        <Client
+                            key={client.socketId}
+                            username={client.username}
+                        />
+                    ))}
                 </div>
                 <div className={styles["btn-group"]}>
                     <button
-                        className={`${styles["btn"]} ${styles["copyBtn"]}`}
+                        className={`${styles["btn"]} ${styles["copy-btn"]}`}
                         onClick={copyRoomId}
                     >
                         Copy Room ID
                     </button>
                     <button
-                        className={`${styles["btn"]} ${styles["leaveBtn"]}`}
+                        className={`${styles["btn"]} ${styles["leave-btn"]}`}
                         onClick={leaveRoom}
                     >
                         Leave Room
                     </button>
-
                 </div>
-            </header>
-            <div className={styles["mainWrap"]}>
-                <div className={styles["leftColumn"]}>
+            </nav>
+            <div className={styles["main-wrap"]}>
+                <div className={styles["left-column"]}>
                     <RoomQuestion roomId={roomId} />
                 </div>
-                <div className={styles["rightColumn"]}>
+                <div className={styles["right-column"]}>
                     <Editor
                         socketRef={socketRef}
                         roomId={roomId}
