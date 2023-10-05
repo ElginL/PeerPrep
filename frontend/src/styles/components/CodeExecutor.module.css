@@ -5,9 +5,11 @@
 }
 
 .results-bar {
-    background-color: black;
-    padding: 10px;
+    background-color: #1c1e29;
+    padding: 20px;
     border-radius: 7px;
+    max-height: 25vh;
+    overflow-y: scroll;
 }
 
 .execution-bar {
@@ -57,4 +59,50 @@
 
 .submit-btn:hover {
     background-color: #199143
+}
+
+.test-cases-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.test-case-unselected,
+.test-case-selected {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.test-case-selected {
+    background-color: grey;
+    border-radius: 5px;
+}
+
+.test-case-unselected:hover {
+    background-color: grey;
+    border-radius: 5px;
+}
+
+.toggle-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.test-case-btn,
+.result-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.test-case-btn:hover,
+.result-btn:hover {
+    color: rgb(209, 203, 203) !important;
 }

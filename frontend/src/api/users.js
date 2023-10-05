@@ -68,8 +68,6 @@ const changePassword = async (oldPassword, newPassword) => {
       setAuthenticationHeader()
     );
 
-    console.log(response);
-
     return {
       message: response.data.msg,
       status: response.status,
