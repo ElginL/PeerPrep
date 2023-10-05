@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 import styles from "../styles/pages/Room.module.css";
 import RoomQuestion from "../components/RoomQuestion";
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -16,6 +18,8 @@ const Room = () => {
     const { roomId } = useParams();
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
+    
+    const [resultsVisible, setResultsVisible] = useState(false);
 
     useEffect(() => {
         const init = async () => {
@@ -132,6 +136,29 @@ const Room = () => {
                             codeRef.current = code;
                         }}
                     />
+                    <div className={styles["bottom-section"]}>
+                        <div className={styles["results-bar"]} style={{ display: resultsVisible ? 'block' : 'none' }}>
+                            Results will be here
+                        </div>
+                        <div className={styles["execution-bar"]}>
+                            <p className={styles["results-btn"]} onClick={() => setResultsVisible(!resultsVisible)}>
+                                <span>Results</span>
+                                {
+                                    resultsVisible
+                                        ? <KeyboardArrowDownIcon />
+                                        : <KeyboardArrowUpIcon />
+                                }
+                            </p>
+                            <div className={styles["btn-group"]}>
+                                <button className={styles["run-btn"]}>
+                                    Run
+                                </button>
+                                <button className={styles["submit-btn"]}>
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
