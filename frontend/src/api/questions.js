@@ -55,7 +55,6 @@ const addQuestion = async (title, category, complexity, description) => {
 
 const deleteQuestionsByIds = async (ids) => {
     try {
-        console.log(ids);
         const response = await axios.delete(baseUrl, { 
             data: { ids },
             ...setAuthenticationHeader()

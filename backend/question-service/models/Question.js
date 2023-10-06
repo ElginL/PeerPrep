@@ -21,6 +21,10 @@ const questionSchema = new Schema({
         type: String,
         required: true
     },
+    codeTemplate: {
+        type: String,
+        required: true
+    },
     testCases: [
         {
             input: Object,
