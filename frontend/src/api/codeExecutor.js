@@ -16,10 +16,8 @@ function sleep(ms) {
 const attachPythonPrintReturnValue = (pythonCode, inputArgs) => {
     const pythonFunctionSignature = /^def [a-zA-Z_]\w*\([^)]*\):\n/;
 
-    console.log(pythonCode);
-
     if (!pythonFunctionSignature.test(pythonCode)) {
-        throw new Error("Missing Method Signature");
+        throw new Error("Missing Method Signature, or you have not made any changes to the code");
     }
 
     const methodName = pythonCode.substring(pythonCode.indexOf(" ") + 1, pythonCode.indexOf("("));

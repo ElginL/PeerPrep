@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { runAllTestCases } from '../api/codeExecutor';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from '../styles/components/CodeExecutor.module.css';
 import { getRoomById } from '../api/collaboration';
 import { fetchQuestionById } from '../api/questions';
 import TestCase from './TestCase';
+import CodeExecutionBar from './CodeExecutionBar';
+import RunTimeErrorResult from './RunTimeErrorResult';
+import CodeExecutionNavigator from './CodeExecutionNavigator';
+import TestCaseNavigator from './TestCaseNavigator';
 
 const CodeExecutor = ({ codeRef, roomId }) => {
     const [resultsVisible, setResultsVisible] = useState(false);
@@ -41,57 +43,28 @@ const CodeExecutor = ({ codeRef, roomId }) => {
     }, []);
 
     return (
-        <div className={styles["bottom-section"]}>
+        <div className={styles["container"]}>
             {
                 executionResults && executionResults.status === 'Runtime Error'
                     ? (
-                        <div className={styles["results-bar"]} style={{ display: resultsVisible ? 'block': 'none' }}>
-                            <h3 className={styles["runtime-error-header"]}>Runtime Error</h3>
-                            <p className={styles["runtime-error-msg"]}>
-                                { executionResults.message }
-                            </p>
-                        </div>
+                        <RunTimeErrorResult 
+                            resultsVisible={resultsVisible}
+                            executionResults={executionResults}
+                        />
                     ) : (
                         <div className={styles["results-bar"]} style={{ display: resultsVisible ? 'block' : 'none' }}>
-                            <div className={styles["toggle-btns"]}>
-                                <button
-                                    className={styles["test-case-btn"]} 
-                                    style={{ color: testCaseBtnSelected ? 'rgb(199, 193, 193)' : 'white'}}
-                                    onClick={() => setTestCaseBtnSelected(true)}
-                                >
-                                    Testcase
-                                </button>
-                                <button 
-                                    className={styles["result-btn"]} 
-                                    style={{ color: testCaseBtnSelected ? 'white' : 'rgb(199, 193, 193)'}}
-                                    onClick={() => setTestCaseBtnSelected(false)}
-                                >
-                                    Result
-                                </button>
-                            </div>
+                            <CodeExecutionNavigator 
+                                testCaseBtnSelected={testCaseBtnSelected}
+                                setTestCaseBtnSelected={setTestCaseBtnSelected}
+                            />
                             <hr />
-                            <div className={styles["test-cases-btns"]}>
-                                {
-                                    inputs.map((_, index) => (
-                                        <button
-                                            key={index} 
-                                            onClick={() => setSelectedTestCase(index)} 
-                                            className={selectedTestCase === index ? styles["test-case-selected"] : styles["test-case-unselected"]}
-                                        >
-                                            <p 
-                                                className={styles["case-btn-text"]}
-                                                style={{ color: executionResults
-                                                    ? executionResults[index].status === 'Passed' ? 'lightgreen' : '#f1635f'
-                                                    : 'white'
-                                                }}
-                                            >
-                                                Case {index}
-                                            </p>
-                                        </button>
-                                    ))
-                                }
-                            </div>
-                            <div className={styles["test-cases"]}>
+                            <TestCaseNavigator
+                                inputs={inputs}
+                                executionResults={executionResults}
+                                selectedTestCase={selectedTestCase}
+                                setSelectedTestCase={setSelectedTestCase}
+                            />
+                            <div>
                                 {
                                     inputs.map((inputObject, index) => (
                                         <div key={index}>
@@ -109,24 +82,11 @@ const CodeExecutor = ({ codeRef, roomId }) => {
                         </div>
                     )
             }
-            <div className={styles["execution-bar"]}>
-                <p className={styles["results-btn"]} onClick={() => setResultsVisible(!resultsVisible)}>
-                    <span>Console</span>
-                    {
-                        resultsVisible
-                            ? <KeyboardArrowDownIcon />
-                            : <KeyboardArrowUpIcon />
-                    }
-                </p>
-                <div className={styles["btn-group"]}>
-                    <button className={styles["run-btn"]} onClick={executeCodeHandler}>
-                        Run
-                    </button>
-                    <button className={styles["submit-btn"]}>
-                        Submit
-                    </button>
-                </div>
-            </div>
+            <CodeExecutionBar 
+                resultsVisible={resultsVisible}
+                setResultsVisible={setResultsVisible}
+                executeCodeHandler={executeCodeHandler}
+            />
         </div>
     );
 };
