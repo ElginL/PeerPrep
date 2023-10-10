@@ -134,7 +134,7 @@ const Room = () => {
                         }}
                     />
                     <CodeExecutor 
-                        code={codeRef.current}
+                        codeRef={codeRef}
                         roomId={roomId}
                     />
                 </div>

@@ -106,3 +106,20 @@
 .result-btn:hover {
     color: rgb(209, 203, 203) !important;
 }
+
+.runtime-error-header {
+    margin: 0;
+    color: red;
+}
+
+.runtime-error-msg {
+    margin-bottom: 0;
+    color: #f1635f;
+    background-color: #ef47431f;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.case-btn-text {
+    margin: 5px;
+}
