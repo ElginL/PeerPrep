@@ -2,10 +2,16 @@ import axios from 'axios';
 
 const baseUrl = 'http://localhost:3001';
 
+const setAuthenticationHeader = () => {
+    return {
+        headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('credentials')).sessionToken}`}
+    };
+};
+
 const fetchAllQuestions = async () => {
     try {
-        const questions = await axios.get(baseUrl)
-
+        const questions = await axios.get(baseUrl, setAuthenticationHeader())
+        
         return questions.data;
 
     } catch (error) {
@@ -15,7 +21,7 @@ const fetchAllQuestions = async () => {
 
 const fetchQuestionById = async (id) => {
     try {
-        const question = await axios.get(baseUrl + `/questions/${id}`);
+        const question = await axios.get(baseUrl + `/questions/${id}`, setAuthenticationHeader());
 
         return question.data;
     } catch (error) {
@@ -32,17 +38,49 @@ const addQuestion = async (title, category, complexity, description) => {
     };
 
     try {
-        const response = await axios.post(baseUrl, questionToAdd);
+        const response = await axios.post(baseUrl, questionToAdd, setAuthenticationHeader());
 
-        console.log(response);
+        return {
+            message: response.data,
+            status: response.status
+        };
     } catch (error) {
-        console.log("Error when trying to post: ", error);
+        return {
+            message: error.response.data.msg,
+            status: error.response.status
+        };
     }
 
+};
+
+const deleteQuestionsByIds = async (ids) => {
+    try {
+        const response = await axios.delete(baseUrl, { 
+            data: { ids },
+            ...setAuthenticationHeader()
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Error when trying to delete questions by ids: ", error);
+    }
+}
+
+const getRandomQuestion = async complexity => {
+    try {
+        const randomQuestion = await axios.get(baseUrl + `/random/${complexity}`, setAuthenticationHeader())
+        return randomQuestion.data;
+
+    } catch (error) {
+        console.error("Error when trying to fetch question: ", error);
+    }
 };
 
 export {
     fetchAllQuestions,
     fetchQuestionById,
-    addQuestion
+    addQuestion,
+    deleteQuestionsByIds,
+    setAuthenticationHeader,
+    getRandomQuestion
 };

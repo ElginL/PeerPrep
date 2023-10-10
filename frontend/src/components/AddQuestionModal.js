@@ -13,6 +13,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState("");
     const [complexity, setComplexity] = useState("Easy");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onDescriptionChange = (description) => {
         setDescription(description);
@@ -30,10 +31,38 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
         setComplexity(e.target.value);
     };
 
-    const submitHandler = async () => {
+    const submitHandler = async e => {
+        e.preventDefault();
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
-        await addQuestion(title, category, complexity, stringifiedDescription);
+        
+        if (stringifiedDescription.trim() === "<p></p>" || title.trim().length === 0 || category.trim().length === 0) {
+            setErrorMessage("Submit failed. All fields must be filled");
+            return;
+        }
+
+        const response = await addQuestion(title, category, complexity, stringifiedDescription);
+        if (response.status !== 201) {
+            setErrorMessage(response.message);
+            return;
+        }
+        
+        setIsVisible(false);
+        setErrorMessage("");
+        setTitle("");
+        setDescription(EditorState.createEmpty());
+        setCategory("");
+        setComplexity("Easy")
     };
+
+    useEffect(() => {
+        if (isVisible) {
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
+        }
+    }, [isVisible]);
 
     const modalRef = useRef(null);
     useEffect(() => {
@@ -43,8 +72,6 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
             });
         }
     }, [description]);
-
-    // console.log(draftToHtml(convertToRaw(description.getCurrentContent())));
     
     return (
         <div className={styles[containerStyle]} onClick={() => setIsVisible(false)}>
@@ -58,6 +85,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             placeholder="New Title" 
                             name="title" 
                             id="title" 
+                            value={title}
                             onChange={onTitleChange} 
                         />
                     </div>
@@ -67,7 +95,8 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             type="text" 
                             placeholder="Category (e.g. Binary Search)" 
                             name="category" 
-                            id="category" 
+                            id="category"
+                            value={category} 
                             onChange={onCategoryChange} 
                         />
                     </div>
@@ -77,6 +106,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             name="complexity" 
                             id="complexity" 
                             className={styles["complexity-container"]}
+                            value={complexity}
                             onChange={onComplexityChange}
                         >
                             <option value="Easy">Easy</option>
@@ -93,6 +123,9 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             onEditorStateChange={onDescriptionChange}
                         />
                     </div>
+                    { errorMessage &&
+                        <p className={styles["error-msg"]}>{errorMessage}</p>
+                    }
                     <button className={styles["submit-btn"]} onClick={submitHandler}>
                         Submit
                     </button>

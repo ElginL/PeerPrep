@@ -1,58 +1,45 @@
 const express = require('express');
 const cors = require('cors');
+const questionRoute = require('./routes/questionRoute');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
+// db connection
+mongoose.connect(
+    process.env.MONGODB_URL,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }
+);
+
+const db = mongoose.connection;
+db.on('error', console.error.bind("connection error: "));
+db.once('open', function() {
+    console.log("Connected successfully");
+});
+
+// server
 const app = express();
 
-const questions = [
-    { id: 1, title: "Reverse a string", category: "Strings, Algorithms", complexity: "Easy",
-        description: "Write a function that reverses a string. The input string is given as an array of characters s." },
-    { id: 2, title: "Linked List Cycle Detection", category: "Data Structures, Algorithms", complexity: "Easy", description: "Another long description" },
-    { id: 3, title: "Rotate Image", category: "Arrays, Algorithms", complexity: "Medium", description: "hello world description" },
-    { id: 4, title: "N-Queen Problem", category: "Algorithms", complexity: "Hard", description: "The N queen problem description" }
-];
-let counter = 5;
-
-// middleware to parse json
 app.use(express.json());
 
 // enable cors for http://localhost:3000
 const corsOption = {
     origin: 'http://localhost:3000',
-    methods: 'GET, POST'
+    methods: 'GET, POST, DELETE'
 };
 app.use(cors(corsOption));
+app.options('*', cors(corsOption));
 
-// Fetch a question by id
-app.get('/questions/:id', (req, res) => {
-    const id = req.params.id;
-    for (const question of questions) {
-        if (question.id == id) {
-            res.json(question);
-            return;
-        }
-    }
+// routes
+app.use("/", questionRoute);
 
-    res.send("Question id does not exist")
-});
 
-// Fetch all questions
-app.get('/', (req, res) => {
-    res.json(questions);
-});
-
-// Add a question
-app.post('/', (req, res) => {
-    const newQuestion = {
-        id: counter++,
-        ...req.body 
-    };
-    
-    console.log(newQuestion);
-
-    questions.push(newQuestion);
-    res.send("New question is saved");
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });
 });
 
 app.listen(3001, () => {
     console.log('Server is running on http://localhost:3001')
-})
+});

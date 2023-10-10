@@ -4,10 +4,12 @@
     box-shadow: 0 0 10px rgb(0, 0, 0);
     display: flex;
     justify-content: space-between;
+    position: fixed;
+    width: 100%;
 }
 
 .header {
-    margin: 0
+    margin: 0;
 }
 
 .logo {
@@ -28,4 +30,18 @@
     list-style: none;
     gap: 30px;
     font-size: 1.25rem;
+    padding: 0;
+}
+
+.nav-links button {
+    color: white;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.nav-links button:hover {
+    color: rgb(47, 162, 200);
+    transition: color 0.5s;
 }
