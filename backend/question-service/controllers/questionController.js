@@ -1,9 +1,12 @@
 const Question = require('../models/Question');
+const TestCase = require('../models/TestCase');
 
 const getQuestionById = (req, res, next) => {
     const id = req.params.id;
 
     Question.findById(id)
+        .populate('testCases')
+        .exec()
         .then(question => {
             if (!question) {
                 return res.status(404).json({ error: 'Cannot find question' });
@@ -20,15 +23,38 @@ const getAllQuestions = (req, res, next) => {
 };
 
 const addQuestion = (req, res, next) => {
-    const newQuestion = new Question(req.body);
+    const savedTestCases = [];
 
-    newQuestion.save()
+    const testCasesPromises = req.body.inputs.map(async (input, index) => {
+        const newTestCase = new TestCase({
+            input: input,
+            output: req.body.outputs[index]
+        });
+
+        const savedTestCase = await newTestCase.save();
+        savedTestCases.push(savedTestCase._id);
+    });
+
+    Promise.all(testCasesPromises)
+        .then(() => {
+            const newQuestion = new Question({
+                title: req.body.title,
+                category: req.body.category,
+                complexity: req.body.complexity,
+                description: req.body.description,
+                codeTemplate: req.body.codeTemplate,
+                testCases: savedTestCases
+            });
+
+            return newQuestion.save();
+        })
         .then(question => {
             console.log('Question saved successfully: ' + question);
             res.status(201).send("Question saved successfully");
         })
         .catch(err => next(err));
 };
+
 
 const deleteQuestion = (req, res, next) => {
     const deleteIds = req.body.ids;

@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { runAllTestCases } from '../api/codeExecutor';
 import styles from '../styles/components/CodeExecutor.module.css';
-import { getRoomById } from '../api/collaboration';
-import { fetchQuestionById } from '../api/questions';
 import TestCase from './TestCase';
 import CodeExecutionBar from './CodeExecutionBar';
 import RunTimeErrorResult from './RunTimeErrorResult';
 import CodeExecutionNavigator from './CodeExecutionNavigator';
 import TestCaseNavigator from './TestCaseNavigator';
 
-const CodeExecutor = ({ codeRef, roomId }) => {
+const CodeExecutor = ({ codeRef, question }) => {
     const [resultsVisible, setResultsVisible] = useState(false);
     const [inputs, setInputs] = useState([]);
     const [outputs, setOutputs] = useState([]);
@@ -26,21 +24,11 @@ const CodeExecutor = ({ codeRef, roomId }) => {
     };
 
     useEffect(() => {
-        const fetchQuestion = async () => {
-            const room = await getRoomById(roomId);
-            if (!room) {
-                return;
-            }
-
-            const question = await fetchQuestionById(room.questionId);
-            if (question.testCases.length > 0) {
-                setInputs(question.testCases.map(obj => obj.input));
-                setOutputs(question.testCases.map(obj => obj.output));
-            }
-        };
-
-        fetchQuestion();
-    }, []);
+        if (question && question.testCases) {
+            setInputs(question.testCases.map(obj => obj.input));
+            setOutputs(question.testCases.map(obj => obj.output));
+        }
+    }, [question]);
 
     return (
         <div className={styles["container"]}>

@@ -27,8 +27,8 @@ const questionSchema = new Schema({
     },
     testCases: [
         {
-            input: Object,
-            output: Schema.Types.Mixed
+            type: Schema.Types.ObjectId,
+            ref: 'TestCase'
         }
     ]
 });

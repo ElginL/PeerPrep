@@ -7,10 +7,8 @@ import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../api/actions";
 import styles from '../styles/components/Editor.module.css';
-import { getRoomById } from "../api/collaboration";
-import { fetchQuestionById } from "../api/questions";
 
-const Editor = ({ socketRef, roomId, onCodeChange }) => {
+const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
     const editorRef = useRef(null);
 
     const [defaultCode, setDefaultCode] = useState('');
@@ -66,27 +64,21 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     }, [socketRef.current]);
 
     useEffect(() => {
-        const fetchQuestion = async () => {
-            try {
-                const room = await getRoomById(roomId);
-                if (!room) {
-                    return;
-                }
+        if (codeTemplate) {
+            setDefaultCode(codeTemplate)
+            setIsLoading(false);
+        }
 
-                const question = await fetchQuestionById(room.questionId);
-                if (question && question.codeTemplate) {
-                    setDefaultCode(question.codeTemplate);
-                }
-
-                setIsLoading(false);
-            } catch (error) {
-                console.error("Error fetching question:", error);
+        const timeout = setTimeout(() => {
+            if (isLoading) {
                 setIsLoading(false);
             }
-        };
+        }, 1000);
 
-        fetchQuestion();
-    }, [roomId]);
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [codeTemplate]);
 
     if (isLoading) {
         return (
@@ -98,7 +90,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
 
     return (
         <div className={styles["container"]}>
-            <textarea id="realtimeEditor" defaultValue={defaultCode} />
+            <textarea id="realtimeEditor" defaultValue={ defaultCode } />
         </div>
     );
 };
