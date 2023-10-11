@@ -52,7 +52,7 @@ const executeCode = async (code, language, inputArgs) => {
         if (retryCount === 10) {
             return {
                 isSuccess: false,
-                data: "Timeout, in queue for too long. Try again later"
+                data: "Timeout, service is overloaded. Try again later"
             };
         }
 
