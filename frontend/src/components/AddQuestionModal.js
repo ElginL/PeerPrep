@@ -18,34 +18,6 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
     const [expectedOutputs, setExpectedOutputs] = useState("");
     const [codeTemplate, setCodeTemplate] = useState("");
 
-    const onDescriptionChange = (description) => {
-        setDescription(description);
-    };
-
-    const onTitleChange = e => {
-        setTitle(e.target.value);
-    };
-
-    const onCategoryChange = e => {
-        setCategory(e.target.value);
-    };
-
-    const onComplexityChange = e => {
-        setComplexity(e.target.value);
-    };
-
-    const onTestCaseChange = e => {
-        setTestCaseInputs(e.target.value);
-    };
-
-    const onExpectedOutputChange = e => {
-        setExpectedOutputs(e.target.value);
-    };
-
-    const onCodeTemplateChange = e => {
-        setCodeTemplate(e.target.value);
-    }
-
     const submitHandler = async e => {
         e.preventDefault();
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
@@ -120,7 +92,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             name="title" 
                             id="title" 
                             value={title}
-                            onChange={onTitleChange} 
+                            onChange={e => setTitle(e.target.value)} 
                         />
                     </div>
                     <div className={styles["input-container"]}>
@@ -131,7 +103,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             name="category" 
                             id="category"
                             value={category} 
-                            onChange={onCategoryChange} 
+                            onChange={e => setCategory(e.target.value)} 
                         />
                     </div>
                     <div className={styles["input-container"]}>
@@ -141,7 +113,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             id="complexity" 
                             className={styles["complexity-container"]}
                             value={complexity}
-                            onChange={onComplexityChange}
+                            onChange={e => setComplexity(e.target.value)}
                         >
                             <option value="Easy">Easy</option>
                             <option value="Medium">Medium</option>
@@ -154,7 +126,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             editorState={description}
                             wrapperClassName={styles["description-wrapper"]}
                             editorClassName={styles["description-editor"]}
-                            onEditorStateChange={onDescriptionChange}
+                            onEditorStateChange={description => setDescription(description)}
                             editorStyle={{ maxHeight: '200px', overflowY: 'auto' }}
                         />
                     </div>
@@ -167,7 +139,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             cols="50"
                             placeholder={`def fn_name(param1, param2):\n  // Enter your code here` }
                             value={codeTemplate}
-                            onChange={onCodeTemplateChange}
+                            onChange={e => setCodeTemplate(e.target.value)}
                         />
                     </div>
                     <div className={styles["input-container"]}>
@@ -178,7 +150,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             name="inputs" 
                             id="inputs"
                             value={testCaseInputs} 
-                            onChange={onTestCaseChange} 
+                            onChange={e => setTestCaseInputs(e.target.value)} 
                         />
                     </div>
                     <div className={styles["input-container"]}>
@@ -189,7 +161,7 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             name="outputs" 
                             id="outputs"
                             value={expectedOutputs} 
-                            onChange={onExpectedOutputChange} 
+                            onChange={e => setExpectedOutputs(e.target.value)} 
                         />
                     </div>
                     { errorMessage &&
