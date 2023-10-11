@@ -21,6 +21,7 @@ const CodeExecutor = ({ codeRef, question }) => {
 
         setExecutionResults(result);
         setResultsVisible(true);
+        setTestCaseBtnSelected(false);
     };
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const CodeExecutor = ({ codeRef, question }) => {
     return (
         <div className={styles["container"]}>
             {
-                executionResults && executionResults.status === 'Runtime Error'
+                executionResults && (executionResults.status === 'Runtime Error' || executionResults.status === 'Time Limit Exceeded')
                     ? (
                         <RunTimeErrorResult 
                             resultsVisible={resultsVisible}

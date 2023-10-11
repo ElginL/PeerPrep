@@ -11,6 +11,7 @@ const TestCase = ({
         return null;
     }
 
+    console.log(input);
     return (
         <div>
             {
@@ -20,7 +21,7 @@ const TestCase = ({
                             {key}= 
                         </p>
                         <div className={styles["arg-value"]}>
-                            {value}
+                        { Array.isArray(value) ? JSON.stringify(value) : value }
                         </div>
                     </div>
                 ))
@@ -33,13 +34,13 @@ const TestCase = ({
                             Output=
                         </p>
                         <div className={styles["arg-value"]}>
-                            { testCaseResult ? testCaseResult.message : "No output values yet..."}
+                            { testCaseResult ? testCaseResult.message : "Run to see output"}
                         </div>
                         <p>
                             Expected=
                         </p>
                         <div className={styles["arg-value"]}>
-                            {expected}
+                            { Array.isArray(expected) ? JSON.stringify(expected) : expected }
                         </div>
                     </div>
                 )

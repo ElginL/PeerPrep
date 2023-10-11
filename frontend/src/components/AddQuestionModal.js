@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../styles/components/AddQuestionModal.module.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -14,6 +14,9 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
     const [category, setCategory] = useState("");
     const [complexity, setComplexity] = useState("Easy");
     const [errorMessage, setErrorMessage] = useState("");
+    const [testCaseInputs, setTestCaseInputs] = useState("");
+    const [expectedOutputs, setExpectedOutputs] = useState("");
+    const [codeTemplate, setCodeTemplate] = useState("");
 
     const onDescriptionChange = (description) => {
         setDescription(description);
@@ -31,6 +34,18 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
         setComplexity(e.target.value);
     };
 
+    const onTestCaseChange = e => {
+        setTestCaseInputs(e.target.value);
+    };
+
+    const onExpectedOutputChange = e => {
+        setExpectedOutputs(e.target.value);
+    };
+
+    const onCodeTemplateChange = e => {
+        setCodeTemplate(e.target.value);
+    }
+
     const submitHandler = async e => {
         e.preventDefault();
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
@@ -40,7 +55,32 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
             return;
         }
 
-        const response = await addQuestion(title, category, complexity, stringifiedDescription);
+        let testCaseInputsArr;
+        try {
+            testCaseInputsArr = JSON.parse(testCaseInputs);
+        } catch (error) {
+            setErrorMessage("Submit failed. Test case inputs should be an array of objects");
+            return;
+        }
+
+        let expectedOutputsArr;
+        try {
+            expectedOutputsArr = JSON.parse(expectedOutputs);
+        } catch (error) {
+            setErrorMessage("Submit failed. Outputs should have an array format");
+            return;
+        }
+
+        const response = await addQuestion(
+            title, 
+            category, 
+            complexity, 
+            stringifiedDescription, 
+            testCaseInputsArr, 
+            expectedOutputsArr,
+            codeTemplate
+        );
+
         if (response.status !== 201) {
             setErrorMessage(response.message);
             return;
@@ -52,6 +92,9 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
         setDescription(EditorState.createEmpty());
         setCategory("");
         setComplexity("Easy")
+        setTestCaseInputs("");
+        setExpectedOutputs("");
+        setCodeTemplate("");
     };
 
     useEffect(() => {
@@ -63,19 +106,10 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
             document.documentElement.style.overflow = 'auto';
         }
     }, [isVisible]);
-
-    const modalRef = useRef(null);
-    useEffect(() => {
-        if (modalRef.current) {
-            requestAnimationFrame(() => {
-                modalRef.current.scrollTop = modalRef.current.scrollHeight;
-            });
-        }
-    }, [description]);
     
     return (
         <div className={styles[containerStyle]} onClick={() => setIsVisible(false)}>
-            <div className={styles["form-container"]} onClick={e => e.stopPropagation()} ref={modalRef}>
+            <div className={styles["form-container"]} onClick={e => e.stopPropagation()}>
                 <h2>Add Question</h2>
                 <form className={styles["form"]}>
                     <div className={styles["input-container"]}>
@@ -121,6 +155,41 @@ const AddQuestionModal = ({ isVisible, setIsVisible }) => {
                             wrapperClassName={styles["description-wrapper"]}
                             editorClassName={styles["description-editor"]}
                             onEditorStateChange={onDescriptionChange}
+                            editorStyle={{ maxHeight: '200px', overflowY: 'auto' }}
+                        />
+                    </div>
+                    <div className={styles["input-container"]}>
+                        <label htmlFor="template-area">Code Template:</label>
+                        <textarea
+                            id="template-area"
+                            name="codeTemplate"
+                            rows="4"
+                            cols="50"
+                            placeholder={`def fn_name(param1, param2):\n  // Enter your code here` }
+                            value={codeTemplate}
+                            onChange={onCodeTemplateChange}
+                        />
+                    </div>
+                    <div className={styles["input-container"]}>
+                        <label htmlFor="inputs">Test Case Inputs:</label>
+                        <input 
+                            type="text"
+                            placeholder={`[{ "arg1": 5, "arg2": 6 }, { "arg1": 7, "arg2": 8}]`} 
+                            name="inputs" 
+                            id="inputs"
+                            value={testCaseInputs} 
+                            onChange={onTestCaseChange} 
+                        />
+                    </div>
+                    <div className={styles["input-container"]}>
+                        <label htmlFor="outputs">Expected Outputs:</label>
+                        <input 
+                            type="text"
+                            placeholder="['firstExpected', 'secondExpected']" 
+                            name="outputs" 
+                            id="outputs"
+                            value={expectedOutputs} 
+                            onChange={onExpectedOutputChange} 
                         />
                     </div>
                     { errorMessage &&

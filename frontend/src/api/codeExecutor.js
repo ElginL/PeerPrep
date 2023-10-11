@@ -41,7 +41,7 @@ const executeCode = async (code, language, inputArgs) => {
         while (retryCount <= 10) {
             submissionResponse = await axios.get(baseUrl + `/submissions/${submissionToken}`);
 
-            if (submissionResponse.data.status.description !== 'In Queue') {
+            if (submissionResponse.data.status.description !== 'In Queue' && submissionResponse.data.status.description !== 'Processing') {
                 break;
             }
 
@@ -77,7 +77,20 @@ const runAllTestCases = async (code, language, allInputs, allExpectedOutputs) =>
         const input = allInputs[i];
         const args = Object.values(input);
 
-        const result = await executeCode(code, language, args.join(', '));
+        let stringifiedArgs = ""
+        for (const arg of args) {
+            if (Array.isArray(arg)) {
+                stringifiedArgs += JSON.stringify(arg);
+            } else if (typeof arg === 'string') {
+                stringifiedArgs += `'${arg}'`;
+            } else {
+                stringifiedArgs += arg;
+            }
+
+            stringifiedArgs += ","
+        }
+
+        const result = await executeCode(code, language, stringifiedArgs.substring(0, stringifiedArgs.length - 1));
 
         if (!result.isSuccess) {
             return {
@@ -98,9 +111,26 @@ const runAllTestCases = async (code, language, allInputs, allExpectedOutputs) =>
             }
         }
 
+        if (result.data.status.description.startsWith('Time Limit Exceeded')) {
+            console.log("TLE");
+
+            return {
+                status: "Time Limit Exceeded",
+                message: "Code took too long to run"
+            }
+        }
+
         if (result.data.status.description === 'Accepted') {
-            const expectedOutput = allExpectedOutputs[i];
-            if (result.data.stdout.trim() === expectedOutput.toString()) {
+            let expectedOutput = allExpectedOutputs[i];
+
+            if (Array.isArray(expectedOutput)) {
+                expectedOutput = JSON.stringify(expectedOutput);
+                result.data.stdout = result.data.stdout.replaceAll(" ", "");
+            } else {
+                expectedOutput = expectedOutput.toString();
+            }
+
+            if (result.data.stdout.trim() === expectedOutput) {
                 console.log("test case passed");
 
                 allTestCaseResults.push({ status: 'Passed', message: result.data.stdout }); 

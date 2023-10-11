@@ -29,12 +29,15 @@ const fetchQuestionById = async (id) => {
     }
 };
 
-const addQuestion = async (title, category, complexity, description) => {
+const addQuestion = async (title, category, complexity, description, testCases, expectedOutputs, codeTemplate) => {
     const questionToAdd = {
-        title,
-        category,
-        complexity,
-        description
+        title: title,
+        category: category,
+        complexity: complexity,
+        description: description,
+        inputs: testCases,
+        outputs: expectedOutputs,
+        codeTemplate: codeTemplate
     };
 
     try {
@@ -50,7 +53,6 @@ const addQuestion = async (title, category, complexity, description) => {
             status: error.response.status
         };
     }
-
 };
 
 const deleteQuestionsByIds = async (ids) => {

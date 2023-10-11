@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const TestCase = require('./TestCase');
 
 const { Schema, model } = mongoose;
 

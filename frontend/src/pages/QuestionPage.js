@@ -27,7 +27,10 @@ const QuestionPage = () => {
                 <h1>{question.title}</h1>
                 <h3>{question.complexity}</h3>
                 <h3>{question.category}</h3>
-                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.description) }} />
+                <div 
+                    className={styles["content"]}
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.description) }} 
+                />
             </div>
         </div>
     );

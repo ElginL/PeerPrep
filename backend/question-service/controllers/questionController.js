@@ -56,14 +56,20 @@ const addQuestion = (req, res, next) => {
 };
 
 
-const deleteQuestion = (req, res, next) => {
+const deleteQuestion = async (req, res, next) => {
     const deleteIds = req.body.ids;
 
-    Question.deleteMany({ _id: { $in: deleteIds }})
-        .then(result => {
-            res.status(204).send(`${result.deletedCount} questions were deleted successfully`);
-        })
-        .catch(err => next(err));
+    try {
+        for (const questionId of deleteIds) {
+            Question.findByIdAndRemove(questionId)
+                .then(async removedQuestion => await TestCase.deleteMany({ _id: { $in: removedQuestion.testCases } }));
+        }
+
+        res.status(204).send('Questions were deleted successfully');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
 };
 
 const getRandomQuestion = (req, res, next) => {
