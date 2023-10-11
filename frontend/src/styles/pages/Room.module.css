@@ -43,7 +43,7 @@
     padding: 20px;
     background-color: #282a36;
     border: 1px solid #333232;
-    height: 90vh;
+    height: calc(100vh - 75px);
     overflow-y: scroll;
 }
 
