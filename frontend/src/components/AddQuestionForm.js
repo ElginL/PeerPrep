@@ -18,7 +18,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
-import styles from '../styles/components/AddQuestionModal.module.css';
+import styles from '../styles/components/AddQuestionForm.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import { addQuestion } from '../api/questions';
 
