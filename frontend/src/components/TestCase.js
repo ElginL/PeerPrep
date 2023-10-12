@@ -11,7 +11,6 @@ const TestCase = ({
         return null;
     }
 
-    console.log(input);
     return (
         <div>
             {

@@ -17,28 +17,6 @@
     transform: translateY(-100%);
 }
 
-.form-container {
-    width: 80%;
-    height: 85%;
-    max-height: 85%;
-    overflow-y: scroll;
-    background-color: white;
-    border-radius: 10px;
-    color: black;
-    padding: 10px 20px;
-}
-
-.form-container h2 {
-    text-align: center;
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-height: 85%;
-}
-
 .input-container,
 .description-container {
     display: flex;
@@ -98,4 +76,21 @@
 
 .error-msg {
     color: red;
+}
+
+.code-template-outer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-self: flex-start;
+}
+
+.code-template-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.code-template-textarea {
+    align-self: stretch;
 }

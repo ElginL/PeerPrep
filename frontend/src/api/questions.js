@@ -29,15 +29,18 @@ const fetchQuestionById = async (id) => {
     }
 };
 
-const addQuestion = async (title, category, complexity, description, testCases, expectedOutputs, codeTemplate) => {
+const addQuestion = async (title, categories, complexity, description, testCases, expectedOutputs, codeTemplates) => {
     const questionToAdd = {
         title: title,
-        category: category,
+        categories: categories,
         complexity: complexity,
         description: description,
         inputs: testCases,
         outputs: expectedOutputs,
-        codeTemplate: codeTemplate
+        codeTemplates: codeTemplates.reduce((result, item) => {
+            result[item.language] = item.template;
+            return result;
+        }, {})
     };
 
     try {

@@ -1,11 +1,13 @@
 const Question = require('../models/Question');
 const TestCase = require('../models/TestCase');
+const CodeTemplate = require('../models/CodeTemplate');
 
 const getQuestionById = (req, res, next) => {
     const id = req.params.id;
 
     Question.findById(id)
         .populate('testCases')
+        .populate('codeTemplate')
         .exec()
         .then(question => {
             if (!question) {
@@ -22,8 +24,14 @@ const getAllQuestions = (req, res, next) => {
         .catch(err => next(err));
 };
 
-const addQuestion = (req, res, next) => {
+const addQuestion = async (req, res, next) => {
     const savedTestCases = [];
+
+    const newCodeTemplate = new CodeTemplate({
+        templates: req.body.codeTemplates
+    });
+
+    const codeTemplateDocument = await newCodeTemplate.save();
 
     const testCasesPromises = req.body.inputs.map(async (input, index) => {
         const newTestCase = new TestCase({
@@ -39,10 +47,10 @@ const addQuestion = (req, res, next) => {
         .then(() => {
             const newQuestion = new Question({
                 title: req.body.title,
-                category: req.body.category,
+                categories: req.body.categories,
                 complexity: req.body.complexity,
                 description: req.body.description,
-                codeTemplate: req.body.codeTemplate,
+                codeTemplate: codeTemplateDocument._id,
                 testCases: savedTestCases
             });
 
@@ -62,7 +70,10 @@ const deleteQuestion = async (req, res, next) => {
     try {
         for (const questionId of deleteIds) {
             Question.findByIdAndRemove(questionId)
-                .then(async removedQuestion => await TestCase.deleteMany({ _id: { $in: removedQuestion.testCases } }));
+                .then(async removedQuestion => {
+                    await TestCase.deleteMany({ _id: { $in: removedQuestion.testCases } });
+                    await CodeTemplate.deleteOne({ _id: removedQuestion.codeTemplate });
+                });
         }
 
         res.status(204).send('Questions were deleted successfully');

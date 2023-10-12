@@ -63,3 +63,8 @@
   border: none;
   background-color: grey;
 }
+
+.category-values {
+  display: flex;
+  gap: 5px;
+}

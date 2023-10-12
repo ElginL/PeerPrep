@@ -149,9 +149,9 @@ const Room = () => {
                         onCodeChange={(code) => {
                             codeRef.current = code;
                         }}
-                        codeTemplate={question.codeTemplate}
+                        codeTemplate={question.codeTemplate && question.codeTemplate.templates ? question.codeTemplate.templates['Python'] : '' }
                     />
-                    <CodeExecutor 
+                    <CodeExecutor
                         codeRef={codeRef}
                         question={question}
                     />

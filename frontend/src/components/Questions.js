@@ -70,7 +70,15 @@ const Questions = () => {
                                     </Link>
                                 </td>
                                 <td className={styles["category-column"]}>
-                                    {question.category}
+                                    <div className={styles["category-values"]}>
+                                        {
+                                            question.categories && question.categories.map(category => (
+                                                <span>
+                                                    {category},
+                                                </span>
+                                            ))
+                                        }
+                                    </div>
                                 </td>
                                 <td className={styles["complexity-column"]}>
                                     <span className={complexityColorStyles[question.complexity]}>

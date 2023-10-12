@@ -7,10 +7,12 @@ const questionSchema = new Schema({
         type: String,
         required: true
     },
-    category: {
-        type: String,
-        required: true
-    },
+    categories: [
+        {
+            type: String,
+            required: true
+        }
+    ],
     complexity: {
         type: String,
         enum: ['Easy', 'Medium', 'Hard'],
@@ -22,8 +24,8 @@ const questionSchema = new Schema({
         required: true
     },
     codeTemplate: {
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: 'CodeTemplate'
     },
     testCases: [
         {

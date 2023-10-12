@@ -10,7 +10,9 @@ const validateQuestion = () => {
                     throw new Error('Question with this title already exists')
                 }
             }),
-        body('category').notEmpty().withMessage("Category is required"),
+        body('categories')
+            .isLength({ min: 1 })
+            .withMessage("Category array cannot be empty"),
         body('complexity').isIn(['Easy', 'Medium', 'Hard']).withMessage("Invalid complexity"),
         body('description')
             .notEmpty().withMessage('Description is required')
