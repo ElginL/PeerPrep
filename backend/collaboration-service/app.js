@@ -5,7 +5,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const { testDbConnection } = require('./db/db');
 const roomRepo = require('./db/repositories/RoomRepo');
-const authenticateJwt = require('./middleware/authenticateJwt');
+const collaborationRoute = require('./routes/collaborationRoute');
 const cors = require('cors');
 
 testDbConnection();
@@ -124,31 +124,7 @@ io.on("connection", (socket) => {
     });
 });
 
-app.post('/', authenticateJwt, async (req, res, next) => {
-    const { roomId, questionId } = req.body;
-
-    try {
-        await roomRepo.addEntry(roomId, questionId);
-
-        res.status(201).json({
-            msg: "Successfully created"
-        });
-    } catch (e) {
-        next(e);
-    }
-});
-
-app.get('/:roomId', authenticateJwt, async (req, res, next) => {
-    const id = req.params.roomId;
-
-    const room = await roomRepo.getByRoomId(id)
-    
-    if (room == null) {
-        return res.status(404).json({ error: 'Cannot find room' });
-    }
-
-    res.status(200).json(room);
-})
+app.use('/', collaborationRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

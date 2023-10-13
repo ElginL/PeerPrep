@@ -1,9 +1,14 @@
 const Question = require('../models/Question');
+const TestCase = require('../models/TestCase');
+const CodeTemplate = require('../models/CodeTemplate');
 
 const getQuestionById = (req, res, next) => {
     const id = req.params.id;
 
     Question.findById(id)
+        .populate('testCases')
+        .populate('codeTemplate')
+        .exec()
         .then(question => {
             if (!question) {
                 return res.status(404).json({ error: 'Cannot find question' });
@@ -19,10 +24,38 @@ const getAllQuestions = (req, res, next) => {
         .catch(err => next(err));
 };
 
-const addQuestion = (req, res, next) => {
-    const newQuestion = new Question(req.body);
+const addQuestion = async (req, res, next) => {
+    const savedTestCases = [];
 
-    newQuestion.save()
+    const newCodeTemplate = new CodeTemplate({
+        templates: req.body.codeTemplates
+    });
+
+    const codeTemplateDocument = await newCodeTemplate.save();
+
+    const testCasesPromises = req.body.inputs.map(async (input, index) => {
+        const newTestCase = new TestCase({
+            input: input,
+            output: req.body.outputs[index]
+        });
+
+        const savedTestCase = await newTestCase.save();
+        savedTestCases.push(savedTestCase._id);
+    });
+
+    Promise.all(testCasesPromises)
+        .then(() => {
+            const newQuestion = new Question({
+                title: req.body.title,
+                categories: req.body.categories,
+                complexity: req.body.complexity,
+                description: req.body.description,
+                codeTemplate: codeTemplateDocument._id,
+                testCases: savedTestCases
+            });
+
+            return newQuestion.save();
+        })
         .then(question => {
             console.log('Question saved successfully: ' + question);
             res.status(201).send("Question saved successfully");
@@ -30,14 +63,24 @@ const addQuestion = (req, res, next) => {
         .catch(err => next(err));
 };
 
-const deleteQuestion = (req, res, next) => {
+
+const deleteQuestion = async (req, res, next) => {
     const deleteIds = req.body.ids;
 
-    Question.deleteMany({ _id: { $in: deleteIds }})
-        .then(result => {
-            res.status(204).send(`${result.deletedCount} questions were deleted successfully`);
-        })
-        .catch(err => next(err));
+    try {
+        for (const questionId of deleteIds) {
+            Question.findByIdAndRemove(questionId)
+                .then(async removedQuestion => {
+                    await TestCase.deleteMany({ _id: { $in: removedQuestion.testCases } });
+                    await CodeTemplate.deleteOne({ _id: removedQuestion.codeTemplate });
+                });
+        }
+
+        res.status(204).send('Questions were deleted successfully');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
 };
 
 const getRandomQuestion = (req, res, next) => {

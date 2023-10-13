@@ -10,6 +10,8 @@ import {
 import styles from "../styles/pages/Room.module.css";
 import RoomQuestion from "../components/RoomQuestion";
 import CodeExecutor from '../components/CodeExecutor';
+import { getRoomById } from '../api/collaboration';
+import { fetchQuestionById } from '../api/questions';
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -17,6 +19,7 @@ const Room = () => {
     const { roomId } = useParams();
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
+    const [question, setQuestion] = useState({});
 
     useEffect(() => {
         const init = async () => {
@@ -80,6 +83,20 @@ const Room = () => {
         }
     }, []);
 
+    useEffect(() => {
+        const fetchQuestion = async () => {
+            const room = await getRoomById(roomId);
+            if (!room) {
+                return;
+            }
+
+            const question = await fetchQuestionById(room.questionId);
+            setQuestion(question);
+        };
+
+        fetchQuestion();
+    }, []);
+
     async function copyRoomId() {
         try {
             await navigator.clipboard.writeText(roomId);
@@ -123,7 +140,7 @@ const Room = () => {
             </nav>
             <div className={styles["main-wrap"]}>
                 <div className={styles["left-column"]}>
-                    <RoomQuestion roomId={roomId} />
+                    <RoomQuestion question={question} />
                 </div>
                 <div className={styles["right-column"]}>
                     <Editor
@@ -132,10 +149,11 @@ const Room = () => {
                         onCodeChange={(code) => {
                             codeRef.current = code;
                         }}
+                        codeTemplate={question.codeTemplate && question.codeTemplate.templates ? question.codeTemplate.templates['Python'] : '' }
                     />
-                    <CodeExecutor 
-                        code={codeRef.current}
-                        roomId={roomId}
+                    <CodeExecutor
+                        codeRef={codeRef}
+                        question={question}
                     />
                 </div>
             </div>

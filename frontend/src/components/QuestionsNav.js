@@ -1,6 +1,6 @@
 import styles from "../styles/components/QuestionsNav.module.css";
 import { fetchAllQuestions } from "../api/questions";
-import AddQuestionModal from "./AddQuestionModal";
+import AddQuestionForm from "./AddQuestionForm";
 
 const QuestionsNav = ({ 
     addFormVisible, 
@@ -65,7 +65,7 @@ const QuestionsNav = ({
                     localStorage.getItem('credentials') && JSON.parse(localStorage.getItem('credentials')).isManager && (
                         <ul className={styles["right-buttons-container"]}>
                             <li>
-                                <button onClick={async () => setAddFormVisible(true)}>
+                                <button onClick={() => setAddFormVisible(true)}>
                                     Add
                                 </button>
                             </li>
@@ -88,7 +88,7 @@ const QuestionsNav = ({
                     )
                 }
             </nav>
-            <AddQuestionModal
+            <AddQuestionForm
                 isVisible={addFormVisible}
                 setIsVisible={setAddFormVisible}
             />
