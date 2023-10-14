@@ -34,8 +34,8 @@ const LanguageSwapButton = ({ handleChooseLanguage }) => {
                     "aria-labelledby": "basic-button",
                 }}
             >
-                <MenuItem onClick={() => handleClose("Java")}>Java</MenuItem>
-                <MenuItem onClick={() => handleClose("Python")}>
+                <MenuItem onClick={() => handleClose("java")}>Java</MenuItem>
+                <MenuItem onClick={() => handleClose("python")}>
                     Python
                 </MenuItem>
             </Menu>

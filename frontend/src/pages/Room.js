@@ -19,7 +19,7 @@ const Room = () => {
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
     const [question, setQuestion] = useState({});
-    const [codeLanguage, setCodeLanguage] = useState("Python");
+    const [codeLanguage, setCodeLanguage] = useState("python");
 
     const handleChooseLanguage = (language) => {
         console.log("Language chosen: ", language);
@@ -148,9 +148,11 @@ const Room = () => {
                 </div>
                 <div className={styles["right-column"]}>
                     <div className={styles["header-box-right"]}>
-                        <LanguageSwapButton
-                            handleChooseLanguage={handleChooseLanguage}
-                        />
+                        <select id="language-swap">
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="c++">C++</option>
+                        </select>
                     </div>
                     <div className={styles["right-column"]}>
                         <Editor
@@ -165,6 +167,7 @@ const Room = () => {
                                     ? question.codeTemplate.templates["Python"]
                                     : ""
                             }
+                            currentLanguage={codeLanguage}
                         />
                         <CodeExecutor codeRef={codeRef} question={question} />
                     </div>

@@ -3,15 +3,16 @@ import Codemirror from "codemirror";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/dracula.css";
 import "codemirror/mode/python/python";
+import "codemirror/mode/clike/clike";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../api/actions";
-import styles from '../styles/components/Editor.module.css';
+import styles from "../styles/components/Editor.module.css";
 
 const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
     const editorRef = useRef(null);
 
-    const [defaultCode, setDefaultCode] = useState('');
+    const [defaultCode, setDefaultCode] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -65,7 +66,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
 
     useEffect(() => {
         if (codeTemplate) {
-            setDefaultCode(codeTemplate)
+            setDefaultCode(codeTemplate);
             setIsLoading(false);
         }
 
@@ -81,16 +82,30 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
     }, [codeTemplate]);
 
     if (isLoading) {
-        return (
-            <div className={styles["container"]}>
-                Loading...
-            </div>
-        )
+        return <div className={styles["container"]}>Loading...</div>;
     }
+
+    var option = document.getElementById("language-swap");
+    option.addEventListener("change", function () {
+        if (option.value === "python") {
+            editorRef.current.setOption("mode", { name: "python", json: true });
+        } else if (option.value === "java") {
+            editorRef.current.setOption("mode", {
+                name: "text/x-java",
+                json: true,
+            });
+        } else if (option.value === "c++") {
+            editorRef.current.setOption("mode", {
+                name: "text/x-c++src",
+                json: true,
+            });
+        }
+        console.log(editorRef.current.getOption("mode"));
+    });
 
     return (
         <div className={styles["container"]}>
-            <textarea id="realtimeEditor" defaultValue={ defaultCode } />
+            <textarea id="realtimeEditor" defaultValue={defaultCode} />
         </div>
     );
 };
