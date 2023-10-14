@@ -3,15 +3,14 @@ import ACTIONS from "../api/actions";
 import Client from "../components/Client";
 import Editor from "../components/Editor";
 import { createSocketConnection } from "../sockets/collaborationServiceSocket";
-import {
-    useNavigate,
-    useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "../styles/pages/Room.module.css";
 import RoomQuestion from "../components/RoomQuestion";
-import CodeExecutor from '../components/CodeExecutor';
-import { getRoomById } from '../api/collaboration';
-import { fetchQuestionById } from '../api/questions';
+import CodeExecutor from "../components/CodeExecutor";
+import { getRoomById } from "../api/collaboration";
+import { fetchQuestionById } from "../api/questions";
+import { Button } from "@mui/material";
+import LanguageSwapButton from "../components/LanguageSwapButton";
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -20,10 +19,18 @@ const Room = () => {
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
     const [question, setQuestion] = useState({});
+    const [codeLanguage, setCodeLanguage] = useState("Python");
+
+    const handleChooseLanguage = (language) => {
+        console.log("Language chosen: ", language);
+        setCodeLanguage(language);
+    };
 
     useEffect(() => {
         const init = async () => {
-            const token = JSON.parse(localStorage.getItem('credentials')).sessionToken;
+            const token = JSON.parse(
+                localStorage.getItem("credentials")
+            ).sessionToken;
 
             socketRef.current = createSocketConnection(token, roomId);
             socketRef.current.on("connect_error", (err) => handleErrors(err));
@@ -36,16 +43,13 @@ const Room = () => {
             }
 
             socketRef.current.emit(ACTIONS.JOIN, {
-                roomId
+                roomId,
             });
 
-            socketRef.current.on(
-                ACTIONS.JOIN_FAILED,
-                () => {
-                    alert("Full capacity reached");
-                    reactNavigator('/');
-                }
-            );
+            socketRef.current.on(ACTIONS.JOIN_FAILED, () => {
+                alert("Full capacity reached");
+                reactNavigator("/");
+            });
 
             socketRef.current.on(
                 ACTIONS.JOINED,
@@ -72,8 +76,8 @@ const Room = () => {
                 }
             );
 
-            socketRef.current.on('disconnect', () => {
-                console.log('Collaboration WebSocket disconnected');
+            socketRef.current.on("disconnect", () => {
+                console.log("Collaboration WebSocket disconnected");
                 socketRef.current.close();
             });
         };
@@ -143,18 +147,27 @@ const Room = () => {
                     <RoomQuestion question={question} />
                 </div>
                 <div className={styles["right-column"]}>
-                    <Editor
-                        socketRef={socketRef}
-                        roomId={roomId}
-                        onCodeChange={(code) => {
-                            codeRef.current = code;
-                        }}
-                        codeTemplate={question.codeTemplate && question.codeTemplate.templates ? question.codeTemplate.templates['Python'] : '' }
-                    />
-                    <CodeExecutor
-                        codeRef={codeRef}
-                        question={question}
-                    />
+                    <div className={styles["header-box-right"]}>
+                        <LanguageSwapButton
+                            handleChooseLanguage={handleChooseLanguage}
+                        />
+                    </div>
+                    <div className={styles["right-column"]}>
+                        <Editor
+                            socketRef={socketRef}
+                            roomId={roomId}
+                            onCodeChange={(code) => {
+                                codeRef.current = code;
+                            }}
+                            codeTemplate={
+                                question.codeTemplate &&
+                                question.codeTemplate.templates
+                                    ? question.codeTemplate.templates["Python"]
+                                    : ""
+                            }
+                        />
+                        <CodeExecutor codeRef={codeRef} question={question} />
+                    </div>
                 </div>
             </div>
         </div>
