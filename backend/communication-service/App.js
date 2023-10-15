@@ -6,13 +6,15 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000", // The origin of your React application
+    origin: "*", // The origin of your React application
     methods: ["GET", "POST"],
   },
 });
 
 // Store mapping of room/socket IDs to their respective socket instances
 const clients = {};
+const users = {};
+const socketToRoom = {};
 
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
@@ -30,10 +32,53 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("receive-message", message);
   });
 
-  // Handle disconnection
+  socket.on("join room", (roomID) => {
+    console.log("joining called ");
+    if (users[roomID]) {
+      const length = users[roomID].length;
+      if (length === 4) {
+        socket.emit("room full");
+        return;
+      }
+      users[roomID].push(socket.id);
+    } else {
+      users[roomID] = [socket.id];
+    }
+    socketToRoom[socket.id] = roomID;
+    const usersInThisRoom = users[roomID].filter((id) => id !== socket.id);
+    console.log(usersInThisRoom);
+    socket.emit("all users", usersInThisRoom);
+  });
+
+  socket.on("sending signal", (payload) => {
+    console.log("sending called");
+    io.to(payload.userToSignal).emit("user joined", {
+      signal: payload.signal,
+      callerID: payload.callerID,
+    });
+  });
+
+  socket.on("returning signal", (payload) => {
+    console.log("returning called");
+    io.to(payload.callerID).emit("receiving returned signal", {
+      signal: payload.signal,
+      id: socket.id,
+    });
+  });
+
   socket.on("disconnect", () => {
-    console.log(`Client disconnected: ${socket.id}`);
-    delete clients[socket.id];
+    const roomID = socketToRoom[socket.id];
+    let room = users[roomID];
+    if (room) {
+      room = room.filter((id) => id !== socket.id);
+      users[roomID] = room;
+      // Emit a user-disconnected event to remaining users in the room
+      room.forEach((userId) => {
+        if (clients[userId]) {
+          clients[userId].emit("user-disconnected", socket.id);
+        }
+      });
+    }
   });
 });
 
