@@ -20,6 +20,7 @@
     "react-avatar": "^5.0.3",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.15.0",
+    "react-draggable": "^4.4.6",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
     "recoil": "^0.7.7",
