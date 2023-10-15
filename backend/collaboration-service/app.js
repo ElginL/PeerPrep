@@ -1,12 +1,12 @@
 const express = require("express");
 const http = require("http");
 const ACTIONS = require("./Actions");
-require('dotenv').config();
-const jwt = require('jsonwebtoken');
-const { testDbConnection } = require('./db/db');
-const roomRepo = require('./db/repositories/RoomRepo');
-const collaborationRoute = require('./routes/collaborationRoute');
-const cors = require('cors');
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const { testDbConnection } = require("./db/db");
+const roomRepo = require("./db/repositories/RoomRepo");
+const collaborationRoute = require("./routes/collaborationRoute");
+const cors = require("cors");
 
 testDbConnection();
 
@@ -16,16 +16,16 @@ const server = http.createServer(app);
 
 app.use(express.json());
 const corsOption = {
-    origin: 'http://localhost:3000',
-    methods: 'GET, POST, DELETE, PUT',
-    credentials: true
+    origin: "http://localhost:3000",
+    methods: "GET, POST, DELETE, PUT",
+    credentials: true,
 };
 app.use(cors(corsOption));
 
-const io = require('socket.io')(server, {
+const io = require("socket.io")(server, {
     cors: {
-        origin: ['http://localhost:3000'],
-        credentials: true
+        origin: ["http://localhost:3000"],
+        credentials: true,
     },
 });
 
@@ -47,7 +47,7 @@ io.use((socket, next) => {
 
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
         if (err) {
-            return next(new Error('Authentication Error'));
+            return next(new Error("Authentication Error"));
         }
 
         socket.username = decoded.username;
@@ -58,8 +58,8 @@ io.use((socket, next) => {
 io.use(async (socket, next) => {
     const roomId = socket.handshake.query.roomId;
 
-    if (await roomRepo.getByRoomId(roomId) == null) {
-        return next(new Error('Room does not exist'));
+    if ((await roomRepo.getByRoomId(roomId)) == null) {
+        return next(new Error("Room does not exist"));
     }
 
     socket.roomId = roomId;
@@ -97,6 +97,13 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on(ACTIONS.CHANGE_LANGUAGE, ({ roomId, language }) => {
+        console.log("change language");
+        socket.in(roomId).emit(ACTIONS.CHANGE_LANGUAGE, {
+            language,
+        });
+    });
+
     socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
         io.to(socketId).emit(ACTIONS.CODE_CHANGE, {
             code,
@@ -115,7 +122,7 @@ io.on("connection", (socket) => {
         socket.leave();
     });
 
-    socket.on('disconnect', async () => {
+    socket.on("disconnect", async () => {
         if (getAllConnectedClients(socket.roomId).length == 0) {
             roomRepo.deleteById(socket.roomId);
         }
@@ -124,14 +131,16 @@ io.on("connection", (socket) => {
     });
 });
 
-app.use('/', collaborationRoute);
+app.use("/", collaborationRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });
+    res.status(err.status || 500).json({
+        msg: err.message || "Internal Server Error",
+    });
 });
 
-const PORT = process.env.PORT || 3004
+const PORT = process.env.PORT || 3004;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });

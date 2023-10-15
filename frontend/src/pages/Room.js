@@ -9,8 +9,6 @@ import RoomQuestion from "../components/RoomQuestion";
 import CodeExecutor from "../components/CodeExecutor";
 import { getRoomById } from "../api/collaboration";
 import { fetchQuestionById } from "../api/questions";
-import { Button } from "@mui/material";
-import LanguageSwapButton from "../components/LanguageSwapButton";
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -19,12 +17,6 @@ const Room = () => {
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
     const [question, setQuestion] = useState({});
-    const [codeLanguage, setCodeLanguage] = useState("python");
-
-    const handleChooseLanguage = (language) => {
-        console.log("Language chosen: ", language);
-        setCodeLanguage(language);
-    };
 
     useEffect(() => {
         const init = async () => {
@@ -150,8 +142,8 @@ const Room = () => {
                     <div className={styles["header-box-right"]}>
                         <select id="language-swap">
                             <option value="python">Python</option>
-                            <option value="java">Java</option>
-                            <option value="c++">C++</option>
+                            <option value="text/x-java">Java</option>
+                            <option value="text/x-c++src">C++</option>
                         </select>
                     </div>
                     <div className={styles["right-column"]}>
@@ -167,7 +159,6 @@ const Room = () => {
                                     ? question.codeTemplate.templates["Python"]
                                     : ""
                             }
-                            currentLanguage={codeLanguage}
                         />
                         <CodeExecutor codeRef={codeRef} question={question} />
                     </div>

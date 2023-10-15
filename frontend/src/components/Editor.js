@@ -43,6 +43,14 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
                     });
                 }
             });
+
+            editorRef.current.on("change", (instance, changes) => {
+                const language = instance.getMode();
+                socketRef.current.emit(ACTIONS.CHANGE_LANGUAGE, {
+                    roomId,
+                    language,
+                });
+            });
         }
 
         if (!isLoading) {
@@ -61,6 +69,24 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
 
         return () => {
             socketRef.current.off(ACTIONS.CODE_CHANGE);
+        };
+    }, [socketRef.current]);
+
+    useEffect(() => {
+        if (socketRef.current) {
+            socketRef.current.on(ACTIONS.CHANGE_LANGUAGE, ({ language }) => {
+                console.log("change language");
+                if (language !== null) {
+                    editorRef.current.setOption("mode", {
+                        name: language,
+                        json: true,
+                    });
+                }
+            });
+        }
+
+        return () => {
+            socketRef.current.off(ACTIONS.CHANGE_LANGUAGE);
         };
     }, [socketRef.current]);
 
@@ -87,20 +113,11 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
 
     var option = document.getElementById("language-swap");
     option.addEventListener("change", function () {
-        if (option.value === "python") {
-            editorRef.current.setOption("mode", { name: "python", json: true });
-        } else if (option.value === "java") {
-            editorRef.current.setOption("mode", {
-                name: "text/x-java",
-                json: true,
-            });
-        } else if (option.value === "c++") {
-            editorRef.current.setOption("mode", {
-                name: "text/x-c++src",
-                json: true,
-            });
-        }
-        console.log(editorRef.current.getOption("mode"));
+        // console.log(option.value);
+        editorRef.current.setOption("mode", {
+            name: option.value,
+            json: true,
+        });
     });
 
     return (
