@@ -143,7 +143,6 @@ const Room = () => {
                         <select id="language-swap">
                             <option value="python">Python</option>
                             <option value="text/x-java">Java</option>
-                            <option value="text/x-c++src">C++</option>
                         </select>
                     </div>
                     <div className={styles["right-column"]}>

@@ -44,11 +44,18 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
                 }
             });
 
-            editorRef.current.on("change", (instance, changes) => {
-                const language = instance.getMode();
+            var option = document.getElementById("language-swap");
+            option.addEventListener("change", function () {
+                console.log("emit change language client");
+                // emit to server
                 socketRef.current.emit(ACTIONS.CHANGE_LANGUAGE, {
                     roomId,
-                    language,
+                    language: option.value,
+                });
+
+                editorRef.current.setOption("mode", {
+                    name: option.value,
+                    json: true,
                 });
             });
         }
@@ -61,21 +68,13 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
     useEffect(() => {
         if (socketRef.current) {
             socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
+                console.log("code change client");
                 if (code !== null) {
                     editorRef.current.setValue(code);
                 }
             });
-        }
-
-        return () => {
-            socketRef.current.off(ACTIONS.CODE_CHANGE);
-        };
-    }, [socketRef.current]);
-
-    useEffect(() => {
-        if (socketRef.current) {
             socketRef.current.on(ACTIONS.CHANGE_LANGUAGE, ({ language }) => {
-                console.log("change language");
+                console.log("change language client");
                 if (language !== null) {
                     editorRef.current.setOption("mode", {
                         name: language,
@@ -86,6 +85,7 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
         }
 
         return () => {
+            socketRef.current.off(ACTIONS.CODE_CHANGE);
             socketRef.current.off(ACTIONS.CHANGE_LANGUAGE);
         };
     }, [socketRef.current]);
@@ -110,15 +110,6 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
     if (isLoading) {
         return <div className={styles["container"]}>Loading...</div>;
     }
-
-    var option = document.getElementById("language-swap");
-    option.addEventListener("change", function () {
-        // console.log(option.value);
-        editorRef.current.setOption("mode", {
-            name: option.value,
-            json: true,
-        });
-    });
 
     return (
         <div className={styles["container"]}>

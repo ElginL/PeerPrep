@@ -92,13 +92,15 @@ io.on("connection", (socket) => {
     });
 
     socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
+        console.log("code change server");
         socket.in(roomId).emit(ACTIONS.CODE_CHANGE, {
             code,
         });
     });
 
     socket.on(ACTIONS.CHANGE_LANGUAGE, ({ roomId, language }) => {
-        console.log("change language");
+        console.log("server receive change language request");
+        console.log(language);
         socket.in(roomId).emit(ACTIONS.CHANGE_LANGUAGE, {
             language,
         });
