@@ -9,3 +9,7 @@
 
 /collaboration-service/node_modules
 /collaboration-service/.env
+
+/communication-service/node_modules
+/communication-service/.env
+
