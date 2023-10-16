@@ -9,6 +9,8 @@ import RoomQuestion from "../components/RoomQuestion";
 import CodeExecutor from "../components/CodeExecutor";
 import { getRoomById } from "../api/collaboration";
 import { fetchQuestionById } from "../api/questions";
+import Chat from "../components/Chat";
+import Video from "../components/Video";
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -89,23 +91,23 @@ const Room = () => {
             const question = await fetchQuestionById(room.questionId);
             setQuestion(question);
         };
-
+      
         fetchQuestion();
     }, []);
-
+  
     async function copyRoomId() {
-        try {
-            await navigator.clipboard.writeText(roomId);
-            console.log("Room ID copied to clipboard!");
-        } catch (error) {
-            console.log("Failed to copy room ID to clipboard!");
-            console.log(error);
-        }
+      try {
+        await navigator.clipboard.writeText(roomId);
+        console.log("Room ID copied to clipboard!");
+      } catch (error) {
+        console.log("Failed to copy room ID to clipboard!");
+        console.log(error);
+      }
     }
-
+  
     function leaveRoom() {
-        reactNavigator("/");
-        socketRef.current.disconnect();
+      reactNavigator("/");
+      socketRef.current.disconnect();
     }
 
     return (
@@ -137,6 +139,10 @@ const Room = () => {
             <div className={styles["main-wrap"]}>
                 <div className={styles["left-column"]}>
                     <RoomQuestion question={question} />
+                    <div className={styles["communication"]}>
+                  <Chat roomId={roomId} />
+                  <Video roomId={roomId} />
+                </div>
                 </div>
                 <div className={styles["right-column"]}>
                     <div className={styles["header-box-right"]}>
@@ -165,7 +171,9 @@ const Room = () => {
                 </div>
             </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Room;

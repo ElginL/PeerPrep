@@ -1,26 +1,26 @@
 .container {
-    height: 100vh;
-    overflow-y: hidden;
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .btn {
-    border: none;
-    padding: 10px 25px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
 .copy-btn {
-    background: #ffffff;
+  background: #ffffff;
 }
 
 .copy-btn:hover {
-    background: #b5b2b2;
+  background: #b5b2b2;
 }
 
 .leave-btn {
@@ -28,13 +28,13 @@
 }
 
 .leave-btn:hover {
-    background: #2b824c;
+  background: #2b824c;
 }
 
 .main-wrap {
-    display: flex;
-    width: 100vw;
-    padding-top: 75px;
+  display: flex;
+  width: 100vw;
+  padding-top: 75px;
 }
 
 .left-column,
@@ -48,13 +48,18 @@
 }
 
 .left-column {
-    max-width: 50%;
+  max-width: 50%;
 }
-
+.communication {
+  display: flex;
+  bottom: 0;
+  width: 50vw;
+  position: absolute;
+}
 .right-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .right-column-wrapper {
@@ -63,35 +68,35 @@
 }
 
 .clients-list {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .client {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    font-weight: bold;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-weight: bold;
 }
 
 .header {
-    padding: 0 30px;
-    display: flex;
-    justify-content: space-between;
-    background: #1c1e29;
-    color: #fff;
-    align-items: center;
-    height: 75px;
-    position: fixed;
-    z-index: 1;
-    width: 100vw;
+  padding: 0 30px;
+  display: flex;
+  justify-content: space-between;
+  background: #1c1e29;
+  color: #fff;
+  align-items: center;
+  height: 75px;
+  position: fixed;
+  z-index: 1;
+  width: 100vw;
 }
 
 .btn-group {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .header-box-right {
@@ -99,7 +104,7 @@
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
