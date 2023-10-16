@@ -19,6 +19,15 @@ const Room = () => {
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
     const [question, setQuestion] = useState({});
+    const [language, setLanguage] = useState("Python");
+
+    const handleLanguageChange = (e) => {
+        setLanguage(e.target.value);
+        socketRef.current.emit(ACTIONS.CHANGE_LANGUAGE, {
+            roomId,
+            language: e.target.value,
+        });
+    };
 
     useEffect(() => {
         const init = async () => {
@@ -91,23 +100,23 @@ const Room = () => {
             const question = await fetchQuestionById(room.questionId);
             setQuestion(question);
         };
-      
+
         fetchQuestion();
     }, []);
-  
+
     async function copyRoomId() {
-      try {
-        await navigator.clipboard.writeText(roomId);
-        console.log("Room ID copied to clipboard!");
-      } catch (error) {
-        console.log("Failed to copy room ID to clipboard!");
-        console.log(error);
-      }
+        try {
+            await navigator.clipboard.writeText(roomId);
+            console.log("Room ID copied to clipboard!");
+        } catch (error) {
+            console.log("Failed to copy room ID to clipboard!");
+            console.log(error);
+        }
     }
-  
+
     function leaveRoom() {
-      reactNavigator("/");
-      socketRef.current.disconnect();
+        reactNavigator("/");
+        socketRef.current.disconnect();
     }
 
     return (
@@ -140,13 +149,17 @@ const Room = () => {
                 <div className={styles["left-column"]}>
                     <RoomQuestion question={question} />
                     <div className={styles["communication"]}>
-                  <Chat roomId={roomId} />
-                  <Video roomId={roomId} />
-                </div>
+                        <Chat roomId={roomId} />
+                        <Video roomId={roomId} />
+                    </div>
                 </div>
                 <div className={styles["right-column"]}>
                     <div className={styles["header-box-right"]}>
-                        <select id="language-swap">
+                        <select
+                            id="language-swap"
+                            value={language}
+                            onChange={handleLanguageChange}
+                        >
                             <option value="python">Python</option>
                             <option value="text/x-java">Java</option>
                             <option value="javascript">Javascript</option>
@@ -165,15 +178,15 @@ const Room = () => {
                                     ? question.codeTemplate.templates["Python"]
                                     : ""
                             }
+                            language={language}
+                            setLanguage={setLanguage}
                         />
                         <CodeExecutor codeRef={codeRef} question={question} />
                     </div>
                 </div>
             </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Room;

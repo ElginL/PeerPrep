@@ -7,6 +7,7 @@ const { testDbConnection } = require("./db/db");
 const roomRepo = require("./db/repositories/RoomRepo");
 const collaborationRoute = require("./routes/collaborationRoute");
 const cors = require("cors");
+const clientMapRepo = require("../collaboration-service/db/repositories/ClientMapRepo");
 
 testDbConnection();
 
@@ -29,17 +30,14 @@ const io = require("socket.io")(server, {
     },
 });
 
-const userSocketMap = {};
+async function getAllConnectedClients(roomId) {
+    const socketIds = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
+    const clientPromises = socketIds.map(async (socketId) => {
+        const username = (await clientMapRepo.getBySocketId(socketId)).username;
+        return { socketId, username };
+    });
 
-function getAllConnectedClients(roomId) {
-    return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
-        (socketId) => {
-            return {
-                socketId,
-                username: userSocketMap[socketId],
-            };
-        }
-    );
+    return Promise.all(clientPromises);
 }
 
 io.use((socket, next) => {
@@ -68,9 +66,9 @@ io.use(async (socket, next) => {
 });
 
 io.on("connection", (socket) => {
-    socket.on(ACTIONS.JOIN, ({ roomId }) => {
-        const clients = getAllConnectedClients(roomId);
-
+    socket.on(ACTIONS.JOIN, async ({ roomId }) => {
+        const clients = await getAllConnectedClients(roomId);
+        console.log(clients);
         if (clients.length >= 2) {
             io.to(socket.id).emit(ACTIONS.JOIN_FAILED);
             return;
@@ -78,29 +76,26 @@ io.on("connection", (socket) => {
 
         console.log(`${socket.username} connected to room ${roomId}`);
 
-        userSocketMap[socket.id] = socket.username;
         socket.join(roomId);
+        clientMapRepo.addEntry(socket.id, socket.username);
         clients.push({ socketId: socket.id, username: socket.username });
 
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
                 clients,
-                username: socket.username,
                 socketId: socket.id,
+                username: socket.username,
             });
         });
     });
 
     socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
-        console.log("code change server");
         socket.in(roomId).emit(ACTIONS.CODE_CHANGE, {
             code,
         });
     });
 
     socket.on(ACTIONS.CHANGE_LANGUAGE, ({ roomId, language }) => {
-        console.log("server receive change language request");
-        console.log(language);
         socket.in(roomId).emit(ACTIONS.CHANGE_LANGUAGE, {
             language,
         });
@@ -117,10 +112,10 @@ io.on("connection", (socket) => {
         rooms.forEach((roomId) => {
             socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
                 socketId: socket.id,
-                username: userSocketMap[socket.id],
+                username: clientMapRepo.getBySocketId(socket.id).username,
             });
         });
-        delete userSocketMap[socket.id];
+        clientMapRepo.deleteBySocketId(socket.id);
         socket.leave();
     });
 

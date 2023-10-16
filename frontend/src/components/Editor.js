@@ -4,16 +4,33 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/dracula.css";
 import "codemirror/mode/python/python";
 import "codemirror/mode/clike/clike";
+import "codemirror/mode/javascript/javascript";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../api/actions";
 import styles from "../styles/components/Editor.module.css";
 
-const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
+const Editor = ({
+    socketRef,
+    roomId,
+    onCodeChange,
+    codeTemplate,
+    language,
+    setLanguage,
+}) => {
     const editorRef = useRef(null);
 
     const [defaultCode, setDefaultCode] = useState("");
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (editorRef.current) {
+            editorRef.current.setOption("mode", {
+                name: language,
+                json: true,
+            });
+        }
+    }, [language]);
 
     useEffect(() => {
         async function init() {
@@ -44,20 +61,20 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
                 }
             });
 
-            var option = document.getElementById("language-swap");
-            option.addEventListener("change", function () {
-                console.log("emit change language client");
-                // emit to server
-                socketRef.current.emit(ACTIONS.CHANGE_LANGUAGE, {
-                    roomId,
-                    language: option.value,
-                });
+            // var option = document.getElementById("language-swap");
+            // option.addEventListener("change", function () {
+            //     console.log("emit change language client");
+            //     // emit to server
+            //     socketRef.current.emit(ACTIONS.CHANGE_LANGUAGE, {
+            //         roomId,
+            //         language: option.value,
+            //     });
 
-                editorRef.current.setOption("mode", {
-                    name: option.value,
-                    json: true,
-                });
-            });
+            //     editorRef.current.setOption("mode", {
+            //         name: option.value,
+            //         json: true,
+            //     });
+            // });
         }
 
         if (!isLoading) {
@@ -68,18 +85,17 @@ const Editor = ({ socketRef, roomId, onCodeChange, codeTemplate }) => {
     useEffect(() => {
         if (socketRef.current) {
             socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
-                console.log("code change client");
                 if (code !== null) {
                     editorRef.current.setValue(code);
                 }
             });
             socketRef.current.on(ACTIONS.CHANGE_LANGUAGE, ({ language }) => {
-                console.log("change language client");
                 if (language !== null) {
                     editorRef.current.setOption("mode", {
                         name: language,
                         json: true,
                     });
+                    setLanguage(language);
                 }
             });
         }
