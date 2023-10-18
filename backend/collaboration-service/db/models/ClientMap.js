@@ -1,18 +1,20 @@
 const { sq } = require("../db.js");
 const { DataTypes } = require("sequelize");
 
-const Room = sq.define("Room", {
-    roomId: {
+const ClientMap = sq.define("ClientMap", {
+    socketId: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
     },
-    questionId: {
+    username: {
         type: DataTypes.STRING,
         allowNull: false,
     },
 });
 
-Room.sync({ force: true }).then(() => console.log("Room model synced"));
+ClientMap.sync({ force: true }).then(() =>
+    console.log("ClientMap model synced")
+);
 
-module.exports = Room;
+module.exports = ClientMap;

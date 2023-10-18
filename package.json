@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/jgyj123/ay2324s1-course-assessment-g08/issues"
   },
-  "homepage": "https://github.com/jgyj123/ay2324s1-course-assessment-g08#readme"
+  "homepage": "https://github.com/jgyj123/ay2324s1-course-assessment-g08#readme",
+  "dependencies": {
+    "concurrently": "^8.2.1"
+  }
 }

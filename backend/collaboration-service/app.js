@@ -1,12 +1,13 @@
 const express = require("express");
 const http = require("http");
 const ACTIONS = require("./Actions");
-require('dotenv').config();
-const jwt = require('jsonwebtoken');
-const { testDbConnection } = require('./db/db');
-const roomRepo = require('./db/repositories/RoomRepo');
-const collaborationRoute = require('./routes/collaborationRoute');
-const cors = require('cors');
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const { testDbConnection } = require("./db/db");
+const roomRepo = require("./db/repositories/RoomRepo");
+const collaborationRoute = require("./routes/collaborationRoute");
+const cors = require("cors");
+const clientMapRepo = require("../collaboration-service/db/repositories/ClientMapRepo");
 
 testDbConnection();
 
@@ -22,24 +23,21 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 
-const io = require('socket.io')(server, {
+const io = require("socket.io")(server, {
     cors: {
         origin: '*',
         credentials: true
     },
 });
 
-const userSocketMap = {};
+async function getAllConnectedClients(roomId) {
+    const socketIds = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
+    const clientPromises = socketIds.map(async (socketId) => {
+        const username = (await clientMapRepo.getBySocketId(socketId)).username;
+        return { socketId, username };
+    });
 
-function getAllConnectedClients(roomId) {
-    return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(
-        (socketId) => {
-            return {
-                socketId,
-                username: userSocketMap[socketId],
-            };
-        }
-    );
+    return Promise.all(clientPromises);
 }
 
 io.use((socket, next) => {
@@ -47,7 +45,7 @@ io.use((socket, next) => {
 
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
         if (err) {
-            return next(new Error('Authentication Error'));
+            return next(new Error("Authentication Error"));
         }
 
         socket.username = decoded.username;
@@ -58,8 +56,8 @@ io.use((socket, next) => {
 io.use(async (socket, next) => {
     const roomId = socket.handshake.query.roomId;
 
-    if (await roomRepo.getByRoomId(roomId) == null) {
-        return next(new Error('Room does not exist'));
+    if ((await roomRepo.getByRoomId(roomId)) == null) {
+        return next(new Error("Room does not exist"));
     }
 
     socket.roomId = roomId;
@@ -68,9 +66,9 @@ io.use(async (socket, next) => {
 });
 
 io.on("connection", (socket) => {
-    socket.on(ACTIONS.JOIN, ({ roomId }) => {
-        const clients = getAllConnectedClients(roomId);
-
+    socket.on(ACTIONS.JOIN, async ({ roomId }) => {
+        const clients = await getAllConnectedClients(roomId);
+        console.log(clients);
         if (clients.length >= 2) {
             io.to(socket.id).emit(ACTIONS.JOIN_FAILED);
             return;
@@ -78,15 +76,15 @@ io.on("connection", (socket) => {
 
         console.log(`${socket.username} connected to room ${roomId}`);
 
-        userSocketMap[socket.id] = socket.username;
         socket.join(roomId);
+        clientMapRepo.addEntry(socket.id, socket.username);
         clients.push({ socketId: socket.id, username: socket.username });
 
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
                 clients,
-                username: socket.username,
                 socketId: socket.id,
+                username: socket.username,
             });
         });
     });
@@ -94,6 +92,12 @@ io.on("connection", (socket) => {
     socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
         socket.in(roomId).emit(ACTIONS.CODE_CHANGE, {
             code,
+        });
+    });
+
+    socket.on(ACTIONS.CHANGE_LANGUAGE, ({ roomId, language }) => {
+        socket.in(roomId).emit(ACTIONS.CHANGE_LANGUAGE, {
+            language,
         });
     });
 
@@ -108,14 +112,14 @@ io.on("connection", (socket) => {
         rooms.forEach((roomId) => {
             socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
                 socketId: socket.id,
-                username: userSocketMap[socket.id],
+                username: clientMapRepo.getBySocketId(socket.id).username,
             });
         });
-        delete userSocketMap[socket.id];
+        clientMapRepo.deleteBySocketId(socket.id);
         socket.leave();
     });
 
-    socket.on('disconnect', async () => {
+    socket.on("disconnect", async () => {
         if (getAllConnectedClients(socket.roomId).length == 0) {
             roomRepo.deleteById(socket.roomId);
         }
@@ -124,14 +128,16 @@ io.on("connection", (socket) => {
     });
 });
 
-app.use('/', collaborationRoute);
+app.use("/", collaborationRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });
+    res.status(err.status || 500).json({
+        msg: err.message || "Internal Server Error",
+    });
 });
 
-const PORT = process.env.PORT || 3004
+const PORT = process.env.PORT || 3004;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });
