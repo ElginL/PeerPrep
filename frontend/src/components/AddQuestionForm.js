@@ -201,7 +201,7 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                                         onChange={e => updateCodeTemplate(index, 'language', e)}
                                     >
                                         <MenuItem value={'Python'}>Python</MenuItem>
-                                        <MenuItem value={'Java'}>Java</MenuItem>
+                                        <MenuItem value={'Ruby'}>Ruby</MenuItem>
                                         <MenuItem value={'Javascript'}>Javascript</MenuItem>
                                     </Select>
                                 </FormControl>
