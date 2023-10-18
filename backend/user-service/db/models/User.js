@@ -17,7 +17,7 @@ const User = sq.define("user", {
     }
 })
 
-User.sync({ force: true })
+User.sync()
     .then(() => console.log("User model synced"));
 
 module.exports = User;

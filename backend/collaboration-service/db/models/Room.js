@@ -13,6 +13,6 @@ const Room = sq.define("Room", {
     },
 });
 
-Room.sync({ force: true }).then(() => console.log("Room model synced"));
+Room.sync().then(() => console.log("Room model synced"));
 
 module.exports = Room;
