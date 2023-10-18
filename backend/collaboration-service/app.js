@@ -16,7 +16,7 @@ const server = http.createServer(app);
 
 app.use(express.json());
 const corsOption = {
-    origin: 'http://localhost:3000',
+    origin: '*',
     methods: 'GET, POST, DELETE, PUT',
     credentials: true
 };
@@ -24,7 +24,7 @@ app.use(cors(corsOption));
 
 const io = require('socket.io')(server, {
     cors: {
-        origin: ['http://localhost:3000'],
+        origin: '*',
         credentials: true
     },
 });

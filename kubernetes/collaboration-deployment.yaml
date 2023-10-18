@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: collaboration-service
+  name: collaboration-service
+  namespace: peerprep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: collaboration-service
+  template:
+    metadata:
+      labels:
+        app: collaboration-service
+    spec:
+      containers:
+      - image: registry.digitalocean.com/peerprep/collaboration-service@sha256:417df096e0cc075a3ba3d13c435b08c7c7feaa4e32e6e618949126b2abf5ab18
+        imagePullPolicy: Always
+        name: collaboration-service
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      restartPolicy: Always
+status: {}
