@@ -73,6 +73,21 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
             return;
         }
 
+        const uniqueKeys = new Set();
+        let hasDuplicates = false;
+        codeTemplateFields.forEach(template => {
+            Object.keys(template).forEach(language => {
+                if (uniqueKeys.has(language)) {
+                    hasDuplicates = true;
+                }
+                uniqueKeys.add(language);
+            });
+        });
+        if (hasDuplicates) {
+            setErrorMessage("Submit failed. Each language can only have 1 code template");
+            return;
+        }
+
         const response = await addQuestion(
             title, 
             categories, 
@@ -165,7 +180,9 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                         setCategories={setCategories}
                     />
                     <FormControl fullWidth>
-                        <InputLabel id="complexity-label">Complexity</InputLabel>
+                        <InputLabel id="complexity-label">
+                            Complexity
+                        </InputLabel>
                         <Select
                             labelId="complexity-label"
                             id="complexity"
@@ -199,6 +216,7 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                                         value={field.language}
                                         label={`Language ${index + 1}`}
                                         onChange={e => updateCodeTemplate(index, 'language', e)}
+                                        sx={{ width: 150 }}
                                     >
                                         <MenuItem value={'Python'}>Python</MenuItem>
                                         <MenuItem value={'Ruby'}>Ruby</MenuItem>
