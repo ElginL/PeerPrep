@@ -68,7 +68,7 @@ io.use(async (socket, next) => {
 io.on("connection", (socket) => {
     socket.on(ACTIONS.JOIN, async ({ roomId }) => {
         const clients = await getAllConnectedClients(roomId);
-        console.log(clients);
+
         if (clients.length >= 2) {
             io.to(socket.id).emit(ACTIONS.JOIN_FAILED);
             return;

@@ -17,6 +17,12 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+const languageToTemplateKeyMap = {
+    "python": "Python",
+    "javascript": "Javascript",
+    "text/x-ruby": "Ruby"
+};
+
 const Room = () => {
     const socketRef = useRef(null);
     const codeRef = useRef(null);
@@ -192,7 +198,7 @@ const Room = () => {
                             >
                                 <MenuItem value={'python'}>Python</MenuItem>
                                 <MenuItem value={'javascript'}>Javascript</MenuItem>
-                                <MenuItem value={'text/x-java'}>Java</MenuItem>
+                                <MenuItem value={'text/x-ruby'}>Ruby</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
@@ -204,15 +210,19 @@ const Room = () => {
                                 codeRef.current = code;
                             }}
                             codeTemplate={
-                                question.codeTemplate &&
-                                question.codeTemplate.templates
-                                    ? question.codeTemplate.templates["Python"]
+                                question.codeTemplate && question.codeTemplate.templates &&
+                                question.codeTemplate.templates[languageToTemplateKeyMap[language]]
+                                    ? question.codeTemplate.templates[languageToTemplateKeyMap[language]]
                                     : ""
                             }
                             language={language}
                             setLanguage={setLanguage}
                         />
-                        <CodeExecutor codeRef={codeRef} question={question} />
+                        <CodeExecutor 
+                            codeRef={codeRef} 
+                            question={question}
+                            language={language}
+                        />
                     </div>
                 </div>
             </div>

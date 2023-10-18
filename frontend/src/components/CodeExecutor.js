@@ -7,7 +7,7 @@ import RunTimeErrorResult from './RunTimeErrorResult';
 import CodeExecutionNavigator from './CodeExecutionNavigator';
 import TestCaseNavigator from './TestCaseNavigator';
 
-const CodeExecutor = ({ codeRef, question }) => {
+const CodeExecutor = ({ codeRef, question, language }) => {
     const [resultsVisible, setResultsVisible] = useState(false);
     const [inputs, setInputs] = useState([]);
     const [outputs, setOutputs] = useState([]);
@@ -17,7 +17,7 @@ const CodeExecutor = ({ codeRef, question }) => {
     const [executionResults, setExecutionResults] = useState(null);
 
     const executeCodeHandler = async () => {
-        const result = await runAllTestCases(codeRef.current, 'Python', inputs, outputs);
+        const result = await runAllTestCases(codeRef.current, language, inputs, outputs);
 
         setExecutionResults(result);
         setResultsVisible(true);

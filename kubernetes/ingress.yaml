@@ -16,20 +16,20 @@ spec:
             name: question-service
             port:
               number: 3001
-      # - pathType: Prefix
-      #   path: "/user-service"
-      #   backend:
-      #     service:
-      #       name: user-service
-      #       port:
-      #         number: 3002     
-      # - pathType: Prefix
-      #   path: "/matching-service"
-      #   backend:
-      #     service:
-      #       name: matching-service
-      #       port:
-      #         number: 3003
+      - pathType: Prefix
+        path: "/user-service"
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 3002     
+      - pathType: Prefix
+        path: "/matching-service"
+        backend:
+          service:
+            name: matching-service
+            port:
+              number: 3003
       - pathType: Prefix
         path: "/collaboration-service"
         backend:
@@ -37,10 +37,10 @@ spec:
             name: collaboration-service
             port:
               number: 3004
-      # - pathType: Prefix
-      #   path: "/communication-service"
-      #   backend:
-      #     service:
-      #       name: communication-service
-      #       port:
-      #         number: 3005
+      - pathType: Prefix
+        path: "/communication-service"
+        backend:
+          service:
+            name: communication-service
+            port:
+              number: 3005
