@@ -5,6 +5,7 @@ import "codemirror/theme/dracula.css";
 import "codemirror/mode/python/python";
 import "codemirror/mode/clike/clike";
 import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/ruby/ruby";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../api/actions";
