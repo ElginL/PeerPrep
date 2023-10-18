@@ -218,7 +218,9 @@ const Room = () => {
                             language={language}
                             setLanguage={setLanguage}
                         />
-                        <CodeExecutor 
+                        <CodeExecutor
+                            socketRef={socketRef}
+                            roomId={roomId}
                             codeRef={codeRef} 
                             question={question}
                             language={language}

@@ -107,6 +107,12 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on(ACTIONS.EXECUTE_CODE, ({ roomId, result }) => {
+        socket.in(roomId).emit(ACTIONS.EXECUTE_CODE, {
+            result
+        });
+    });
+
     socket.on("disconnecting", () => {
         const rooms = [...socket.rooms];
         rooms.forEach((roomId) => {
