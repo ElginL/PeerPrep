@@ -133,6 +133,11 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
             } else if (outputType === 'Array') {
                 try {
                     output = JSON.parse(output);
+                    
+                    if (!Array.isArray(output)) {
+                        setErrorMessage("Some inputs are specified as array but the value given is not an array!");
+                        return;
+                    }
                 } catch (error) {
                     setErrorMessage("Some outputs are specified as array but the value given is not an array!");
                     return;
@@ -168,9 +173,14 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                         setErrorMessage("Some inputs are specified as float but the value given is not a float!");
                     }
                 } else if (argType === "Array") {
-                    value = JSON.parse(value);
-
-                    if (!Array.isArray(value)) {
+                    try {
+                        value = JSON.parse(value);
+    
+                        if (!Array.isArray(value)) {
+                            setErrorMessage("Some inputs are specified as array but the value given is not an array!");
+                            return;
+                        }
+                    } catch (err) {
                         setErrorMessage("Some inputs are specified as array but the value given is not an array!");
                         return;
                     }
@@ -181,26 +191,6 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
 
             testCaseInputsArr.push(testCaseObj);
         }
-
-        // console.log("Map: " + JSON.stringify(argNameToTypeMap));
-
-        // console.log("Arguments: " + argumentNames);
-        // console.log("Types: " + types);
-        // console.log("Title: " + title);
-        // console.log("Categories: " + categories);
-        // console.log("Complexity: " + complexity);
-        // console.log("Description: " + stringifiedDescription);
-        // console.log("Inputs: ");
-        // for (const obj of testCaseInputsArr) {
-        //     const objString = JSON.stringify(obj);
-        //     console.log(objString);
-        //   }
-        // console.log("Outputs: " + expectedOutputs);
-        // console.log("templates: " + codeTemplateFields)
-        // for (const obj of codeTemplateFields) {
-        //     const objString = JSON.stringify(obj);
-        //     console.log(objString);
-        // }
 
         const response = await addQuestion(
             title, 
