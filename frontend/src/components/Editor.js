@@ -5,6 +5,7 @@ import "codemirror/theme/dracula.css";
 import "codemirror/mode/python/python";
 import "codemirror/mode/clike/clike";
 import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/ruby/ruby";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import ACTIONS from "../api/actions";
@@ -60,21 +61,6 @@ const Editor = ({
                     });
                 }
             });
-
-            // var option = document.getElementById("language-swap");
-            // option.addEventListener("change", function () {
-            //     console.log("emit change language client");
-            //     // emit to server
-            //     socketRef.current.emit(ACTIONS.CHANGE_LANGUAGE, {
-            //         roomId,
-            //         language: option.value,
-            //     });
-
-            //     editorRef.current.setOption("mode", {
-            //         name: option.value,
-            //         json: true,
-            //     });
-            // });
         }
 
         if (!isLoading) {

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: communication-service
+  name: communication-service
+  namespace: peerprep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: communication-service
+  template:
+    metadata:
+      labels:
+        app: communication-service
+    spec:
+      containers:
+      - image: registry.digitalocean.com/peerprep/communication-service@sha256:3e380993047c9f395e605304f515b6006b724e1c7c44eac09e1c9c99d8ed12ae
+        imagePullPolicy: Always
+        name: communication-service
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      restartPolicy: Always
+status: {}

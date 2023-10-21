@@ -11,6 +11,17 @@ import { getRoomById } from "../api/collaboration";
 import { fetchQuestionById } from "../api/questions";
 import Chat from "../components/Chat";
 import Video from "../components/Video";
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
+const languageToTemplateKeyMap = {
+    "python": "Python",
+    "javascript": "Javascript",
+    "text/x-ruby": "Ruby"
+};
 
 const Room = () => {
     const socketRef = useRef(null);
@@ -19,7 +30,7 @@ const Room = () => {
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
     const [question, setQuestion] = useState({});
-    const [language, setLanguage] = useState("Python");
+    const [language, setLanguage] = useState("python");
 
     const handleLanguageChange = (e) => {
         setLanguage(e.target.value);
@@ -154,17 +165,43 @@ const Room = () => {
                     </div>
                 </div>
                 <div className={styles["right-column"]}>
-                    <div className={styles["header-box-right"]}>
-                        <select
-                            id="language-swap"
-                            value={language}
-                            onChange={handleLanguageChange}
-                        >
-                            <option value="python">Python</option>
-                            <option value="text/x-java">Java</option>
-                            <option value="javascript">Javascript</option>
-                        </select>
-                    </div>
+                    <Box sx={{ minWidth: 200 }}>
+                        <FormControl sx={{ borderColor: 'white' }}>
+                            <InputLabel id="language" sx={{ color: 'white' }}>
+                                Language
+                            </InputLabel>
+                            <Select
+                                labelId="language"
+                                id="language"
+                                value={language}
+                                label="Language"
+                                onChange={handleLanguageChange}
+                                labelStyle={{ color: '#ff0000' }}
+                                sx={{
+                                    marginBottom: '5px',
+                                    height: '45px',
+                                    width: '150px',
+                                    color: "white",
+                                    '.MuiOutlinedInput-notchedOutline': {
+                                        borderColor: 'rgba(228, 219, 233, 0.25)',
+                                    },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: 'rgba(228, 219, 233, 0.25)',
+                                    },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: 'rgba(228, 219, 233, 0.25)',
+                                    },
+                                    '.MuiSvgIcon-root ': {
+                                        fill: "white !important",
+                                    }
+                                }}
+                            >
+                                <MenuItem value={'python'}>Python</MenuItem>
+                                <MenuItem value={'javascript'}>Javascript</MenuItem>
+                                <MenuItem value={'text/x-ruby'}>Ruby</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
                     <div className={styles["right-column"]}>
                         <Editor
                             socketRef={socketRef}
@@ -173,15 +210,21 @@ const Room = () => {
                                 codeRef.current = code;
                             }}
                             codeTemplate={
-                                question.codeTemplate &&
-                                question.codeTemplate.templates
-                                    ? question.codeTemplate.templates["Python"]
+                                question.codeTemplate && question.codeTemplate.templates &&
+                                question.codeTemplate.templates[languageToTemplateKeyMap[language]]
+                                    ? question.codeTemplate.templates[languageToTemplateKeyMap[language]]
                                     : ""
                             }
                             language={language}
                             setLanguage={setLanguage}
                         />
-                        <CodeExecutor codeRef={codeRef} question={question} />
+                        <CodeExecutor
+                            socketRef={socketRef}
+                            roomId={roomId}
+                            codeRef={codeRef} 
+                            question={question}
+                            language={language}
+                        />
                     </div>
                 </div>
             </div>

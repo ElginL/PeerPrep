@@ -112,10 +112,6 @@
     gap: 20px;
 }
 
-.header-box-right {
-    height: 5%;
-}
-
 ::-webkit-scrollbar {
     width: 5px;
 }

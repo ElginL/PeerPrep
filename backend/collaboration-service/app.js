@@ -17,16 +17,16 @@ const server = http.createServer(app);
 
 app.use(express.json());
 const corsOption = {
-    origin: "http://localhost:3000",
-    methods: "GET, POST, DELETE, PUT",
-    credentials: true,
+    origin: '*',
+    methods: 'GET, POST, DELETE, PUT',
+    credentials: true
 };
 app.use(cors(corsOption));
 
 const io = require("socket.io")(server, {
     cors: {
-        origin: ["http://localhost:3000"],
-        credentials: true,
+        origin: '*',
+        credentials: true
     },
 });
 
@@ -68,7 +68,7 @@ io.use(async (socket, next) => {
 io.on("connection", (socket) => {
     socket.on(ACTIONS.JOIN, async ({ roomId }) => {
         const clients = await getAllConnectedClients(roomId);
-        console.log(clients);
+
         if (clients.length >= 2) {
             io.to(socket.id).emit(ACTIONS.JOIN_FAILED);
             return;
@@ -104,6 +104,12 @@ io.on("connection", (socket) => {
     socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
         io.to(socketId).emit(ACTIONS.CODE_CHANGE, {
             code,
+        });
+    });
+
+    socket.on(ACTIONS.EXECUTE_CODE, ({ roomId, result }) => {
+        socket.in(roomId).emit(ACTIONS.EXECUTE_CODE, {
+            result
         });
     });
 

@@ -17,7 +17,7 @@ const WaitingList = sq.define("WaitingList", {
     },
 });
 
-WaitingList.sync({ force: true })
+WaitingList.sync()
     .then(() => console.log("Waiting List model synced"));
 
 module.exports = WaitingList;

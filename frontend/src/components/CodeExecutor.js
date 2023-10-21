@@ -6,8 +6,15 @@ import CodeExecutionBar from './CodeExecutionBar';
 import RunTimeErrorResult from './RunTimeErrorResult';
 import CodeExecutionNavigator from './CodeExecutionNavigator';
 import TestCaseNavigator from './TestCaseNavigator';
+import ACTIONS from '../api/actions';
 
-const CodeExecutor = ({ codeRef, question }) => {
+const CodeExecutor = ({ 
+    socketRef,
+    roomId,
+    codeRef,
+    question, 
+    language 
+}) => {
     const [resultsVisible, setResultsVisible] = useState(false);
     const [inputs, setInputs] = useState([]);
     const [outputs, setOutputs] = useState([]);
@@ -17,11 +24,16 @@ const CodeExecutor = ({ codeRef, question }) => {
     const [executionResults, setExecutionResults] = useState(null);
 
     const executeCodeHandler = async () => {
-        const result = await runAllTestCases(codeRef.current, 'Python', inputs, outputs);
+        const result = await runAllTestCases(codeRef.current, language, inputs, outputs);
 
         setExecutionResults(result);
         setResultsVisible(true);
         setTestCaseBtnSelected(false);
+
+        socketRef.current.emit(ACTIONS.EXECUTE_CODE, {
+            roomId,
+            result
+        });
     };
 
     useEffect(() => {
@@ -30,6 +42,17 @@ const CodeExecutor = ({ codeRef, question }) => {
             setOutputs(question.testCases.map(obj => obj.output));
         }
     }, [question]);
+
+    useEffect(() => {
+        if (socketRef.current) {
+            socketRef.current.on(ACTIONS.EXECUTE_CODE, ({ result }) => {
+                console.log(result);
+                setExecutionResults(result);
+                setResultsVisible(true);
+                setTestCaseBtnSelected(false);
+            });
+        }
+    }, [socketRef.current]);
 
     return (
         <div className={styles["container"]}>

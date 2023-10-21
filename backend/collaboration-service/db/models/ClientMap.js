@@ -13,7 +13,7 @@ const ClientMap = sq.define("ClientMap", {
     },
 });
 
-ClientMap.sync({ force: true }).then(() =>
+ClientMap.sync().then(() =>
     console.log("ClientMap model synced")
 );
 
