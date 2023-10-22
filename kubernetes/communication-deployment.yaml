@@ -16,7 +16,7 @@ spec:
         app: communication-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/communication-service@sha256:3e380993047c9f395e605304f515b6006b724e1c7c44eac09e1c9c99d8ed12ae
+      - image: registry.digitalocean.com/peerprep/communication-service@sha256:cbcbacc34763cefb5fe2855b11e1237336adb9857769ba8beb2bf3e69f0435c6
         imagePullPolicy: Always
         name: communication-service
         resources:

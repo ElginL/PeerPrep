@@ -16,7 +16,7 @@ spec:
         app: collaboration-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/collaboration-service@sha256:417df096e0cc075a3ba3d13c435b08c7c7feaa4e32e6e618949126b2abf5ab18
+      - image: registry.digitalocean.com/peerprep/collaboration-service@sha256:6c9f5970dc85f2c1a2c9dbbeec4e759012b685b870fc66202422f1370ccd53b0
         imagePullPolicy: Always
         name: collaboration-service
         resources:
@@ -28,3 +28,23 @@ spec:
             cpu: "1000m"
       restartPolicy: Always
 status: {}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: collaboration-hpa
+  namespace: peerprep
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: collaboration-service
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50

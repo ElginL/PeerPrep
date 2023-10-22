@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:2358';
+const baseUrl = process.env.REACT_APP_CODE_EXECUTION_URL;
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -17,7 +17,7 @@ const attachPythonPrintReturnValue = (pythonCode, inputArgs) => {
     const methodName = pythonCode.substring(pythonCode.indexOf(" ") + 1, pythonCode.indexOf("("));
 
     return pythonCode + '\n' + 'print(' + methodName + '(' + inputArgs + '))';
-}
+};
 
 const attachJsPrintReturnValue = (jsCode, inputArgs) => {
     const functionSignature = /function\s+([a-zA-Z_]\w*)\s*\([^)]*\)\s*\{/;
@@ -32,7 +32,7 @@ const attachJsPrintReturnValue = (jsCode, inputArgs) => {
     const returnValue = `${methodName}(${inputArgs})`;
 
     return jsCode + '\n' + `console.log(${returnValue});`;
-}
+};
 
 const attachRubyPrintReturnValue = (rubyCode, inputArgs) => {
     const methodSignature = /^def [a-zA-Z_]\w*\([^)]*\)\n/;
@@ -47,7 +47,7 @@ const attachRubyPrintReturnValue = (rubyCode, inputArgs) => {
     const returnValue = `${methodName}(${inputArgs})`;
 
     return rubyCode + '\n' + `p ${returnValue}`;
-}
+};
 
 const languageToIdMap = {
     'python': '71',
@@ -70,18 +70,37 @@ const executeCode = async (code, language, inputArgs) => {
     try {
         const content = {
             'language_id': languageToIdMap[language],
-            'source_code': attachPrintReturnValue(language, code, inputArgs)
+            'source_code': btoa(attachPrintReturnValue(language, code, inputArgs)),
         };
 
-        console.log(content.source_code);
+        const tokenResponse = await axios.post(baseUrl + "/submissions", content, {
+            headers: {
+                'content-type': 'application/json',
+                'Content-Type': 'application/json',
+                'X-RapidAPI-Key': process.env.REACT_APP_X_RAPIDAPI_KEY,
+                'X-RapidAPI-Host': process.env.REACT_APP_X_RAPIDAPI_HOST
+            },
+            params: {
+                base64_encoded: true,
+                fields: '*'
+            }
+        });
 
-        const tokenResponse = await axios.post(baseUrl + "/submissions", content);
+        // const tokenResponse = await axios.post(baseUrl + "/submissions", content);
         const submissionToken = tokenResponse.data.token;
         let submissionResponse;
 
         let retryCount = 0;
         while (retryCount <= 10) {
-            submissionResponse = await axios.get(baseUrl + `/submissions/${submissionToken}`);
+            submissionResponse = await axios.get(baseUrl + `/submissions/${submissionToken}`, {
+                headers: {
+                    'X-RapidAPI-Key': process.env.REACT_APP_X_RAPIDAPI_KEY,
+                    'X-RapidAPI-Host': process.env.REACT_APP_X_RAPIDAPI_HOST
+                },
+                params: {
+                    fields: '*'
+                }
+            });
 
             if (submissionResponse.data.status.description !== 'In Queue' && submissionResponse.data.status.description !== 'Processing') {
                 break;

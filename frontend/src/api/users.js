@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3002";
+const baseUrl = process.env.REACT_APP_USER_SERVICE_URL + "/user-service";
 
 const loginUser = (username, password) => {
   const credentials = {

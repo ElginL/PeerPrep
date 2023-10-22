@@ -16,7 +16,7 @@ spec:
         app: matching-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/matching-service@sha256:8fbd8684b1cbf342005b0a867116a5e1302937ee1a3b5db6931a35c84156b903
+      - image: registry.digitalocean.com/peerprep/matching-service@sha256:9c2d45cde579cd9d280d9eda5a270c2e4dee0d1de818628d5ea0c6493a3aef2a
         imagePullPolicy: IfNotPresent
         name: matching-service
         resources:

@@ -17,7 +17,7 @@ const corsOption = {
 app.use(cors(corsOption));
 
 // routes
-app.use('/', userRoute);
+app.use('/user-service', userRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

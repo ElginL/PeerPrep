@@ -4,10 +4,13 @@ const socketIo = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
+
 const io = socketIo(server, {
+  path: "/communication-service/socket.io",
   cors: {
-    origin: "*", // The origin of your React application
+    origin: ['localhost:3000'],
     methods: ["GET", "POST"],
+    credentials: true
   },
 });
 

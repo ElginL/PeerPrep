@@ -16,7 +16,7 @@ spec:
         app: question-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/question-service@sha256:5ceecf2271a1b1adc0381969793d154059ce6860ed4e7a7d41ada8342126572f
+      - image: registry.digitalocean.com/peerprep/question-service@sha256:02595fe5e7d8ee4160e297949f4edf2ff10404ab06682cdbb744d77fd73bea50
         imagePullPolicy: Always
         name: question-service
         resources:
