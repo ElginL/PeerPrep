@@ -8,7 +8,6 @@ const Home = () => {
         <div>
             <Navbar />
             <div className={styles["container"]}>
-                {/* TODO: ADD STATISTICS DISPLAY */}
                 <div className={styles["right-container"]}>
                     <Matching />
                     <Questions />

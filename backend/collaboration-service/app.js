@@ -7,7 +7,7 @@ const { testDbConnection } = require("./db/db");
 const roomRepo = require("./db/repositories/RoomRepo");
 const collaborationRoute = require("./routes/collaborationRoute");
 const cors = require("cors");
-const clientMapRepo = require("../collaboration-service/db/repositories/ClientMapRepo");
+const clientMapRepo = require("./db/repositories/ClientMapRepo");
 
 testDbConnection();
 
@@ -17,15 +17,16 @@ const server = http.createServer(app);
 
 app.use(express.json());
 const corsOption = {
-    origin: '*',
+    origin: 'http://localhost:3000',
     methods: 'GET, POST, DELETE, PUT',
     credentials: true
 };
 app.use(cors(corsOption));
 
 const io = require("socket.io")(server, {
+    path: '/collaboration-service/socket.io',
     cors: {
-        origin: '*',
+        origin: ['http://localhost:3000'],
         credentials: true
     },
 });
@@ -134,7 +135,7 @@ io.on("connection", (socket) => {
     });
 });
 
-app.use("/", collaborationRoute);
+app.use("/collaboration-service", collaborationRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

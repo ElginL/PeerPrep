@@ -16,7 +16,7 @@ spec:
         app: user-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/user-service@sha256:29b15b66588998e772d2fdcb4376470dad900bc177b38df45fc62650c0b362aa
+      - image: registry.digitalocean.com/peerprep/user-service@sha256:7a4d2034dcb237de0bf5000f7bc9a22b69fa55486635dea6ad5c38733fd949e7
         imagePullPolicy: IfNotPresent
         name: user-service
         resources:

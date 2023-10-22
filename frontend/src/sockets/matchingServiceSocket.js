@@ -2,12 +2,14 @@ import socketIOClient from 'socket.io-client';
 import { createRoom } from '../api/collaboration';
 import { getRandomQuestion } from '../api/questions';
 
-const matchingServiceURL = 'http://localhost:3003';
+const matchingServiceURL = process.env.REACT_APP_MATCHING_SERVICE_URL;
+const path = "/matching-service/socket.io";
 
 let socket;
 
 const createSocketConnection = (token) => {
     socket = socketIOClient(matchingServiceURL, {
+        path,
         query: { token }
     });
 };

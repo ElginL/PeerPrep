@@ -19,7 +19,15 @@ function Chat(props) {
   const roomId = props.roomId; // This should be dynamically set based on your application logic
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:3005"); // Assign socket instance to ref
+    const socketURL = process.env.REACT_APP_COMMUNICATION_SERVICE_URL;
+    const path = "/communication-service/socket.io";
+    socketRef.current = io(socketURL, {
+      path,
+      "force new connection": true,
+      reconnectionAttempts: 5,
+      timeout: 10000,
+      transports: ["websocket"],
+    }); // Assign socket instance to ref
 
     socketRef.current.on("connect", () => {
       console.log("Connected to the server.");

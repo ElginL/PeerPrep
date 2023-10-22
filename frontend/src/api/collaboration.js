@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3004";
+const baseUrl = process.env.REACT_APP_COLLABORATION_SERVICE_URL + "/collaboration-service";
 
 const setAuthenticationHeader = () => {
   return {

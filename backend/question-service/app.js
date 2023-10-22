@@ -32,8 +32,7 @@ app.use(cors(corsOption));
 app.options('*', cors(corsOption));
 
 // routes
-app.use("/", questionRoute);
-
+app.use("/question-service", questionRoute);
 
 app.use((err, req, res, next) => {
     res.status(err.status || 500).json({ msg: err.message || "Internal Server Error" });

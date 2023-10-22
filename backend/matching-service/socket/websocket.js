@@ -6,8 +6,9 @@ const waitingListRepo = require("../db/repositories/waitingListRepo");
 
 const initializeWebSocket = (server) => {
     const io = require("socket.io")(server, {
+        path: '/matching-service/socket.io',
         cors: {
-            origin: ["http://localhost:3000", "https://admin.socket.io"],
+            origin: ['http://localhost:3000'],
             credentials: true,
         },
     });
