@@ -50,6 +50,9 @@ const CodeExecutor = ({
             setInputs(question.testCases.map(obj => obj.input));
             setOutputs(question.testCases.map(obj => obj.output));
         }
+
+        setExecutionResults(null);
+        setAllPassModalVisible(false);
     }, [question]);
 
     useEffect(() => {

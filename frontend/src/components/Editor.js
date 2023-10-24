@@ -64,6 +64,16 @@ const Editor = ({
     }, []);
 
     useEffect(() => {
+        if (codeTemplate) {
+            if (editorRef.current.getValue() !== '') {
+                return;
+            }
+
+            editorRef.current.setValue(codeTemplate);
+        }
+    }, [codeTemplate]);
+
+    useEffect(() => {
         if (socketRef.current) {
             socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
                 if (code !== null) {
@@ -86,12 +96,6 @@ const Editor = ({
             socketRef.current.off(ACTIONS.CHANGE_LANGUAGE);
         };
     }, [socketRef.current]);
-
-    useEffect(() => {
-        if (codeTemplate) {
-            editorRef.current.setValue(codeTemplate);
-        }
-    }, [codeTemplate]);
 
     return (
         <div className={styles["container"]}>
