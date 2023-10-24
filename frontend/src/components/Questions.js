@@ -73,7 +73,7 @@ const Questions = () => {
                                     <div className={styles["category-values"]}>
                                         {
                                             question.categories && question.categories.map(category => (
-                                                <span>
+                                                <span key={category}>
                                                     {category},
                                                 </span>
                                             ))

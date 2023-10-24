@@ -114,6 +114,26 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on(ACTIONS.SYNC_QUESTION, ({ roomId, newQuestionId }) => {
+        socket.in(roomId).emit(ACTIONS.SYNC_QUESTION, {
+            newQuestionId
+        });
+
+        io.to(socket.id).emit(ACTIONS.SYNC_QUESTION, {
+            newQuestionId
+        });
+    });
+
+    socket.on(ACTIONS.REQUEST_QUESTION_CHANGE, ({ roomId, complexity }) => {
+        socket.in(roomId).emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
+            complexity
+        });
+    });
+
+    socket.on(ACTIONS.DECLINE_QUESTION_CHANGE, ({ roomId }) => {
+        socket.in(roomId).emit(ACTIONS.DECLINE_QUESTION_CHANGE);
+    });
+
     socket.on("disconnecting", () => {
         const rooms = [...socket.rooms];
         rooms.forEach((roomId) => {

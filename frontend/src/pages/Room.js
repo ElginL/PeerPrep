@@ -16,6 +16,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import ChangeQuestionButton from "../components/ChangeQuestionButton";
 
 const languageToTemplateKeyMap = {
     "python": "Python",
@@ -142,6 +143,12 @@ const Room = () => {
                     ))}
                 </div>
                 <div className={styles["btn-group"]}>
+                    <ChangeQuestionButton 
+                        socketRef={socketRef}
+                        setQuestion={setQuestion}
+                        roomId={roomId}
+                        currentQuestionId={question._id}
+                    />
                     <button
                         className={`${styles["btn"]} ${styles["copy-btn"]}`}
                         onClick={copyRoomId}

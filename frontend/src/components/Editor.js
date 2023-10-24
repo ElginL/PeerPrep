@@ -21,9 +21,6 @@ const Editor = ({
 }) => {
     const editorRef = useRef(null);
 
-    const [defaultCode, setDefaultCode] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
-
     useEffect(() => {
         if (editorRef.current) {
             editorRef.current.setOption("mode", {
@@ -63,10 +60,8 @@ const Editor = ({
             });
         }
 
-        if (!isLoading) {
-            init();
-        }
-    }, [isLoading]);
+        init();
+    }, []);
 
     useEffect(() => {
         if (socketRef.current) {
@@ -94,28 +89,13 @@ const Editor = ({
 
     useEffect(() => {
         if (codeTemplate) {
-            setDefaultCode(codeTemplate);
-            setIsLoading(false);
+            editorRef.current.setValue(codeTemplate);
         }
-
-        const timeout = setTimeout(() => {
-            if (isLoading) {
-                setIsLoading(false);
-            }
-        }, 1000);
-
-        return () => {
-            clearTimeout(timeout);
-        };
     }, [codeTemplate]);
-
-    if (isLoading) {
-        return <div className={styles["container"]}>Loading...</div>;
-    }
 
     return (
         <div className={styles["container"]}>
-            <textarea id="realtimeEditor" defaultValue={defaultCode} />
+            <textarea id="realtimeEditor" />
         </div>
     );
 };
