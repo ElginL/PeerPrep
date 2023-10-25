@@ -10,7 +10,8 @@
     "question-service": "cd backend/question-service && npm run start-dev",
     "user-service": "cd backend/user-service && npm run start-dev",
     "communication-service": "cd backend/communication-service && npm run start-dev",
-    "start-all": "concurrently npm:frontend npm:collaboration-service npm:matching-service npm:question-service npm:user-service npm:communication-service"
+    "ai-service": "cd backend/ai-service && npm run start-dev",
+    "start-all": "concurrently npm:frontend npm:collaboration-service npm:matching-service npm:question-service npm:user-service npm:communication-service npm:ai-service"
   },
   "repository": {
     "type": "git",
