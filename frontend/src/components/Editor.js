@@ -23,6 +23,13 @@ const Editor = ({
 
     useEffect(() => {
         if (editorRef.current) {
+            const template = codeTemplate === null ? "" : codeTemplate;
+            editorRef.current.setValue(template);
+        }
+    }, [editorRef.current, codeTemplate]);
+
+    useEffect(() => {
+        if (editorRef.current) {
             editorRef.current.setOption("mode", {
                 name: language,
                 json: true,
@@ -62,16 +69,6 @@ const Editor = ({
 
         init();
     }, []);
-
-    useEffect(() => {
-        if (codeTemplate) {
-            if (editorRef.current.getValue() !== '') {
-                return;
-            }
-
-            editorRef.current.setValue(codeTemplate);
-        }
-    }, [codeTemplate]);
 
     useEffect(() => {
         if (socketRef.current) {
