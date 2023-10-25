@@ -71,6 +71,35 @@ const deleteQuestionsByIds = async (ids) => {
     }
 }
 
+const UpdateQuestion = async (title, categories, complexity, description, testCases, expectedOutputs, codeTemplates) => {
+    const questionToAdd = {
+        title: title,
+        categories: categories,
+        complexity: complexity,
+        description: description,
+        inputs: testCases,
+        outputs: expectedOutputs,
+        codeTemplates: codeTemplates.reduce((result, item) => {
+            result[item.language] = item.template;
+            return result;
+        }, {})
+    };
+
+    try {
+        const response = await axios.post(baseUrl, questionToAdd, setAuthenticationHeader());
+
+        return {
+            message: response.data,
+            status: response.status
+        };
+    } catch (error) {
+        return {
+            message: error.response.data.msg,
+            status: error.response.status
+        };
+    }
+};
+
 const getRandomQuestion = async complexity => {
     try {
         const randomQuestion = await axios.get(baseUrl + `/random/${complexity}`, setAuthenticationHeader())
