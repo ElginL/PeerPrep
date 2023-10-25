@@ -39,7 +39,7 @@ function AiChat() {
   };
 
   if (!isChatVisible) {
-    return <button onClick={toggleChatVisibility}>Open Chat</button>;
+    return <button onClick={toggleChatVisibility}>AI Assistant ^ </button>;
   }
 
   return (
