@@ -25,7 +25,8 @@ const RequestQuestionModal = ({
     roomId,
     currentQuestionId, 
     isVisible, 
-    closeHandler 
+    closeHandler,
+    setQuestionChanged
 }) => {
     const onAccept = async () => {
         let randomQuestion = await getRandomQuestion(newComplexity);
@@ -44,6 +45,7 @@ const RequestQuestionModal = ({
             newQuestionId: randomQuestion._id
         });
 
+        setQuestionChanged(true);
         closeHandler();
     };
 

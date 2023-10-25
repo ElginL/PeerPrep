@@ -10,7 +10,8 @@ const ChangeQuestionButton = ({
     socketRef,
     setQuestion,
     roomId,
-    currentQuestionId
+    currentQuestionId,
+    setQuestionChanged
 }) => {
     const [changeModalVisible, setChangeModalVisible] = useState(false);
     const [requestModalVisible, setRequestModalVisible] = useState(false);
@@ -24,6 +25,7 @@ const ChangeQuestionButton = ({
                 async ({ newQuestionId }) => {
                     const newQuestion = await fetchQuestionById(newQuestionId);
                     setQuestion(newQuestion);
+                    setQuestionChanged(true);
                 }
             );
     
@@ -65,6 +67,7 @@ const ChangeQuestionButton = ({
                 newComplexity={requestComplexity}
                 isVisible={requestModalVisible}
                 closeHandler={() => setRequestModalVisible(false)}
+                setQuestionChanged={setQuestionChanged}
             />
             <DeclineQuestionChangeModal
                 isVisible={declineChangeModalVisible}

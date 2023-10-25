@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
                 clients,
                 socketId: socket.id,
                 username: socket.username,
+                fromSocket: socketId
             });
         });
     });
@@ -132,6 +133,13 @@ io.on("connection", (socket) => {
 
     socket.on(ACTIONS.DECLINE_QUESTION_CHANGE, ({ roomId }) => {
         socket.in(roomId).emit(ACTIONS.DECLINE_QUESTION_CHANGE);
+    });
+
+    socket.on(ACTIONS.CHECK_SYNC, ({ roomId, template }) => {
+        socket.in(roomId).emit(ACTIONS.CHECK_SYNC, {
+            template,
+            socketId: socket.id
+        });
     });
 
     socket.on("disconnecting", () => {
