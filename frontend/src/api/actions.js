@@ -7,7 +7,11 @@ const ACTIONS = {
     LEAVE: "leave",
     JOIN_FAILED: "join-fail",
     CHANGE_LANGUAGE: "change-language",
-    EXECUTE_CODE: "execute-code"
+    EXECUTE_CODE: "execute-code",
+    SYNC_QUESTION: "sync-question",
+    REQUEST_QUESTION_CHANGE: "request-question-change",
+    DECLINE_QUESTION_CHANGE: "decline-question-change",
+    CHECK_SYNC: "check-sync"
 };
 
 module.exports = ACTIONS;

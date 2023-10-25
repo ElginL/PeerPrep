@@ -37,8 +37,22 @@ const deleteById = async (roomId) => {
     }
 };
 
+const updateRoomQuestion = async (roomId, questionId) => {
+    const room = await getByRoomId(roomId);
+
+    if (room === null) {
+        return false;
+    }
+
+    room.questionId = questionId;
+    await room.save();
+
+    return true;
+};
+
 module.exports = {
     addEntry,
     getByRoomId,
-    deleteById
+    deleteById,
+    updateRoomQuestion
 };

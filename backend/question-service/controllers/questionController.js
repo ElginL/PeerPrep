@@ -90,7 +90,13 @@ const getRandomQuestion = (req, res, next) => {
         { $match: { complexity: complexity } },
         { $sample: { size: 1 } }
     ])
-    .then(question => res.status(200).json(question[0]))
+    .then(questions => {
+        if (questions.length === 0) {
+            return res.status(404).json({ msg: "No questions found" });
+        }
+
+        return res.status(200).json(questions[0]);
+    })
     .catch(err => next(err));
 };
 

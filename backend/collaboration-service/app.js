@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
                 clients,
                 socketId: socket.id,
                 username: socket.username,
+                fromSocket: socketId
             });
         });
     });
@@ -111,6 +112,33 @@ io.on("connection", (socket) => {
     socket.on(ACTIONS.EXECUTE_CODE, ({ roomId, result }) => {
         socket.in(roomId).emit(ACTIONS.EXECUTE_CODE, {
             result
+        });
+    });
+
+    socket.on(ACTIONS.SYNC_QUESTION, ({ roomId, newQuestionId }) => {
+        socket.in(roomId).emit(ACTIONS.SYNC_QUESTION, {
+            newQuestionId
+        });
+
+        io.to(socket.id).emit(ACTIONS.SYNC_QUESTION, {
+            newQuestionId
+        });
+    });
+
+    socket.on(ACTIONS.REQUEST_QUESTION_CHANGE, ({ roomId, complexity }) => {
+        socket.in(roomId).emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
+            complexity
+        });
+    });
+
+    socket.on(ACTIONS.DECLINE_QUESTION_CHANGE, ({ roomId }) => {
+        socket.in(roomId).emit(ACTIONS.DECLINE_QUESTION_CHANGE);
+    });
+
+    socket.on(ACTIONS.CHECK_SYNC, ({ roomId, template }) => {
+        socket.in(roomId).emit(ACTIONS.CHECK_SYNC, {
+            template,
+            socketId: socket.id
         });
     });
 

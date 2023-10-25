@@ -16,6 +16,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import ChangeQuestionButton from "../components/ChangeQuestionButton";
 
 const languageToTemplateKeyMap = {
     "python": "Python",
@@ -31,6 +32,7 @@ const Room = () => {
     const [clients, setClients] = useState([]);
     const [question, setQuestion] = useState({});
     const [language, setLanguage] = useState("python");
+    const [questionChanged, setQuestionChanged] = useState(false);
 
     const handleLanguageChange = (e) => {
         setLanguage(e.target.value);
@@ -56,27 +58,16 @@ const Room = () => {
                 reactNavigator("/");
             }
 
-            socketRef.current.emit(ACTIONS.JOIN, {
-                roomId,
-            });
+            const timeout = setTimeout(() => {
+                socketRef.current.emit(ACTIONS.JOIN, {
+                    roomId,
+                });
+            }, 500);
 
             socketRef.current.on(ACTIONS.JOIN_FAILED, () => {
                 alert("Full capacity reached");
                 reactNavigator("/");
             });
-
-            socketRef.current.on(
-                ACTIONS.JOINED,
-                ({ clients, username, socketId }) => {
-                    console.log(`${username} joined the room.`);
-
-                    setClients(clients);
-                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
-                        code: codeRef.current,
-                        socketId,
-                    });
-                }
-            );
 
             socketRef.current.on(
                 ACTIONS.DISCONNECTED,
@@ -94,12 +85,42 @@ const Room = () => {
                 console.log("Collaboration WebSocket disconnected");
                 socketRef.current.close();
             });
+
+            return () => {
+                clearTimeout(timeout);
+            }
         };
 
         if (socketRef.current === null) {
             init();
         }
     }, []);
+
+    useEffect(() => {
+        if (socketRef.current) {
+            socketRef.current.on(
+                ACTIONS.JOINED,
+                ({ clients, username, socketId, fromSocket }) => {
+                    console.log(`${username} joined the room.`);
+
+                    setClients(clients);
+
+                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                        code: codeRef.current,
+                        socketId,
+                    });
+
+                    if (fromSocket !== socketId) {
+                        socketRef.current.emit(ACTIONS.CHANGE_LANGUAGE, {
+                            roomId,
+                            language
+                        })
+                    }
+
+                }
+            );
+        }
+    }, [socketRef.current, language]);
 
     useEffect(() => {
         const fetchQuestion = async () => {
@@ -130,6 +151,8 @@ const Room = () => {
         socketRef.current.disconnect();
     }
 
+    console.log(question);
+
     return (
         <div className={styles["container"]}>
             <nav className={styles["header"]}>
@@ -142,6 +165,13 @@ const Room = () => {
                     ))}
                 </div>
                 <div className={styles["btn-group"]}>
+                    <ChangeQuestionButton 
+                        socketRef={socketRef}
+                        setQuestion={setQuestion}
+                        roomId={roomId}
+                        currentQuestionId={question._id}
+                        setQuestionChanged={setQuestionChanged}
+                    />
                     <button
                         className={`${styles["btn"]} ${styles["copy-btn"]}`}
                         onClick={copyRoomId}
@@ -217,6 +247,8 @@ const Room = () => {
                             }
                             language={language}
                             setLanguage={setLanguage}
+                            questionChanged={questionChanged}
+                            setQuestionChanged={setQuestionChanged}
                         />
                         <CodeExecutor
                             socketRef={socketRef}
