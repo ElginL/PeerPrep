@@ -4,7 +4,11 @@ const RunTimeErrorResult = ({ executionResults, resultsVisible }) => {
     return (
         <div className={styles["results-bar"]} style={{ display: resultsVisible ? 'block': 'none' }}>
             <h3 className={styles["runtime-error-header"]}>
-                Runtime Error
+                {
+                    executionResults.status === "Time Limit Exceeded"
+                        ? "Time Limit Exceeded"
+                        : "Runtime Error"
+                }
             </h3>
             <p className={styles["runtime-error-msg"]}>
                 { executionResults.message }

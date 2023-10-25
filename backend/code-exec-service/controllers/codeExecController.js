@@ -1,68 +1,89 @@
-const { executeOneTestCase } = require('../helper/executeOneTestCase'); 
+const { languageToIdMap } = require('../helper/languageToIdMap');
+const { attachPrintReturnValue } = require('../helper/attachPrintTemplates');
+const { submitBatch } = require('../helper/submitBatch');
+const { getBatchResult } = require('../helper/getBatchResult');
 
 const runAllTestCases = async (req, res, next) => {
     const { code, language, allInputs, allExpectedOutputs } = req.body;
 
-    const allTestCaseResults = [];
+    const submissions = [];
     
     for (let i = 0; i < allInputs.length; i += 1) {
         const input = allInputs[i];
-        const args = Object.values(input);
+        const inputValues = Object.values(input);
 
-        let stringifiedArgs = ""
-        for (const arg of args) {
-            if (Array.isArray(arg)) {
-                stringifiedArgs += JSON.stringify(arg);
-            } else if (typeof arg === 'string') {
-                stringifiedArgs += `'${arg}'`;
+        let inputValuesStr = ""
+        for (const value of inputValues) {
+            if (Array.isArray(value)) {
+                inputValuesStr += JSON.stringify(value);
+            } else if (typeof value === 'string') {
+                inputValuesStr += `"${value}"`;
             } else {
-                stringifiedArgs += arg;
+                inputValuesStr += value;
             }
 
-            stringifiedArgs += ","
+            inputValuesStr += ","
         }
 
-        const result = await executeOneTestCase(code, language, stringifiedArgs.substring(0, stringifiedArgs.length - 1));
+        inputValuesStr = inputValuesStr.substring(0, inputValuesStr.length - 1);
 
-        if (!result.isSuccess) {
-            // test case fails because of server error
-            return res.status(500).json({
-                status: 'Runtime Error',
-                message: result.data
-            });
-        }
+        const codeWithPrint = attachPrintReturnValue(language, code, inputValuesStr);
+
+        submissions.push({
+            source_code: Buffer.from(codeWithPrint).toString('base64'),
+            language_id: languageToIdMap[language]
+        });
+    }
+
+    let results;
+    try {
+        const tokens = await submitBatch(submissions)
+    
+        results = await getBatchResult(tokens);
+    } catch (error) {
+        return res.status(500).json({
+            status: "Internal Server Error",
+            message: error
+        })
+    }
+
+    const allTestCaseResults = []
+    for (let i = 0; i < results.length; i += 1) {
+        const result = results[i];
+
+        console.log(result);
         
-        if (result.data.status.description.startsWith('Runtime Error')) {
-            // test case fails because of code error
+        if (result.status.description.startsWith('Runtime Error')) {
             return res.status(400).json({
                 status: 'Runtime Error',
-                message: result.data.stderr
+                message: Buffer.from(result.stderr, 'base64').toString('utf-8')
             })
         }
-
-        if (result.data.status.description.startsWith('Time Limit Exceeded')) {
+    
+        if (result.status.description.startsWith('Time Limit Exceeded')) {
             return res.status(400).json({
                 status: "Time Limit Exceeded",
                 message: "Code took too long to run"
             });
         }
-
-        if (result.data.status.description === 'Accepted') {
+    
+        if (result.status.description === 'Accepted') {
+            result.stdout = Buffer.from(result.stdout, 'base64').toString('utf-8')
             let expectedOutput = allExpectedOutputs[i];
-
+    
             if (Array.isArray(expectedOutput)) {
                 expectedOutput = JSON.stringify(expectedOutput);
-                result.data.stdout = result.data.stdout.replaceAll(" ", "");
+                result.stdout = result.stdout.replaceAll(" ", "");
             } else {
                 expectedOutput = expectedOutput.toString();
             }
-
-            if (result.data.stdout.trim() === expectedOutput) {
-                allTestCaseResults.push({ status: 'Passed', message: result.data.stdout }); 
+    
+            if (result.stdout.trim() === expectedOutput) {
+                allTestCaseResults.push({ status: 'Passed', message: result.stdout }); 
             } else {
-                allTestCaseResults.push({ status: 'Failed', message: result.data.stdout });
+                allTestCaseResults.push({ status: 'Failed', message: result.stdout });
             }
-
+    
             continue;
         }
 
