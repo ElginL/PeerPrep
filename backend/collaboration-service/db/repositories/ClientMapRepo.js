@@ -1,7 +1,7 @@
 const ClientMap = require("../models/ClientMap");
 
-const addEntry = (socketId, username) => {
-    ClientMap.create({
+const addEntry = async (socketId, username) => {
+    await ClientMap.create({
         socketId,
         username,
     });
@@ -9,11 +9,10 @@ const addEntry = (socketId, username) => {
 
 const getBySocketId = async (socketId) => {
     const clientMapping = await ClientMap.findByPk(socketId);
-    if (clientMapping == null) {
+    if (clientMapping === null) {
         return null;
     }
-    console.log("FOUND USERNAME");
-    console.log(clientMapping.username);
+    
     return clientMapping;
 };
 
