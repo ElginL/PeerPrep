@@ -16,16 +16,16 @@ spec:
         app: question-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/question-service@sha256:02595fe5e7d8ee4160e297949f4edf2ff10404ab06682cdbb744d77fd73bea50
+      - image: registry.digitalocean.com/peerprep/question-service@sha256:4b6a6def489cd2fdd3827678d5c3fb148f8f7e6d695ed6472aec049c6cd7f3fc
         imagePullPolicy: Always
         name: question-service
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "1Gi"
-            cpu: "1000m"
+            memory: "512Mi"
+            cpu: "500m"
       restartPolicy: Always
 status: {}
 ---
@@ -40,7 +40,7 @@ spec:
     kind: Deployment
     name: question-service
   minReplicas: 1
-  maxReplicas: 10
+  maxReplicas: 3
   metrics:
   - type: Resource
     resource:
