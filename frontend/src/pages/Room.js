@@ -151,8 +151,6 @@ const Room = () => {
         socketRef.current.disconnect();
     }
 
-    console.log(question);
-
     return (
         <div className={styles["container"]}>
             <nav className={styles["header"]}>
