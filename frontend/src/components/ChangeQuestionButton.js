@@ -58,7 +58,8 @@ const ChangeQuestionButton = ({
                 socketRef={socketRef}
                 isVisible={changeModalVisible}
                 roomId={roomId}
-                closeHandler={() => setChangeModalVisible(false)} 
+                closeHandler={() => setChangeModalVisible(false)}
+                currentQuestionId={currentQuestionId}
             />
             <RequestQuestionModal
                 socketRef={socketRef}

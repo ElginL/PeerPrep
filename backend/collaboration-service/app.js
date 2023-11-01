@@ -133,7 +133,17 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on(ACTIONS.REQUEST_QUESTION_CHANGE, ({ roomId, complexity }) => {
+    socket.on(ACTIONS.REQUEST_QUESTION_CHANGE, async ({ roomId, complexity }) => {
+        const clients = await getAllConnectedClients(roomId);
+
+        if (clients.length < 2) {
+            io.to(socket.id).emit(ACTIONS.CHANGE_QUESTION, {
+                complexity
+            });
+
+            return;
+        }
+
         socket.in(roomId).emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
             complexity
         });
