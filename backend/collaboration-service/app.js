@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
                 complexity
             });
 
-            return { socketId: '', username: '' };
+            return;
         }
 
         socket.in(roomId).emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
