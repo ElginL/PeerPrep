@@ -74,6 +74,7 @@ io.use(async (socket, next) => {
 
 io.on("connection", (socket) => {
     socket.on(ACTIONS.JOIN, async ({ roomId }) => {
+        await clientMapRepo.addEntry(socket.id, socket.username);
         const clients = await getAllConnectedClients(roomId);
 
         if (clients.length >= 2) {
@@ -84,7 +85,7 @@ io.on("connection", (socket) => {
         console.log(`${socket.username} connected to room ${roomId}`);
 
         socket.join(roomId);
-        await clientMapRepo.addEntry(socket.id, socket.username);
+        // await clientMapRepo.addEntry(socket.id, socket.username);
         clients.push({ socketId: socket.id, username: socket.username });
 
         console.log(clients);
@@ -141,7 +142,7 @@ io.on("connection", (socket) => {
                 complexity
             });
 
-            return;
+            return { socketId: '', username: '' };
         }
 
         socket.in(roomId).emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
