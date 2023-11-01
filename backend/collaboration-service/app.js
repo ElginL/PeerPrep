@@ -87,6 +87,8 @@ io.on("connection", (socket) => {
         await clientMapRepo.addEntry(socket.id, socket.username);
         clients.push({ socketId: socket.id, username: socket.username });
 
+        console.log(clients);
+
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
                 clients,
@@ -149,16 +151,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnecting", async () => {
-        const rooms = [...socket.rooms];
-        rooms.forEach(async (roomId) => {
-            const clientMapping = await clientMapRepo.getBySocketId(socket.id);
+        const clientMapping = await clientMapRepo.getBySocketId(socket.id);
 
-            if (!clientMapping) {
-                socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
-                    socketId: socket.id,
-                    username: clientMapping.username,
-                });
-            }
+        socket.in(socket.roomId).emit(ACTIONS.DISCONNECTED, {
+            socketId: socket.id,
+            username: clientMapping.username
         });
 
         await clientMapRepo.deleteBySocketId(socket.id);

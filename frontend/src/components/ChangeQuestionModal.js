@@ -81,8 +81,11 @@ const ChangeQuestionModal = ({ socketRef, isVisible, closeHandler, roomId }) => 
                     </Box>
                 ) : (
                     <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginBottom: 2, color: 'green' }}>
                             Request Sent!
+                        </Typography>
+                        <Typography id="modal-modal-description" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
+                            You need your partner to accept the request
                         </Typography>
                     </Box>
                 )
