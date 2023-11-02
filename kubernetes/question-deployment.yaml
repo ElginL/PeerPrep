@@ -16,7 +16,7 @@ spec:
         app: question-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/question-service@sha256:4b6a6def489cd2fdd3827678d5c3fb148f8f7e6d695ed6472aec049c6cd7f3fc
+      - image: <IMAGE>
         imagePullPolicy: Always
         name: question-service
         resources:
@@ -28,6 +28,19 @@ spec:
             cpu: "500m"
       restartPolicy: Always
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: question-service
+  namespace: peerprep
+spec:
+  selector:
+    app: question-service
+  ports:
+    - protocol: TCP
+      port: 3001
+  type: ClusterIP
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

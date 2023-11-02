@@ -47,3 +47,10 @@ spec:
                 name: communication-service
                 port:
                   number: 3005
+          - path: /code-exec-service
+            pathType: Prefix
+            backend:
+              service:
+                name: code-exec-service
+                port:
+                  number: 3007

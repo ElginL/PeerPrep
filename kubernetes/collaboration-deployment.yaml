@@ -16,7 +16,7 @@ spec:
         app: collaboration-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/collaboration-service@sha256:8b3947d139ab12ba8dad29796d3ed221569c0e86c8fb05fce0c58b6fdafd8eaf
+      - image: <IMAGE>
         imagePullPolicy: Always
         name: collaboration-service
         resources:
@@ -28,3 +28,17 @@ spec:
             cpu: "500m"
       restartPolicy: Always
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collaboration-service
+  namespace: peerprep
+spec:
+  selector:
+    app: collaboration-service
+  ports:
+    - protocol: "TCP"
+      port: 3004
+      targetPort: 3004
+  type: ClusterIP

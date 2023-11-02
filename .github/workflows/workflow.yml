@@ -1,0 +1,122 @@
+name: Deploy to DigitalOcean Kubernetes
+
+on:
+  push:
+    branches:
+      - master
+      - elgin
+    paths:
+      - 'backend/**'
+      - 'kubernetes/**'
+      - '.github/workflows/**'
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@main
+
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      
+    - name: Build user service container image
+      run: docker build -t ${{ secrets.REGISTRY_NAME }}/user-service:$(echo $GITHUB_SHA | head -c7) $GITHUB_WORKSPACE/backend/user-service
+    
+    - name: Build question service container image
+      run: docker build -t ${{ secrets.REGISTRY_NAME }}/question-service:$(echo $GITHUB_SHA | head -c7) $GITHUB_WORKSPACE/backend/question-service
+    
+    - name: Build matching service container image
+      run: docker build -t ${{ secrets.REGISTRY_NAME }}/matching-service:$(echo $GITHUB_SHA | head -c7) $GITHUB_WORKSPACE/backend/matching-service
+
+    - name: Build collaboration service container image
+      run: docker build -t ${{ secrets.REGISTRY_NAME }}/collaboration-service:$(echo $GITHUB_SHA | head -c7) $GITHUB_WORKSPACE/backend/collaboration-service
+
+    - name: Build code execution service container image
+      run: docker build -t ${{ secrets.REGISTRY_NAME }}/code-exec-service:$(echo $GITHUB_SHA | head -c7) $GITHUB_WORKSPACE/backend/code-exec-service
+
+    - name: Build communication service container image
+      run: docker build -t ${{ secrets.REGISTRY_NAME }}/communication-service:$(echo $GITHUB_SHA | head -c7) $GITHUB_WORKSPACE/backend/communication-service
+
+    - name: Log in to DigitalOcean Container Registry with short-lived credentials
+      run: doctl registry login --expiry-seconds 1200
+
+    - name: Push user-service image to DigitalOcean Container Registry
+      run: docker push ${{ secrets.REGISTRY_NAME }}/user-service:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Push question-service image to DigitalOcean Container Registry
+      run: docker push ${{ secrets.REGISTRY_NAME }}/question-service:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Push matching-service image to DigitalOcean Container Registry
+      run: docker push ${{ secrets.REGISTRY_NAME }}/matching-service:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Push collaboration-service image to DigitalOcean Container Registry
+      run: docker push ${{ secrets.REGISTRY_NAME }}/collaboration-service:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Push code-exec-service image to DigitalOcean Container Registry
+      run: docker push ${{ secrets.REGISTRY_NAME }}/code-exec-service:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Push communication-service image to DigitalOcean Container Registry
+      run: docker push ${{ secrets.REGISTRY_NAME }}/communication-service:$(echo $GITHUB_SHA | head -c7)
+
+    - name: Update user deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/user-service:'${TAG}'|' $GITHUB_WORKSPACE/kubernetes/user-deployment.yaml
+
+    - name: Update question deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/question-service:'${TAG}'|' $GITHUB_WORKSPACE/kubernetes/question-deployment.yaml
+
+    - name: Update matching deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/matching-service:'${TAG}'|' $GITHUB_WORKSPACE/kubernetes/matching-deployment.yaml
+
+    - name: Update collaboration deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/collaboration-service:'${TAG}'|' $GITHUB_WORKSPACE/kubernetes/collaboration-deployment.yaml
+
+    - name: Update code execution deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/code-exec-service:'${TAG}'|' $GITHUB_WORKSPACE/kubernetes/code-exec-deployment.yaml
+
+    - name: Update communication deployment file
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/communication-service:'${TAG}'|' $GITHUB_WORKSPACE/kubernetes/communication-deployment.yaml
+
+    - name: Save DigitalOcean kubeconfig with short-lived credentials
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME }}
+
+    - name: Deploy user-deployment DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/user-deployment.yaml
+
+    - name: Deploy question-deployment DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/question-deployment.yaml
+  
+    - name: Deploy matching-deployment DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/matching-deployment.yaml
+
+    - name: Deploy collaboration-deployment DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/collaboration-deployment.yaml
+
+    - name: Deploy code-exec-deployment DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/code-exec-deployment.yaml
+
+    - name: Deploy communication-deployment DigitalOcean Kubernetes
+      run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/communication-deployment.yaml
+
+    - name: Verify question-service deployment
+      run: kubectl rollout status deployment/question-service
+
+    - name: Verify user-service deployment
+      run: kubectl rollout status deployment/user-service
+
+    - name: Verify matching-service deployment
+      run: kubectl rollout status deployment/matching-service
+
+    - name: Verify collaboration-service deployment
+      run: kubectl rollout status deployment/collaboration-service
+
+    - name: Verify code-exec-service deployment
+      run: kubectl rollout status deployment/code-exec-service
+
+    - name: Verify communication-service deployment
+      run: kubectl rollout status deployment/communication-service
+
+    - name: Configure kubernetes ingress
+      run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/ingress.yaml

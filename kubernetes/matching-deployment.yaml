@@ -16,7 +16,7 @@ spec:
         app: matching-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/matching-service@sha256:9c2d45cde579cd9d280d9eda5a270c2e4dee0d1de818628d5ea0c6493a3aef2a
+      - image: <IMAGE>
         imagePullPolicy: IfNotPresent
         name: matching-service
         resources:
@@ -28,3 +28,17 @@ spec:
             cpu: "500m"
       restartPolicy: Always
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matching-service
+  namespace: peerprep
+spec:
+  selector:
+    app: matching-service
+  ports:
+    - protocol: "TCP"
+      port: 3003
+      targetPort: 3003
+  type: ClusterIP
