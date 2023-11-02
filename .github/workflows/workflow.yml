@@ -105,23 +105,5 @@ jobs:
     - name: Deploy communication-deployment DigitalOcean Kubernetes
       run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/communication-deployment.yaml
 
-    - name: Verify question-service deployment
-      run: kubectl rollout status deployment/question-service
-
-    - name: Verify user-service deployment
-      run: kubectl rollout status deployment/user-service
-
-    - name: Verify matching-service deployment
-      run: kubectl rollout status deployment/matching-service
-
-    - name: Verify collaboration-service deployment
-      run: kubectl rollout status deployment/collaboration-service
-
-    - name: Verify code-exec-service deployment
-      run: kubectl rollout status deployment/code-exec-service
-
-    - name: Verify communication-service deployment
-      run: kubectl rollout status deployment/communication-service
-
     - name: Configure kubernetes ingress
       run: kubectl apply -f $GITHUB_WORKSPACE/kubernetes/ingress.yaml
