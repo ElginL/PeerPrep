@@ -17,7 +17,38 @@ spec:
     spec:
       containers:
       - image: <IMAGE>
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
+        env:
+        - name: DB
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_HOST
+        - name: DB_DIALECT
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_DIALECT
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: JWT_SECRET_KEY
         name: user-service
         resources:
           requests:

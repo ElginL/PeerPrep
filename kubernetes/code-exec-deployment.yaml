@@ -18,6 +18,27 @@ spec:
       containers:
       - image: <IMAGE>
         imagePullPolicy: Always
+        env:
+        - name: CODE_EXECUTION_URL
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: CODE_EXECUTION_URL
+        - name: X_RAPIDAPI_KEY
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: X_RAPIDAPI_KEY
+        - name: X_RAPIDAPI_HOST
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: X_RAPIDAPI_HOST
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: JWT_SECRET_KEY
         name: code-exec-service
         resources:
           requests:
