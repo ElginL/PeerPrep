@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -8,6 +8,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { getRandomQuestion } from "../api/questions";
+import { updateRoomQuestion } from "../api/collaboration";
 
 const style = {
   position: 'absolute',
@@ -22,9 +24,34 @@ const style = {
   color: 'black'
 };
 
-const ChangeQuestionModal = ({ socketRef, isVisible, closeHandler, roomId }) => {
+const ChangeQuestionModal = ({ socketRef, isVisible, closeHandler, roomId, currentQuestionId }) => {
     const [newQuestionComplexity, setNewQuestionComplexity] = useState('Easy');
     const [requestSent, setRequestSent] = useState(false);
+
+    useEffect(() => {
+        if (socketRef.current) {
+            socketRef.current.on(ACTIONS.CHANGE_QUESTION, async ({ complexity }) => {
+                closeHandler();
+                setRequestSent(false);
+                
+                let randomQuestion = await getRandomQuestion(complexity);
+
+                while (randomQuestion._id === currentQuestionId) {
+                    randomQuestion = await getRandomQuestion(complexity);
+                }
+        
+                const isSuccessful = await updateRoomQuestion(roomId, randomQuestion._id);
+                if (!isSuccessful) {
+                    return;
+                }
+            
+                socketRef.current.emit(ACTIONS.SYNC_QUESTION, {
+                    roomId,
+                    newQuestionId: randomQuestion._id
+                });
+            });
+        }
+    }, [socketRef.current]);
 
     const requestChangeHandler = () => {
         socketRef.current.emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
@@ -81,8 +108,11 @@ const ChangeQuestionModal = ({ socketRef, isVisible, closeHandler, roomId }) => 
                     </Box>
                 ) : (
                     <Box sx={style}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginBottom: 2, color: 'green' }}>
                             Request Sent!
+                        </Typography>
+                        <Typography id="modal-modal-description" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
+                            You need your partner to accept the request
                         </Typography>
                     </Box>
                 )

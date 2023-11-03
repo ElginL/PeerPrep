@@ -16,8 +16,39 @@ spec:
         app: collaboration-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/collaboration-service@sha256:8b3947d139ab12ba8dad29796d3ed221569c0e86c8fb05fce0c58b6fdafd8eaf
+      - image: <IMAGE>
         imagePullPolicy: Always
+        env:
+        - name: DB
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_HOST
+        - name: DB_DIALECT
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_DIALECT
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: JWT_SECRET_KEY
         name: collaboration-service
         resources:
           requests:
@@ -28,3 +59,17 @@ spec:
             cpu: "500m"
       restartPolicy: Always
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collaboration-service
+  namespace: peerprep
+spec:
+  selector:
+    app: collaboration-service
+  ports:
+    - protocol: "TCP"
+      port: 3004
+      targetPort: 3004
+  type: ClusterIP

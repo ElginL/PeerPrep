@@ -16,7 +16,7 @@ spec:
         app: communication-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/communication-service@sha256:cbcbacc34763cefb5fe2855b11e1237336adb9857769ba8beb2bf3e69f0435c6
+      - image: <IMAGE>
         imagePullPolicy: Always
         name: communication-service
         resources:
@@ -28,3 +28,17 @@ spec:
             cpu: "500m"
       restartPolicy: Always
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: communication-service
+  namespace: peerprep
+spec:
+  selector:
+    app: communication-service
+  ports:
+    - protocol: "TCP"
+      port: 3005
+      targetPort: 3005
+  type: ClusterIP

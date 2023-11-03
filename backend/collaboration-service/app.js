@@ -74,6 +74,7 @@ io.use(async (socket, next) => {
 
 io.on("connection", (socket) => {
     socket.on(ACTIONS.JOIN, async ({ roomId }) => {
+        await clientMapRepo.addEntry(socket.id, socket.username);
         const clients = await getAllConnectedClients(roomId);
 
         if (clients.length >= 2) {
@@ -84,8 +85,10 @@ io.on("connection", (socket) => {
         console.log(`${socket.username} connected to room ${roomId}`);
 
         socket.join(roomId);
-        await clientMapRepo.addEntry(socket.id, socket.username);
+        // await clientMapRepo.addEntry(socket.id, socket.username);
         clients.push({ socketId: socket.id, username: socket.username });
+
+        console.log(clients);
 
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
@@ -131,7 +134,17 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on(ACTIONS.REQUEST_QUESTION_CHANGE, ({ roomId, complexity }) => {
+    socket.on(ACTIONS.REQUEST_QUESTION_CHANGE, async ({ roomId, complexity }) => {
+        const clients = await getAllConnectedClients(roomId);
+
+        if (clients.length < 2) {
+            io.to(socket.id).emit(ACTIONS.CHANGE_QUESTION, {
+                complexity
+            });
+
+            return;
+        }
+
         socket.in(roomId).emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
             complexity
         });
@@ -149,16 +162,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnecting", async () => {
-        const rooms = [...socket.rooms];
-        rooms.forEach(async (roomId) => {
-            const clientMapping = await clientMapRepo.getBySocketId(socket.id);
+        const clientMapping = await clientMapRepo.getBySocketId(socket.id);
 
-            if (!clientMapping) {
-                socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
-                    socketId: socket.id,
-                    username: clientMapping.username,
-                });
-            }
+        socket.in(socket.roomId).emit(ACTIONS.DISCONNECTED, {
+            socketId: socket.id,
+            username: clientMapping.username
         });
 
         await clientMapRepo.deleteBySocketId(socket.id);
