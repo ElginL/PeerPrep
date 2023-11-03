@@ -10,6 +10,7 @@ const authenticateJwt = (req, res, next) => {
     const token = header.substring(7);
 
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+        console.log(process.env.JWT_SECRET_KEY ? "SET" : "NOT SET");
         if (err) {
             return res.status(401).json({ msg: 'Authentication failed: invalid token' });
         }
