@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 app.use(express.json());
 const corsOption = {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://peer-prep-ywhzo.ondigitalocean.app'],
     methods: 'GET, POST, DELETE, PUT',
     credentials: true
 };
@@ -26,7 +26,7 @@ app.use(cors(corsOption));
 const io = require("socket.io")(server, {
     path: '/collaboration-service/socket.io',
     cors: {
-        origin: ['http://localhost:3000'],
+        origin: ['http://localhost:3000', 'https://peer-prep-ywhzo.ondigitalocean.app'],
         credentials: true
     },
 });

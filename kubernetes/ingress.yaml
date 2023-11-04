@@ -7,10 +7,16 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/websocket-services: "collaboration-service,matching-service,communication-service"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: "nginx"
+  tls:
+    - hosts:
+      - peerprepbackend.com
+      secretName: peerprep-tls
   rules:
-    - http:
+    - host: "peerprepbackend.com"
+      http:
         paths:
           - path: /question-service
             pathType: Prefix
