@@ -63,6 +63,71 @@ const addQuestion = async (req, res, next) => {
         .catch(err => next(err));
 };
 
+const updateQuestion = async (req, res, next) => {
+    try {
+        const question = await Question.findById(req.body.questionId);
+
+        await CodeTemplate.updateOne(
+            { _id: question.codeTemplate },
+            {
+                $set: {
+                    templates: req.body.codeTemplates
+                },
+            }
+        );
+
+        const updatedTestCases = [];
+        for (let i = 0; i < req.body.inputs.length; i++) {
+            const res = await TestCase.updateOne(
+                { _id: question.testCases[i] },
+                {
+                    $set: {
+                        input: req.body.inputs[i],
+                        output: req.body.outputs[i]
+                    }
+                }
+            )
+            
+            if (res.matchedCount === 0) {
+                const newTestCase = new TestCase({
+                    input: req.body.inputs[i],
+                    output: req.body.outputs[i]
+                });
+
+                newTestCase.save();
+
+                updatedTestCases.push(newTestCase._id);
+            } else {
+                updatedTestCases.push(question.testCases[i]);
+            }
+        }
+
+        for (const id of question.testCases) {
+            if (!req.body.testCasesIds.includes(id.toString())) {
+                await TestCase.findByIdAndRemove(id);
+            }
+        }
+
+        await Question.updateOne(
+            { _id: req.body.questionId },
+            {
+                $set: {
+                    title: req.body.title,
+                    categories: req.body.categories,
+                    complexity: req.body.complexity,
+                    description: req.body.description,
+                    testCases: updatedTestCases
+                },
+            }
+        );
+
+        return res.status(201).send("Question updated successfully");
+    } catch (err) {
+        console.error(err);
+        return next(err);
+    }
+};
+
 
 const deleteQuestion = async (req, res, next) => {
     const deleteIds = req.body.ids;
@@ -104,6 +169,7 @@ module.exports = {
     getQuestionById,
     getAllQuestions,
     addQuestion,
+    updateQuestion,
     deleteQuestion,
     getRandomQuestion
 };

@@ -62,7 +62,6 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
             setErrorMessage("Submit failed. All fields must be filled");
             return;
         }
-        console.log(codeTemplateFields);
 
         // Checks that only 1 code template per language, and template is not empty.
         const uniqueKeys = new Set();
@@ -116,7 +115,7 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
 
         // Converting expected outputs to valid format
         const expectedOutputsArr = []
-        for (let output in expectedOutputs) {
+        for (let output of expectedOutputs) {
             if (outputType === 'Integer') {
                 output = parseInt(output, 10); // The second argument (base) is optional but recommended to avoid unexpected behavior.
 
@@ -259,7 +258,10 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                         <p className={styles["error-msg"]}>{errorMessage}</p>
                     }
                     <AddQuestionTitle title={title} setTitle={setTitle} />
-                    <CategoryDropdown setCategories={setCategories} />
+                    <CategoryDropdown
+                        selectedCategories={categories}
+                        setCategories={setCategories} 
+                    />
                     <AddComplexity complexity={complexity} setComplexity={setComplexity} />
                     <InputLabel id="question-description">Question Description</InputLabel>
                     <Editor

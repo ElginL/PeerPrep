@@ -15,13 +15,13 @@ import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import styles from '../styles/components/AddQuestionForm.module.css';
-import { addQuestion } from '../api/questions';
 import AddQuestionTitle from './AddQuestionTitle';
 import AddComplexity from './AddComplexity';
 import AddCodeTemplate from './AddCodeTemplate';
 import AddArguments from './AddArguments';
 import AddOutput from './AddOutput';
 import AddTestCase from './AddTestCase';
+import { updateQuestion } from '../api/questions';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -41,80 +41,103 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
     const [expectedOutputs, setExpectedOutputs] = useState([]);
     const [types, setTypes] = useState([]);
     const [outputType, setOutputType] = useState("Integer");
-
-
     
     useEffect(() => {
-        if (question.title == undefined) {
-            return
+        if (!question.title) {
+            return;
         }
-        console.log(question)
-        console.log(question.types)
-        const init = question.codeTemplate.templates
-        const keys = Object.keys(question.codeTemplate.templates)
-        let codeTemplates = []
-        for (let key of keys) {
-            const temp = {}
-            temp["language"] = String(key)
-            temp["template"] = String(init[key])
-            codeTemplates.push(temp);
+
+        // populating code templates
+        const templates = question.codeTemplate.templates;
+        const languages = Object.keys(templates);
+        let codeTemplates = [];
+        for (let language of languages) {
+            codeTemplates.push({ "language": language, "template": templates[language]});
         }
+        setCodeTemplateFields(codeTemplates);
+
         // Create a temporary element and set its innerHTML to the HTML content
         const tempElement = document.createElement('div');
         tempElement.innerHTML = question.description;
         // Extract the text content
         const textContent = tempElement.innerText;
-        const contentState = ContentState.createFromText(textContent)
-        const editorState = EditorState.createWithContent(contentState)
-        setDescription(editorState)
-        setTitle(question.title)
-        setCategories(question.categories)
-        console.log(question.categories)
-        setComplexity(question.complexity)
-        console.log(question.complexity)
-        setCodeTemplateFields(codeTemplates)
+        const contentState = ContentState.createFromText(textContent);
+        const editorState = EditorState.createWithContent(contentState);
+        setDescription(editorState);
 
-        const testInput = question.testCases[0].input
-        const testOutput = question.testCases[0].output
-        const inputKeys = Object.keys(question.testCases[0].input)
-        setInputCount(inputKeys.length)
-        let argNames = []
-        for (let key of inputKeys) {
-            argNames.push(key)
+        setTitle(question.title);
+
+        setCategories(question.categories);
+
+        setComplexity(question.complexity);
+
+        // argument names
+        const inputParameterNames = Object.keys(question.testCases[0].input);
+        setArgumentNames(inputParameterNames);
+
+        // input count
+        setInputCount(inputParameterNames.length);
+
+        // inputs and outputs
+        let inputs = [];
+        let outputs = [];
+        for (const testCase of question.testCases) {
+            inputs.push(testCase.input);
+            outputs.push(testCase.output);
         }
-        setArgumentNames(argNames)
-        let inputs = []
-        let outputs = []
-        for (let i = 0; i < question.testCases.length; i++) {
-            const temp = question.testCases[i]
-            inputs[i] = temp.input
-            outputs[i] = temp.output
-        }
-        setTestCases(inputs)
-        setExpectedOutputs(outputs)
-        let inputTypes = []
-        for (let key of inputKeys) {
-            const temp = typeof testInput[key]
-            if (typeof testInput[key] == 'object') {
-                inputTypes.push('Array')
-            } else {
-                inputTypes.push(temp)
+        
+        inputs = inputs.map(input => {
+            const tmp = {};
+            for (const inputName of Object.keys(input)) {
+                const value = input[inputName];
+
+                if (Array.isArray(value)) {
+                    tmp[inputName] = `[${value.join(', ')}]`;
+                } else {
+                    tmp[inputName] = value.toString();
+                }
+            }
+            return tmp;
+        });
+
+        outputs = outputs.map(value => {
+            if (Array.isArray(value)) {
+                return `[${value.join(', ')}]`;
+            }
+
+            return value.toString();
+        });
+        setTestCases(inputs);
+        setExpectedOutputs(outputs);
+
+        // input types
+        const inputTypes = [];
+        const values = Object.values(question.testCases[0].input);
+        for (const value of values) {
+            if (Array.isArray(value)) {
+                inputTypes.push('Array');
+            } else if (typeof value === 'number' && Number.isInteger(value)) {
+                inputTypes.push('Integer');
+            } else if (typeof value === 'number' && !Number.isInteger(value)) {
+                inputTypes.push('Float');
+            } else if (typeof value === 'string') {
+                inputTypes.push('String');
             }
         }
-        setTypes(inputTypes)
-        if (typeof testOutput == 'object') {
-            setOutputType('Array')
-        } else if (typeof testOutput == 'number') {
-            if (testOutput % 1 == 0) {
-                setOutputType('Integer')
-            } else {
-                setOutputType('Float')
-            }
-        } else {
-            setOutputType(typeof testOutput)
-        }
 
-        console.log(typeof testOutput)
+        setTypes(inputTypes);
+
+        // output types
+        const outputValue = question.testCases[0].output;
+        if (Array.isArray(outputValue)) {
+            setOutputType('Array');
+        } else if (typeof outputValue === 'number' && Number.isInteger(outputValue)) {
+            setOutputType('Integer');
+        } else if (typeof outputValue === 'number' && !Number.isInteger(outputValue)) {
+            setOutputType('Float');
+        } else if (typeof outputValue === 'string') {
+            setOutputType('String');
+        }
     }, [question?.title]);
 
     useEffect(() => {
@@ -125,7 +148,7 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
         }
     }, [isVisible]);
 
-      const submitHandler = async e => {
+    const submitHandler = async e => {
         e.preventDefault();
 
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
@@ -136,7 +159,6 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
             setErrorMessage("Submit failed. All fields must be filled");
             return;
         }
-        console.log(codeTemplateFields);
 
         // Checks that only 1 code template per language, and template is not empty.
         const uniqueKeys = new Set();
@@ -190,7 +212,7 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
 
         // Converting expected outputs to valid format
         const expectedOutputsArr = []
-        for (let output in expectedOutputs) {
+        for (let output of expectedOutputs) {
             if (outputType === 'Integer') {
                 output = parseInt(output, 10); // The second argument (base) is optional but recommended to avoid unexpected behavior.
 
@@ -266,11 +288,12 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
             testCaseInputsArr.push(testCaseObj);
         }
 
-        const response = await UpdateQuestionForm(
+        const response = await updateQuestion(
+            question,
             title, 
             categories, 
             complexity, 
-            stringifiedDescription, 
+            stringifiedDescription,
             testCaseInputsArr, 
             expectedOutputsArr,
             codeTemplateFields
@@ -280,23 +303,9 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
             setErrorMessage(response.message);
             return;
         }
-        
-        // Reset form
-        setIsVisible(false);
-        setErrorMessage("");
-        setTitle("");
-        setDescription(EditorState.createEmpty());
-        setCategories([]);
-        setComplexity("Easy")
-        setCodeTemplateFields([ { language: 'Python', template: '' } ]);
-        setInputCount(0);
-        setArgumentNames([""]);
-        setTestCases([]);
-        setExpectedOutputs([]);
-        setTypes([]);
-        setOutputType("Integer");
-    };
 
+        setIsVisible(false);
+    };
 
     const handleClose = () => {
         setIsVisible(false);
@@ -333,7 +342,10 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
                         <p className={styles["error-msg"]}>{errorMessage}</p>
                     }
                     <AddQuestionTitle title={title} setTitle={setTitle} />
-                    <CategoryDropdown setCategories={setCategories} />
+                    <CategoryDropdown 
+                        selectedCategories={categories}
+                        setCategories={setCategories} 
+                    />
                     <AddComplexity complexity={complexity} setComplexity={setComplexity} />
                     <InputLabel id="question-description">Question Description</InputLabel>
                     <Editor
