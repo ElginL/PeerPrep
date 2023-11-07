@@ -72,11 +72,8 @@ const deleteQuestionsByIds = async (ids) => {
 }
 
 const updateQuestion = async (question, title, categories, complexity, description, testCases, expectedOutputs, codeTemplates) => {
-    const testCasesIds = question.testCases.map(testCase => testCase._id);
-
     const data = {
         questionId: question._id,
-        testCasesIds: testCasesIds,
         title: title,
         categories: categories,
         complexity: complexity,

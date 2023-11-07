@@ -77,6 +77,7 @@ const updateQuestion = async (req, res, next) => {
         );
 
         const updatedTestCases = [];
+        const oldTestCasesUpdated = [];
         for (let i = 0; i < req.body.inputs.length; i++) {
             const res = await TestCase.updateOne(
                 { _id: question.testCases[i] },
@@ -86,7 +87,7 @@ const updateQuestion = async (req, res, next) => {
                         output: req.body.outputs[i]
                     }
                 }
-            )
+            );
             
             if (res.matchedCount === 0) {
                 const newTestCase = new TestCase({
@@ -99,11 +100,12 @@ const updateQuestion = async (req, res, next) => {
                 updatedTestCases.push(newTestCase._id);
             } else {
                 updatedTestCases.push(question.testCases[i]);
+                oldTestCasesUpdated.push(question.testCases[i]);
             }
         }
 
         for (const id of question.testCases) {
-            if (!req.body.testCasesIds.includes(id.toString())) {
+            if (!oldTestCasesUpdated.includes(id)) {
                 await TestCase.findByIdAndRemove(id);
             }
         }
