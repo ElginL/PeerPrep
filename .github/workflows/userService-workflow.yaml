@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - play
     paths:
       - 'backend/user-service/**'
       - 'kubernetes/user-deployment.yaml'

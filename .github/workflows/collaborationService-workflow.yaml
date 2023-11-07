@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - play
     paths:
       - 'backend/collaboration-service/**'
       - 'kubernetes/collaboration-deployment.yaml'
