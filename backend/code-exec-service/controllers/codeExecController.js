@@ -26,8 +26,16 @@ const runAllTestCases = async (req, res, next) => {
         }
 
         inputValuesStr = inputValuesStr.substring(0, inputValuesStr.length - 1);
-
-        const codeWithPrint = attachPrintReturnValue(language, code, inputValuesStr);
+        
+        let codeWithPrint = "";
+        try {
+            codeWithPrint = attachPrintReturnValue(language, code, inputValuesStr);
+        } catch (e) {
+            return res.status(400).json({
+                status: 'Runtime Error',
+                message: 'Missing method signature, or you have not made changes to the code'
+            });
+        }
 
         submissions.push({
             source_code: Buffer.from(codeWithPrint).toString('base64'),
