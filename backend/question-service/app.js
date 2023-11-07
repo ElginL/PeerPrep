@@ -26,7 +26,7 @@ app.use(express.json());
 
 const corsOption = {
     origin: ['http://localhost:3000', 'https://peer-prep-ywhzo.ondigitalocean.app'],
-    methods: 'GET, POST, DELETE, UPDATE'
+    methods: 'GET, POST, DELETE, PUT'
 };
 app.use(cors(corsOption));
 app.options('*', cors(corsOption));
