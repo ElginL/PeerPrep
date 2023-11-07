@@ -204,7 +204,7 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
 
         // Checks that expected outputs are not empty
         for (const output of expectedOutputs) {
-            if (output.trim() === "") {
+            if (output.trim() === "" || output.replace(/^"|"$/g, '') === "") {
                 setErrorMessage("Expected output cannot be empty!");
                 return;
             }
@@ -238,7 +238,9 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
                     setErrorMessage("Some outputs are specified as array but the value given is not an array!");
                     return;
                 }
-            } 
+            } else if (outputType === 'String') {
+                output = output.replace(/^"|"$/g, '');
+            }
 
             expectedOutputsArr.push(output);
         }
@@ -280,6 +282,8 @@ const UpdateQuestionForm = ({ isVisible, setIsVisible, question }) => {
                         setErrorMessage("Some inputs are specified as array but the value given is not an array!");
                         return;
                     }
+                } else if (argType === 'String') {
+                    value = value.replace(/^"|"$/g, '');
                 }
 
                 testCaseObj[argName] = value;
