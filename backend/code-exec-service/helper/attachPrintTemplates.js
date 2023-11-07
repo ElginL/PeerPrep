@@ -37,18 +37,22 @@ const attachJsPrintReturnValue = (jsCode, inputArgs) => {
 };
 
 const attachRubyPrintReturnValue = (rubyCode, inputArgs) => {
-    const methodSignature = /^def [a-zA-Z_]\w*\([^)]*\)\n/;
+    const methodSignature = /# @param {[^]*?@return {[^]*?}\s*def [a-zA-Z_]\w*\([^)]*\)\s*\n/;
 
     const match = rubyCode.match(methodSignature);
 
     if (!match) {
-        throw new Error("Missing method signature, or you have not made any changes to the code");
+        throw new Error("Missing or incorrectly formatted method signature");
     }
 
-    const methodName = rubyCode.substring(rubyCode.indexOf(" ") + 1, rubyCode.indexOf("("))
-    const returnValue = `${methodName}(${inputArgs})`;
+    const methodNameMatch = rubyCode.match(/def ([a-zA-Z_]\w*)\([^)]*\)/);
+    if (!methodNameMatch) {
+        throw new Error("Failed to extract method name");
+    }
 
-    return rubyCode + '\n' + `p ${returnValue}`;
+    const methodName = methodNameMatch[1];
+
+    return rubyCode + '\n' + `puts ${methodName}(${inputArgs})`;
 };
 
 const attachPrintReturnValue = (language, code, inputArgs) => {
