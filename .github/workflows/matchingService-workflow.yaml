@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean Kubernetes
+name: Deploy matching service to DigitalOcean Kubernetes
 
 on:
   push:
