@@ -71,8 +71,9 @@ const deleteQuestionsByIds = async (ids) => {
     }
 }
 
-const UpdateQuestion = async (title, categories, complexity, description, testCases, expectedOutputs, codeTemplates) => {
-    const questionToAdd = {
+const updateQuestion = async (question, title, categories, complexity, description, testCases, expectedOutputs, codeTemplates) => {
+    const data = {
+        questionId: question._id,
         title: title,
         categories: categories,
         complexity: complexity,
@@ -86,7 +87,7 @@ const UpdateQuestion = async (title, categories, complexity, description, testCa
     };
 
     try {
-        const response = await axios.post(baseUrl, questionToAdd, setAuthenticationHeader());
+        const response = await axios.put(baseUrl, data, setAuthenticationHeader());
 
         return {
             message: response.data,
@@ -116,5 +117,6 @@ export {
     addQuestion,
     deleteQuestionsByIds,
     setAuthenticationHeader,
-    getRandomQuestion
+    getRandomQuestion,
+    updateQuestion
 };

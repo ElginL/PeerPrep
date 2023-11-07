@@ -34,7 +34,7 @@ const categories = [
     "Geometry"
 ];
 
-const CategoryDropdown = ({ setCategories }) => {
+const CategoryDropdown = ({ selectedCategories, setCategories }) => {
     const handleCategoryChange = (event, newValue) => {
         setCategories(newValue);
     };
@@ -46,6 +46,7 @@ const CategoryDropdown = ({ setCategories }) => {
             options={categories}
             disableCloseOnSelect
             getOptionLabel={(option) => option}
+            value={selectedCategories}
             renderOption={(props, option, { selected }) => (
                 <li {...props}>
                 <Checkbox

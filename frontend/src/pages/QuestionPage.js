@@ -11,7 +11,6 @@ const QuestionPage = () => {
     const { id } = useParams();
 
     const [question, setQuestion] = useState({});
-
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -22,20 +21,25 @@ const QuestionPage = () => {
         };
 
         fetchQuestion(id);
-    }, [id]);
+    }, [id, isVisible]);
 
-    console.log(question)
+    console.log(question);
 
     return (
         <div>
             <Navbar />
-            <Button 
-                variant="contained"
-                onClick={() => setIsVisible(true)}>
-                Update
-            </Button>
             <div className={styles["container"]}>
-                <h1>{question.title}</h1>
+                <div className={styles["header-container"]}>
+                    <h1>{question.title}</h1>
+                    {
+                        localStorage.getItem('credentials') && JSON.parse(localStorage.getItem('credentials')).isManager && (<Button 
+                                variant="contained"
+                                onClick={() => setIsVisible(true)}
+                            >
+                            Update
+                        </Button>)
+                    }
+                </div>
                 <h3>{question.complexity}</h3>
                 <h3>{question.category}</h3>
                 <div 
@@ -47,6 +51,7 @@ const QuestionPage = () => {
                 isVisible={isVisible}
                 setIsVisible={setIsVisible}
                 question={question}
+
             />
         </div>
     );
