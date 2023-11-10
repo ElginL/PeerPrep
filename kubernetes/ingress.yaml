@@ -53,6 +53,13 @@ spec:
                 name: communication-service
                 port:
                   number: 3005
+          - path: /ai-service
+            pathType: Prefix
+            backend:
+              service:
+                name: ai-service
+                port:
+                  number: 3006
           - path: /code-exec-service
             pathType: Prefix
             backend:
