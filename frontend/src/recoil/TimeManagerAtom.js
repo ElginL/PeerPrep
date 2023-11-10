@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 export const secondsState = atom({
     key: 'seconds',
-    default: 10
+    default: 30
 });
 
 export const timerRunningState = atom({

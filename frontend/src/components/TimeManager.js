@@ -12,7 +12,7 @@ import { connectMatchingSocket, socket } from '../sockets/matchingServiceSocket'
 import RetryModal from '../components/RetryModal';
 import MatchFoundModal from '../components/MatchFoundModal';
 
-const maxQueueTime = 10;
+const maxQueueTime = 30;
 
 const TimerManager = () => {
     const navigate = useNavigate();

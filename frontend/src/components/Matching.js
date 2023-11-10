@@ -10,7 +10,7 @@ import {
     buttonsDisabledState
 } from '../recoil/TimeManagerAtom';
 
-const maxQueueTime = 10;
+const maxQueueTime = 30;
 
 const Matching = () => {
     const navigate = useNavigate();
