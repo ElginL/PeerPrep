@@ -30,16 +30,13 @@ function Video(props) {
   const buttonRef = useRef(null);
   const modalRef = useRef(null); // New reference for modal
   const [isVideoOn, setIsVideoOn] = useState(true);
-
+  const streamHolder = useRef();
   const [peers, setPeers] = useState([]);
   const socketRef = useRef();
   const userVideo = useRef();
   const peersRef = useRef([]);
   const roomID = props.roomId;
-  const videoConstraints = {
-    height: window.innerHeight / 4,
-    width: window.innerWidth / 4,
-  };
+
   const toggleVideo = () => {
     if (userVideo.current && userVideo.current.srcObject) {
       const videoTracks = userVideo.current.srcObject.getVideoTracks();
@@ -62,11 +59,12 @@ function Video(props) {
       timeout: 10000,
       transports: ["websocket"],
     }); // Assign socket instance to ref
-
+    console.log("getting camera");
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         userVideo.current.srcObject = stream;
+        streamHolder.current = stream;
         console.log("joining");
         toggleVideo();
         socketRef.current.emit("join room", roomID);
@@ -118,13 +116,16 @@ function Video(props) {
             setPeers((peers) => peers.filter((p) => p !== peerObj.peer));
           }
         });
+      })
+      .catch((err) => {
+        console.error("Failed to get user media:", err);
       });
     return () => {
       // Stop all media tracks
-      if (userVideo.current && userVideo.current.srcObject) {
-        userVideo.current.srcObject
-          .getTracks()
-          .forEach((track) => track.stop());
+      console.log(userVideo.current);
+      console.log(streamHolder.current.getTracks());
+      if (streamHolder.current) {
+        streamHolder.current.getTracks().forEach((track) => track.stop());
       }
 
       // Destroy all peer connections
@@ -144,6 +145,28 @@ function Video(props) {
       }
     };
   }, []);
+
+  function turnOffAllMediaStreams() {
+    // Get all media elements in the document (videos and audios)
+    const mediaElements = document.querySelectorAll("video, audio");
+
+    // Iterate through each media element
+    mediaElements.forEach((element) => {
+      // Check if the element has an associated MediaStream
+      if (element.srcObject) {
+        // Get all tracks from the MediaStream
+        const tracks = element.srcObject.getTracks();
+
+        // Stop each track
+        tracks.forEach((track) => {
+          track.stop();
+        });
+
+        // Remove the srcObject from the media element
+        element.srcObject = null;
+      }
+    });
+  }
 
   function createPeer(userToSignal, callerID, stream) {
     const peer = new Peer({
