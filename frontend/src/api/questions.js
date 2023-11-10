@@ -71,6 +71,36 @@ const deleteQuestionsByIds = async (ids) => {
     }
 }
 
+const updateQuestion = async (question, title, categories, complexity, description, testCases, expectedOutputs, codeTemplates) => {
+    const data = {
+        questionId: question._id,
+        title: title,
+        categories: categories,
+        complexity: complexity,
+        description: description,
+        inputs: testCases,
+        outputs: expectedOutputs,
+        codeTemplates: codeTemplates.reduce((result, item) => {
+            result[item.language] = item.template;
+            return result;
+        }, {})
+    };
+
+    try {
+        const response = await axios.put(baseUrl, data, setAuthenticationHeader());
+
+        return {
+            message: response.data,
+            status: response.status
+        };
+    } catch (error) {
+        return {
+            message: error.response.data.msg,
+            status: error.response.status
+        };
+    }
+};
+
 const getRandomQuestion = async complexity => {
     try {
         const randomQuestion = await axios.get(baseUrl + `/random/${complexity}`, setAuthenticationHeader())
@@ -87,5 +117,6 @@ export {
     addQuestion,
     deleteQuestionsByIds,
     setAuthenticationHeader,
-    getRandomQuestion
+    getRandomQuestion,
+    updateQuestion
 };

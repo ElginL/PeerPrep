@@ -16,35 +16,60 @@ spec:
         app: matching-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/matching-service@sha256:9c2d45cde579cd9d280d9eda5a270c2e4dee0d1de818628d5ea0c6493a3aef2a
-        imagePullPolicy: IfNotPresent
+      - image: <IMAGE>
+        imagePullPolicy: Always
+        env:
+        - name: DB
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_HOST
+        - name: DB_DIALECT
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_DIALECT
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: JWT_SECRET_KEY
         name: matching-service
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "1Gi"
-            cpu: "1000m"
+            memory: "512Mi"
+            cpu: "500m"
       restartPolicy: Always
 status: {}
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+apiVersion: v1
+kind: Service
 metadata:
-  name: matching-hpa
+  name: matching-service
   namespace: peerprep
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: matching-service
-  minReplicas: 1
-  maxReplicas: 3
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
+  selector:
+    app: matching-service
+  ports:
+    - protocol: "TCP"
+      port: 3003
+      targetPort: 3003
+  type: ClusterIP

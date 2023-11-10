@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "@mui/material/Link";
 import styles from "../styles/components/Authentication.module.css";
 import { loginUser } from "../api/users";
 import { useRecoilState } from "recoil";
@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import Wallpaper from "../assets/wallpaper.png";
 
 const LogIn = () => {
     const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
@@ -51,8 +52,7 @@ const LogIn = () => {
                 sm={4}
                 md={7}
                 sx={{
-                    backgroundImage:
-                        "url(https://source.unsplash.com/random?wallpapers)",
+                    backgroundImage: `url(${Wallpaper})`,
                     backgroundRepeat: "no-repeat",
                     backgroundColor: (t) =>
                         t.palette.mode === "dark"
@@ -70,6 +70,9 @@ const LogIn = () => {
                 component={Paper}
                 elevation={6}
                 square
+                sx={{
+                    bgcolor: "#F9F1E3",
+                }}
             >
                 <Box
                     sx={{
@@ -80,7 +83,7 @@ const LogIn = () => {
                         alignItems: "center",
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                    <Avatar sx={{ m: 1, bgcolor: "#1976d2" }}>
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
@@ -97,6 +100,9 @@ const LogIn = () => {
                             autoComplete="username"
                             autoFocus
                             onChange={(e) => setUsername(e.target.value)}
+                            sx={{
+                                bgcolor: "#FFFFFF",
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -108,6 +114,9 @@ const LogIn = () => {
                             id="password"
                             autoComplete="current-password"
                             onChange={(e) => setPassword(e.target.value)}
+                            sx={{
+                                bgcolor: "#FFFFFF",
+                            }}
                         />
                         {errorMessage && (
                             <p className={styles["error-msg"]}>
@@ -125,7 +134,11 @@ const LogIn = () => {
                         </Button>
                         <Grid container>
                             <Grid item>
-                                <Link to="/signup" variant="body2">
+                                <Link
+                                    href="/signup"
+                                    underline="hover"
+                                    color="inherit"
+                                >
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>

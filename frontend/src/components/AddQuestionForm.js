@@ -37,21 +37,13 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
         { language: 'Python', template: '' }
     ]);
     const [inputCount, setInputCount] = useState(0);
-    const [argumentNames, setArgumentNames] = useState([""])
+    const [argumentNames, setArgumentNames] = useState([])
     const [testCases, setTestCases] = useState([]);
     const [expectedOutputs, setExpectedOutputs] = useState([]);
     const [types, setTypes] = useState([]);
     const [outputType, setOutputType] = useState("Integer");
 
-    useEffect(() => {
-        if (isVisible) {
-          document.documentElement.style.overflow='hidden';
-        } else {
-          document.documentElement.style.overflow='unset';
-        }
-    }, [isVisible]);
-
-      const submitHandler = async e => {
+    const submitHandler = async e => {
         e.preventDefault();
 
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
@@ -62,7 +54,6 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
             setErrorMessage("Submit failed. All fields must be filled");
             return;
         }
-        console.log(codeTemplateFields);
 
         // Checks that only 1 code template per language, and template is not empty.
         const uniqueKeys = new Set();
@@ -83,6 +74,16 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
         }
 
         // Check that arguments are not an empty string
+        if (argumentNames.length === 0) {
+            setErrorMessage("There must be more than 1 argument in test case");
+            return;
+        }
+
+        if (argumentNames.length !== inputCount) {
+            setErrorMessage("Missing some arguments, make sure they are filled!");
+            return;
+        }
+
         for (const argumentName of argumentNames) {
             if (argumentName.trim() === "") {
                 setErrorMessage("All argument names must be filled!");
@@ -91,6 +92,11 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
         }
 
         // Checks the inputs to make sure that there are no empty strings
+        if (testCases.length === 0) {
+            setErrorMessage("There must be at least 1 test case");
+            return;
+        }
+
         for (const testCase of testCases) {
             if (JSON.stringify(testCase) === "{}") {
                 setErrorMessage("Test case cannot be empty!");
@@ -108,7 +114,7 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
 
         // Checks that expected outputs are not empty
         for (const output of expectedOutputs) {
-            if (output.trim() === "") {
+            if (output.trim() === "" || output.replace(/^"|"$/g, '') === "") {
                 setErrorMessage("Expected output cannot be empty!");
                 return;
             }
@@ -116,7 +122,7 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
 
         // Converting expected outputs to valid format
         const expectedOutputsArr = []
-        for (let output in expectedOutputs) {
+        for (let output of expectedOutputs) {
             if (outputType === 'Integer') {
                 output = parseInt(output, 10); // The second argument (base) is optional but recommended to avoid unexpected behavior.
 
@@ -142,7 +148,9 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                     setErrorMessage("Some outputs are specified as array but the value given is not an array!");
                     return;
                 }
-            } 
+            } else if (outputType === 'String') {
+                output = output.replace(/^"|"$/g, '');
+            }
 
             expectedOutputsArr.push(output);
         }
@@ -184,6 +192,8 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                         setErrorMessage("Some inputs are specified as array but the value given is not an array!");
                         return;
                     }
+                } else if (argType === "String") {
+                    value = value.replace(/^"|"$/g, '');
                 }
 
                 testCaseObj[argName] = value;
@@ -259,7 +269,10 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
                         <p className={styles["error-msg"]}>{errorMessage}</p>
                     }
                     <AddQuestionTitle title={title} setTitle={setTitle} />
-                    <CategoryDropdown setCategories={setCategories} />
+                    <CategoryDropdown
+                        selectedCategories={categories}
+                        setCategories={setCategories} 
+                    />
                     <AddComplexity complexity={complexity} setComplexity={setComplexity} />
                     <InputLabel id="question-description">Question Description</InputLabel>
                     <Editor

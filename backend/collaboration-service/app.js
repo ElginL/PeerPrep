@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 app.use(express.json());
 const corsOption = {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'https://peer-prep-ywhzo.ondigitalocean.app'],
     methods: 'GET, POST, DELETE, PUT',
     credentials: true
 };
@@ -26,7 +26,7 @@ app.use(cors(corsOption));
 const io = require("socket.io")(server, {
     path: '/collaboration-service/socket.io',
     cors: {
-        origin: ['http://localhost:3000'],
+        origin: ['http://localhost:3000', 'https://peer-prep-ywhzo.ondigitalocean.app'],
         credentials: true
     },
 });
@@ -34,7 +34,13 @@ const io = require("socket.io")(server, {
 async function getAllConnectedClients(roomId) {
     const socketIds = Array.from(io.sockets.adapter.rooms.get(roomId) || []);
     const clientPromises = socketIds.map(async (socketId) => {
-        const username = (await clientMapRepo.getBySocketId(socketId)).username;
+        const clientMap = await clientMapRepo.getBySocketId(socketId);
+
+        if (clientMap === null) {
+            return;
+        }
+
+        const username = clientMap.username;
         return { socketId, username };
     });
 
@@ -57,7 +63,7 @@ io.use((socket, next) => {
 io.use(async (socket, next) => {
     const roomId = socket.handshake.query.roomId;
 
-    if ((await roomRepo.getByRoomId(roomId)) == null) {
+    if ((await roomRepo.getByRoomId(roomId)) === null) {
         return next(new Error("Room does not exist"));
     }
 
@@ -68,6 +74,7 @@ io.use(async (socket, next) => {
 
 io.on("connection", (socket) => {
     socket.on(ACTIONS.JOIN, async ({ roomId }) => {
+        await clientMapRepo.addEntry(socket.id, socket.username);
         const clients = await getAllConnectedClients(roomId);
 
         if (clients.length >= 2) {
@@ -78,14 +85,17 @@ io.on("connection", (socket) => {
         console.log(`${socket.username} connected to room ${roomId}`);
 
         socket.join(roomId);
-        clientMapRepo.addEntry(socket.id, socket.username);
+        // await clientMapRepo.addEntry(socket.id, socket.username);
         clients.push({ socketId: socket.id, username: socket.username });
+
+        console.log(clients);
 
         clients.forEach(({ socketId }) => {
             io.to(socketId).emit(ACTIONS.JOINED, {
                 clients,
                 socketId: socket.id,
                 username: socket.username,
+                fromSocket: socketId
             });
         });
     });
@@ -114,21 +124,59 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on("disconnecting", () => {
-        const rooms = [...socket.rooms];
-        rooms.forEach((roomId) => {
-            socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
-                socketId: socket.id,
-                username: clientMapRepo.getBySocketId(socket.id).username,
-            });
+    socket.on(ACTIONS.SYNC_QUESTION, ({ roomId, newQuestionId }) => {
+        socket.in(roomId).emit(ACTIONS.SYNC_QUESTION, {
+            newQuestionId
         });
-        clientMapRepo.deleteBySocketId(socket.id);
+
+        io.to(socket.id).emit(ACTIONS.SYNC_QUESTION, {
+            newQuestionId
+        });
+    });
+
+    socket.on(ACTIONS.REQUEST_QUESTION_CHANGE, async ({ roomId, complexity }) => {
+        const clients = await getAllConnectedClients(roomId);
+
+        if (clients.length < 2) {
+            io.to(socket.id).emit(ACTIONS.CHANGE_QUESTION, {
+                complexity
+            });
+
+            return;
+        }
+
+        socket.in(roomId).emit(ACTIONS.REQUEST_QUESTION_CHANGE, {
+            complexity
+        });
+    });
+
+    socket.on(ACTIONS.DECLINE_QUESTION_CHANGE, ({ roomId }) => {
+        socket.in(roomId).emit(ACTIONS.DECLINE_QUESTION_CHANGE);
+    });
+
+    socket.on(ACTIONS.CHECK_SYNC, ({ roomId, template }) => {
+        socket.in(roomId).emit(ACTIONS.CHECK_SYNC, {
+            template,
+            socketId: socket.id
+        });
+    });
+
+    socket.on("disconnecting", async () => {
+        const clientMapping = await clientMapRepo.getBySocketId(socket.id);
+
+        socket.in(socket.roomId).emit(ACTIONS.DISCONNECTED, {
+            socketId: socket.id,
+            username: clientMapping.username
+        });
+
+        await clientMapRepo.deleteBySocketId(socket.id);
         socket.leave();
     });
 
     socket.on("disconnect", async () => {
-        if (getAllConnectedClients(socket.roomId).length == 0) {
-            roomRepo.deleteById(socket.roomId);
+        const allClients = await getAllConnectedClients(socket.roomId);
+        if (allClients.length == 0) {
+            await roomRepo.deleteById(socket.roomId);
         }
 
         console.log(`User disconnected: ${socket.id}`);

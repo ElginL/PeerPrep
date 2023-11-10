@@ -18,11 +18,36 @@ const Editor = ({
     codeTemplate,
     language,
     setLanguage,
+    questionChanged,
+    setQuestionChanged
 }) => {
     const editorRef = useRef(null);
 
-    const [defaultCode, setDefaultCode] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        if (editorRef.current) {
+            const template = codeTemplate === null ? "" : codeTemplate;
+            
+            editorRef.current.setValue(template);
+
+            if (!questionChanged) {
+                socketRef.current.emit(ACTIONS.CHECK_SYNC, {
+                    roomId,
+                    template
+                });
+            } else {
+                setQuestionChanged(false);
+            }
+        }
+    }, [editorRef.current, codeTemplate]);
+
+    useEffect(() => {
+        if (questionChanged) {
+            const template = codeTemplate === null ? "" : codeTemplate;
+            editorRef.current.setValue(template);
+        }
+
+        setQuestionChanged(false);
+    }, [questionChanged]);
 
     useEffect(() => {
         if (editorRef.current) {
@@ -54,6 +79,7 @@ const Editor = ({
                 const { origin } = changes;
                 const code = instance.getValue();
                 onCodeChange(code);
+
                 if (origin !== "setValue") {
                     socketRef.current.emit(ACTIONS.CODE_CHANGE, {
                         roomId,
@@ -63,10 +89,8 @@ const Editor = ({
             });
         }
 
-        if (!isLoading) {
-            init();
-        }
-    }, [isLoading]);
+        init();
+    }, []);
 
     useEffect(() => {
         if (socketRef.current) {
@@ -75,6 +99,7 @@ const Editor = ({
                     editorRef.current.setValue(code);
                 }
             });
+
             socketRef.current.on(ACTIONS.CHANGE_LANGUAGE, ({ language }) => {
                 if (language !== null) {
                     editorRef.current.setOption("mode", {
@@ -84,6 +109,15 @@ const Editor = ({
                     setLanguage(language);
                 }
             });
+
+            socketRef.current.on(ACTIONS.CHECK_SYNC, ({ template, socketId }) => {
+                if (editorRef.current.getValue() !== template) {
+                    socketRef.current.emit(ACTIONS.SYNC_CODE, {
+                        code: editorRef.current.getValue(),
+                        socketId,
+                    });
+                }
+            })
         }
 
         return () => {
@@ -92,30 +126,9 @@ const Editor = ({
         };
     }, [socketRef.current]);
 
-    useEffect(() => {
-        if (codeTemplate) {
-            setDefaultCode(codeTemplate);
-            setIsLoading(false);
-        }
-
-        const timeout = setTimeout(() => {
-            if (isLoading) {
-                setIsLoading(false);
-            }
-        }, 1000);
-
-        return () => {
-            clearTimeout(timeout);
-        };
-    }, [codeTemplate]);
-
-    if (isLoading) {
-        return <div className={styles["container"]}>Loading...</div>;
-    }
-
     return (
         <div className={styles["container"]}>
-            <textarea id="realtimeEditor" defaultValue={defaultCode} />
+            <textarea id="realtimeEditor" />
         </div>
     );
 };

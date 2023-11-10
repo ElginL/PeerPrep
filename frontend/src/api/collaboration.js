@@ -40,7 +40,19 @@ const getRoomById = async roomId => {
   }
 }
 
+const updateRoomQuestion = async (roomId, questionId) => {
+  try {
+    await axios.put(baseUrl + "/room-question", { roomId, questionId}, setAuthenticationHeader());
+
+    return true;
+  } catch (error) {
+    console.error("Error when trying to update question", error);
+    return false;
+  }
+}
+
 export { 
     createRoom,
-    getRoomById
+    getRoomById,
+    updateRoomQuestion
 };

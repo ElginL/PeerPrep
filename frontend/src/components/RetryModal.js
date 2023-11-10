@@ -52,7 +52,7 @@ const RetryModal = ({
                         Matching Failed
                         </Typography>
                         <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                        There are too less people in the {queueComplexity} queue
+                        There were too less people in the {queueComplexity} queue
                         </Typography>
                         <div className={styles["button-group"]}>
                             <button className={styles["retry-btn"]} onClick={clickHandler}>

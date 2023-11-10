@@ -13,3 +13,5 @@
 /communication-service/node_modules
 /communication-service/.env
 
+/code-exec-service/node_modules
+/code-exec-service/.env

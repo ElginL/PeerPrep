@@ -16,18 +16,63 @@ spec:
         app: user-service
     spec:
       containers:
-      - image: registry.digitalocean.com/peerprep/user-service@sha256:7a4d2034dcb237de0bf5000f7bc9a22b69fa55486635dea6ad5c38733fd949e7
-        imagePullPolicy: IfNotPresent
+      - image: <IMAGE>
+        imagePullPolicy: Always
+        env:
+        - name: DB
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_HOST
+        - name: DB_DIALECT
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: DB_DIALECT
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: peerprep-secret
+              key: JWT_SECRET_KEY
         name: user-service
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "1Gi"
-            cpu: "1000m"
+            memory: "512Mi"
+            cpu: "500m"
       restartPolicy: Always
 status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: peerprep
+spec:
+  selector:
+    app: user-service
+  ports:
+    - protocol: "TCP"
+      port: 3002
+      targetPort: 3002
+  type: ClusterIP
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -47,4 +92,4 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50
+        averageUtilization: 80

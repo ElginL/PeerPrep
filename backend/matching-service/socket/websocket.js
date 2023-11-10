@@ -8,7 +8,7 @@ const initializeWebSocket = (server) => {
     const io = require("socket.io")(server, {
         path: '/matching-service/socket.io',
         cors: {
-            origin: ['http://localhost:3000'],
+            origin: ['http://localhost:3000', 'https://peer-prep-ywhzo.ondigitalocean.app'],
             credentials: true,
         },
     });

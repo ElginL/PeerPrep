@@ -7,6 +7,7 @@ import RunTimeErrorResult from './RunTimeErrorResult';
 import CodeExecutionNavigator from './CodeExecutionNavigator';
 import TestCaseNavigator from './TestCaseNavigator';
 import ACTIONS from '../api/actions';
+import AllPassModal from './AllPassModal';
 
 const CodeExecutor = ({ 
     socketRef,
@@ -20,11 +21,19 @@ const CodeExecutor = ({
     const [outputs, setOutputs] = useState([]);
     const [selectedTestCase, setSelectedTestCase] = useState(0);
     const [testCaseBtnSelected, setTestCaseBtnSelected] = useState(true);
+    const [allPassModalVisible, setAllPassModalVisible] = useState(false);
 
     const [executionResults, setExecutionResults] = useState(null);
 
     const executeCodeHandler = async () => {
         const result = await runAllTestCases(codeRef.current, language, inputs, outputs);
+
+        if (Array.isArray(result)) {
+            const allPassed = result.every(item => item.status === "Passed");
+            if (allPassed) {
+                setAllPassModalVisible(true);
+            }
+        }
 
         setExecutionResults(result);
         setResultsVisible(true);
@@ -41,12 +50,21 @@ const CodeExecutor = ({
             setInputs(question.testCases.map(obj => obj.input));
             setOutputs(question.testCases.map(obj => obj.output));
         }
+
+        setExecutionResults(null);
+        setAllPassModalVisible(false);
     }, [question]);
 
     useEffect(() => {
         if (socketRef.current) {
             socketRef.current.on(ACTIONS.EXECUTE_CODE, ({ result }) => {
-                console.log(result);
+                if (Array.isArray(result)) {
+                    const allPassed = result.every(item => item.status === "Passed");
+                    if (allPassed) {
+                        setAllPassModalVisible(true);
+                    }
+                }
+                
                 setExecutionResults(result);
                 setResultsVisible(true);
                 setTestCaseBtnSelected(false);
@@ -98,6 +116,10 @@ const CodeExecutor = ({
                 resultsVisible={resultsVisible}
                 setResultsVisible={setResultsVisible}
                 executeCodeHandler={executeCodeHandler}
+            />
+            <AllPassModal
+                isVisible={allPassModalVisible}
+                closeHandler={() => setAllPassModalVisible(false)}
             />
         </div>
     );

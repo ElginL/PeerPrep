@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   path: "/communication-service/socket.io",
   cors: {
-    origin: ['localhost:3000'],
+    origin: ['http://localhost:3000', 'https://peer-prep-ywhzo.ondigitalocean.app'],
     methods: ["GET", "POST"],
     credentials: true
   },
