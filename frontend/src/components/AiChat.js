@@ -43,7 +43,7 @@ function AiChat() {
       setMessage("");
       setIsAwaitingReply(true);
 
-      const response = await axios.post("http://localhost:3006/chatgpt", {
+      const response = await axios.post(`${process.env.REACT_APP_AI_SERVICE_URL}/ai-service/chatgpt`, {
         messages: chatHistory.concat(userMessage),
       });
 

@@ -18,7 +18,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 const PORT = 3006;
 
-app.post("/chatgpt", async (req, res) => {
+app.post("/ai-service/chatgpt", async (req, res) => {
   console.log("called");
   const { messages } = req.body;
   console.log(messages);
