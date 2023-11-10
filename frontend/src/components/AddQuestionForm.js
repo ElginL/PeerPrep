@@ -37,21 +37,13 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
         { language: 'Python', template: '' }
     ]);
     const [inputCount, setInputCount] = useState(0);
-    const [argumentNames, setArgumentNames] = useState([""])
+    const [argumentNames, setArgumentNames] = useState([])
     const [testCases, setTestCases] = useState([]);
     const [expectedOutputs, setExpectedOutputs] = useState([]);
     const [types, setTypes] = useState([]);
     const [outputType, setOutputType] = useState("Integer");
 
-    useEffect(() => {
-        if (isVisible) {
-          document.documentElement.style.overflow='hidden';
-        } else {
-          document.documentElement.style.overflow='unset';
-        }
-    }, [isVisible]);
-
-      const submitHandler = async e => {
+    const submitHandler = async e => {
         e.preventDefault();
 
         const stringifiedDescription = draftToHtml(convertToRaw(description.getCurrentContent()));
@@ -82,6 +74,11 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
         }
 
         // Check that arguments are not an empty string
+        if (argumentNames.length === 0) {
+            setErrorMessage("There must be more than 1 argument in test case");
+            return;
+        }
+
         for (const argumentName of argumentNames) {
             if (argumentName.trim() === "") {
                 setErrorMessage("All argument names must be filled!");
@@ -90,6 +87,11 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
         }
 
         // Checks the inputs to make sure that there are no empty strings
+        if (testCases.length === 0) {
+            setErrorMessage("There must be at least 1 test case");
+            return;
+        }
+
         for (const testCase of testCases) {
             if (JSON.stringify(testCase) === "{}") {
                 setErrorMessage("Test case cannot be empty!");
