@@ -12,7 +12,7 @@ const openai = new OpenAIApi(configuration);
 const app = express();
 app.use(bodyParser.json());
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
