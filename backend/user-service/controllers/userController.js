@@ -53,7 +53,6 @@ const loginUser = async (req, res, next) => {
             isManager: dbUser.isManager,
           },
           process.env.JWT_SECRET_KEY,
-          // { expiresIn: "1h" }
         );
 
         res.status(200).json({

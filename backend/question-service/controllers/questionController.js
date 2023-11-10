@@ -67,6 +67,12 @@ const updateQuestion = async (req, res, next) => {
     try {
         const question = await Question.findById(req.body.questionId);
 
+        if (question === null) {
+            return res.status(400).json({
+                msg: "Unable to find question with the id specified"
+            })
+        }
+
         await CodeTemplate.updateOne(
             { _id: question.codeTemplate },
             {
@@ -138,8 +144,10 @@ const deleteQuestion = async (req, res, next) => {
         for (const questionId of deleteIds) {
             Question.findByIdAndRemove(questionId)
                 .then(async removedQuestion => {
-                    await TestCase.deleteMany({ _id: { $in: removedQuestion.testCases } });
-                    await CodeTemplate.deleteOne({ _id: removedQuestion.codeTemplate });
+                    if (removedQuestion) {
+                        await TestCase.deleteMany({ _id: { $in: removedQuestion.testCases } });
+                        await CodeTemplate.deleteOne({ _id: removedQuestion.codeTemplate });
+                    }
                 });
         }
 
