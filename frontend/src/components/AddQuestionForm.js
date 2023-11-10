@@ -79,6 +79,11 @@ const AddQuestionForm = ({ isVisible, setIsVisible}) => {
             return;
         }
 
+        if (argumentNames.length !== inputCount) {
+            setErrorMessage("Missing some arguments, make sure they are filled!");
+            return;
+        }
+
         for (const argumentName of argumentNames) {
             if (argumentName.trim() === "") {
                 setErrorMessage("All argument names must be filled!");

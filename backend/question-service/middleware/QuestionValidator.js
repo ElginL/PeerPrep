@@ -58,13 +58,25 @@ const validateQuestion = () => {
 const validateUpdateQuestion = () => {
     return [
         body('title')
-            .notEmpty().withMessage("Title is required"),
+            .notEmpty().withMessage("Title is required")
+            .custom(async (value, { req }) => {
+                const question = await Question.findOne({ title: value });
+                if (question && question._id.toString() !== req.body.questionId) {
+                    throw new Error('Question with this title already exists')
+                }
+            }),
         body('categories')
             .isLength({ min: 1 })
             .withMessage("Category array cannot be empty"),
         body('complexity').isIn(['Easy', 'Medium', 'Hard']).withMessage("Invalid complexity"),
         body('description')
-            .notEmpty().withMessage('Description is required'),
+            .notEmpty().withMessage('Description is required')
+            .custom(async (value, { req }) => {
+                const question = await Question.findOne({ description: value });
+                if (question && question._id.toString() !== req.body.questionId) {
+                    throw new Error('Question with this description already exists')
+                }
+            }),
         body('outputs')
             .isArray()
             .withMessage("Outputs must be an array"),
