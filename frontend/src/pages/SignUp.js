@@ -2,11 +2,9 @@ import { useState } from "react";
 import { registerUser } from "../api/users";
 import { useNavigate } from "react-router-dom";
 import Link from "@mui/material/Link";
-import styles from "../styles/components/Authentication.module.css";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -22,12 +20,9 @@ const SignUp = () => {
     const [passwordError, setPasswordError] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
-    const onClickShowPassword = () => setShowPassword(show => !show);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const onClickShowConfirmPassword = () => setShowConfirmPassword(show => !show);
 
     const navigate = useNavigate();
 
@@ -71,7 +66,8 @@ const SignUp = () => {
 
         const res = await registerUser(username, password);
         if (res.status !== 201) {
-            setErrorMessage(res.message);
+            setUsernameError(res.message[0]);
+            setPasswordError(res.message[1]);
             return;
         }
 
@@ -98,7 +94,7 @@ const SignUp = () => {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign up
+                        Sign Up
                     </Typography>
                     <Box component="form" noValidate sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
@@ -115,7 +111,7 @@ const SignUp = () => {
                                     error={passwordError}
                                     setPassword={setPassword}
                                     showPassword={showPassword}
-                                    onClick={onClickShowPassword}
+                                    setShowPassword={setShowPassword}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -125,15 +121,10 @@ const SignUp = () => {
                                     error={confirmPasswordError}
                                     setPassword={setConfirmPassword}
                                     showPassword={showConfirmPassword}
-                                    onClick={onClickShowConfirmPassword}
+                                    setShowPassword={setShowConfirmPassword}
                                 />
                             </Grid>
                         </Grid>
-                        {errorMessage && (
-                            <p className={styles["error-msg"]}>
-                                {errorMessage}
-                            </p>
-                        )}
                         <Button
                             type="submit"
                             fullWidth
@@ -141,16 +132,17 @@ const SignUp = () => {
                             onClick={registerBtnHandler}
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            Register
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
+                                Already have an account? &nbsp;
                                 <Link
                                     href="/"
                                     underline="hover"
-                                    color="inherit"
+                                    color="#0000EE"
                                 >
-                                    Already have an account? Log in
+                                    Log in
                                 </Link>
                             </Grid>
                         </Grid>

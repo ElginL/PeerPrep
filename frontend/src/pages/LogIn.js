@@ -24,7 +24,6 @@ const LogIn = () => {
     const [passwordError, setPasswordError] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
-    const onClickShowPassword = () => setShowPassword(show => !show);
 
     const validateForm = () => {
         if (!username) {
@@ -128,7 +127,7 @@ const LogIn = () => {
                             error={passwordError}
                             setPassword={setPassword}
                             showPassword={showPassword}
-                            onClick={onClickShowPassword}
+                            setShowPassword={setShowPassword}
                         />
                         <Button
                             type="submit"
@@ -147,7 +146,7 @@ const LogIn = () => {
                                     underline="hover"
                                     color="#0000EE"
                                 >
-                                    {"Sign Up"}
+                                    Sign Up
                                 </Link>
                             </Grid>
                         </Grid>

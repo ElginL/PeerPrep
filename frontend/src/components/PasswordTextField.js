@@ -3,7 +3,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
 
-const PasswordTextField = ({ label, name, error, setPassword, showPassword, onClick }) => {
+const PasswordTextField = ({ label, name, error, setPassword, showPassword, setShowPassword }) => {
     return (
         <TextField
             error={error && error.length ? true : false}
@@ -27,7 +27,7 @@ const PasswordTextField = ({ label, name, error, setPassword, showPassword, onCl
                 endAdornment: 
                     <InputAdornment position="end">
                         <IconButton
-                            onClick={onClick}
+                            onClick={() => setShowPassword(show => !show)}
                             onMouseDown={e => e.preventDefault()}
                             onMouseUp={e => e.preventDefault()}
                             edge="end"
