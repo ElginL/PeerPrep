@@ -17,6 +17,7 @@ const loginUser = (username, password) => {
       status: response.status,
     }))
     .catch((error) => ({
+      errorType: error.response.data.errorType,
       message: error.response.data.msg,
       status: error.response.status,
     }));

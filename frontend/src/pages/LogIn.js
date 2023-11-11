@@ -53,7 +53,11 @@ const LogIn = () => {
         if (validateForm()) {
             const res = await loginUser(username, password);
             if (res.status !== 200) {
-                setErrorMessage(res.message);
+                if (res.errorType === "invalid-username") {
+                    setUsernameError(res.message)
+                } else if (res.errorType === "invalid-password") {
+                    setPasswordError(res.message)
+                }
                 return;
             }
 
