@@ -53,7 +53,6 @@ const LogIn = () => {
         if (validateForm()) {
             const res = await loginUser(username, password);
             if (res.status !== 200) {
-                console.log(res)
                 setErrorMessage(res.message);
                 return;
             }
@@ -130,13 +129,18 @@ const LogIn = () => {
                             autoFocus
                             onChange={(e) => setUsername(e.target.value)}
                             sx={{
-                                bgcolor: "#FFFFFF",
+                                '& .MuiInputBase-root': {
+                                    bgcolor: "#FFFFFF"
+                                },
+                                '& .MuiFormHelperText-contained': {
+                                    bgcolor: "transparent",
+                                }
                             }}
                         />
                         <TextField 
                             id="password"
-                            error={passwordError && passwordError ? true : false}
-                            helperText={passwordError}
+                            error={!usernameError && passwordError && passwordError ? true : false}
+                            helperText={!usernameError && passwordError}
                             margin="normal"
                             fullWidth
                             name="password"
@@ -145,7 +149,12 @@ const LogIn = () => {
                             autoComplete="current-password"
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{
-                                bgcolor: "#FFFFFF",
+                                '& .MuiInputBase-root': {
+                                    bgcolor: "#FFFFFF"
+                                },
+                                '& .MuiFormHelperText-contained': {
+                                    bgcolor: "transparent",
+                                }
                             }}
                             InputProps={{
                                 endAdornment: 
