@@ -26,14 +26,15 @@ const Editor = ({
     useEffect(() => {
         if (editorRef.current) {
             const template = codeTemplate === null ? "" : codeTemplate;
-            
             editorRef.current.setValue(template);
 
             if (!questionChanged) {
-                socketRef.current.emit(ACTIONS.CHECK_SYNC, {
-                    roomId,
-                    template
-                });
+                setTimeout(() => {
+                    socketRef.current.emit(ACTIONS.CHECK_SYNC, {
+                        roomId,
+                        template
+                    });
+                }, 50)
             } else {
                 setQuestionChanged(false);
             }
