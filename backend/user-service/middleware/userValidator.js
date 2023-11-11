@@ -14,6 +14,9 @@ const validateUser = () => {
                 if (await User.findOne({ where: { username: value } })) {
                     throw new Error('Username is already in use')
                 }
+            }).withMessage({
+                errorLoc: "username",
+                msg: "Username already in use"
             }),
         body('password')
             .notEmpty().withMessage("Password is required")
