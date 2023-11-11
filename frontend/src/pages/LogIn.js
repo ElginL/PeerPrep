@@ -25,7 +25,6 @@ const LogIn = () => {
     const [password, setPassword] = useState("");
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword(show => !show);
@@ -174,11 +173,6 @@ const LogIn = () => {
                                     </InputAdornment>
                             }}
                         />
-                        {errorMessage && (
-                            <p className={styles["error-msg"]}>
-                                {errorMessage}
-                            </p>
-                        )}
                         <Button
                             type="submit"
                             fullWidth
