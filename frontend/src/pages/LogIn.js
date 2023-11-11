@@ -1,22 +1,19 @@
 import { useState } from "react";
 import Link from "@mui/material/Link";
-import styles from "../styles/components/Authentication.module.css";
 import { loginUser } from "../api/users";
 import { useRecoilState } from "recoil";
 import { isLoggedInState } from "../recoil/UserAtom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Wallpaper from "../assets/wallpaper.png";
-import { IconButton, InputAdornment } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import UsernameTextField from "../components/UsernameTextField";
+import PasswordTextField from "../components/PasswordTextField";
 
 const LogIn = () => {
     const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
@@ -27,7 +24,7 @@ const LogIn = () => {
     const [passwordError, setPasswordError] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
-    const handleClickShowPassword = () => setShowPassword(show => !show);
+    const onClickShowPassword = () => setShowPassword(show => !show);
 
     const validateForm = () => {
         if (!username) {
@@ -49,6 +46,7 @@ const LogIn = () => {
 
     const logInButtonHandler = async (e) => {
         e.preventDefault();
+
         if (validateForm()) {
             const res = await loginUser(username, password);
             if (res.status !== 200) {
@@ -120,58 +118,17 @@ const LogIn = () => {
                         Sign in
                     </Typography>
                     <Box component="form" noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            id="username"
-                            error={usernameError && usernameError.length ? true : false}
-                            helperText={usernameError}
-                            label="Username"
-                            name="username"
-                            margin="normal"
-                            fullWidth
-                            autoComplete="username"
-                            autoFocus
-                            onChange={(e) => setUsername(e.target.value)}
-                            sx={{
-                                '& .MuiInputBase-root': {
-                                    bgcolor: "#FFFFFF"
-                                },
-                                '& .MuiFormHelperText-contained': {
-                                    bgcolor: "transparent",
-                                }
-                            }}
+                        <UsernameTextField 
+                            error={usernameError} 
+                            setUsername={setUsername} 
                         />
-                        <TextField 
-                            id="password"
-                            error={!usernameError && passwordError && passwordError ? true : false}
-                            helperText={!usernameError && passwordError}
-                            margin="normal"
-                            fullWidth
-                            name="password"
+                        <PasswordTextField 
                             label="Password"
-                            type={showPassword ? "text" : "password"}
-                            autoComplete="current-password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            sx={{
-                                '& .MuiInputBase-root': {
-                                    bgcolor: "#FFFFFF"
-                                },
-                                '& .MuiFormHelperText-contained': {
-                                    bgcolor: "transparent",
-                                }
-                            }}
-                            InputProps={{
-                                endAdornment: 
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={e => e.preventDefault()}
-                                            onMouseUp={e => e.preventDefault()}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                            }}
+                            name="password"
+                            error={passwordError}
+                            setPassword={setPassword}
+                            showPassword={showPassword}
+                            onClick={onClickShowPassword}
                         />
                         <Button
                             type="submit"

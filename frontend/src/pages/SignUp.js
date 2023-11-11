@@ -3,7 +3,6 @@ import { registerUser } from "../api/users";
 import { useNavigate } from "react-router-dom";
 import Link from "@mui/material/Link";
 import styles from "../styles/components/Authentication.module.css";
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -13,20 +12,60 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import UsernameTextField from "../components/UsernameTextField";
+import PasswordTextField from "../components/PasswordTextField";
 
 const SignUp = () => {
     const [username, setUsername] = useState("");
+    const [usernameError, setUsernameError] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [confirmPasswordError, setConfirmPasswordError] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
+    const [showPassword, setShowPassword] = useState(false);
+    const onClickShowPassword = () => setShowPassword(show => !show);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const onClickShowConfirmPassword = () => setShowConfirmPassword(show => !show);
+
     const navigate = useNavigate();
+
+    const validateForm = () => {
+        if (!username) {
+            setUsernameError("Enter a username");
+            return false;
+        } else {
+            setUsernameError("");
+        }
+
+        if (!password) {
+            setPasswordError("Enter a password");
+            return false;
+        } else {
+            setPasswordError("");
+        }
+
+        if (!confirmPassword) {
+            setConfirmPasswordError("Enter the same password");
+            return false;
+        } else {
+            setPasswordError("");
+        }
+
+        return true;
+    }
 
     const registerBtnHandler = async (e) => {
         e.preventDefault();
 
+        if (!validateForm()) {
+            return;
+        }
+
         if (password !== confirmPassword) {
-            setErrorMessage("Password does not match with confirm password");
+            setPasswordError("Passwords do not match!");
+            setConfirmPasswordError("Passwords do not match!");
             return;
         }
 
@@ -64,53 +103,29 @@ const SignUp = () => {
                     <Box component="form" noValidate sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="username"
-                                    label="Username"
-                                    name="username"
-                                    autoComplete="username"
-                                    onChange={(e) =>
-                                        setUsername(e.target.value)
-                                    }
-                                    sx={{
-                                        bgcolor: "#FFFFFF",
-                                    }}
+                                <UsernameTextField 
+                                    error={usernameError} 
+                                    setUsername={setUsername} 
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
+                                <PasswordTextField
                                     label="Password"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
-                                    sx={{
-                                        bgcolor: "#FFFFFF",
-                                    }}
+                                    name="password"
+                                    error={passwordError}
+                                    setPassword={setPassword}
+                                    showPassword={showPassword}
+                                    onClick={onClickShowPassword}
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="confirm-password"
+                                <PasswordTextField
                                     label="Confirm Password"
-                                    type="password"
-                                    id="confirm-password"
-                                    autoComplete="confirm-password"
-                                    onChange={(e) =>
-                                        setConfirmPassword(e.target.value)
-                                    }
-                                    sx={{
-                                        bgcolor: "#FFFFFF",
-                                    }}
+                                    name="confirm-password"
+                                    error={confirmPasswordError}
+                                    setPassword={setConfirmPassword}
+                                    showPassword={showConfirmPassword}
+                                    onClick={onClickShowConfirmPassword}
                                 />
                             </Grid>
                         </Grid>
