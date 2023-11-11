@@ -14,33 +14,61 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Wallpaper from "../assets/wallpaper.png";
+import { IconButton, InputAdornment } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const LogIn = () => {
     const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+    const [showPassword, setShowPassword] = useState(false);
+    const handleClickShowPassword = () => setShowPassword(show => !show);
+
+    const validateForm = () => {
+        if (!username) {
+            setUsernameError("Enter a username")
+            return false
+        } else {
+            setUsernameError("")
+        }
+
+        if (!password) {
+            setPasswordError("Enter a password")
+            return false
+        } else {
+            setPasswordError("")
+        }
+
+        return true
+    }
 
     const logInButtonHandler = async (e) => {
         e.preventDefault();
+        if (validateForm()) {
+            const res = await loginUser(username, password);
+            if (res.status !== 200) {
+                console.log(res)
+                setErrorMessage(res.message);
+                return;
+            }
 
-        const res = await loginUser(username, password);
-        if (res.status !== 200) {
-            setErrorMessage(res.message);
-            return;
+            localStorage.setItem(
+                "credentials",
+                JSON.stringify({
+                    sessionToken: res.token,
+                    username: res.username,
+                    isManager: res.isManager,
+                })
+            );
+
+            setIsLoggedIn(true);
         }
-
-        localStorage.setItem(
-            "credentials",
-            JSON.stringify({
-                sessionToken: res.token,
-                username: res.username,
-                isManager: res.isManager,
-            })
-        );
-
-        setIsLoggedIn(true);
     };
 
     return (
@@ -91,12 +119,13 @@ const LogIn = () => {
                     </Typography>
                     <Box component="form" noValidate sx={{ mt: 1 }}>
                         <TextField
-                            margin="normal"
-                            required
-                            fullWidth
                             id="username"
+                            error={usernameError && usernameError.length ? true : false}
+                            helperText={usernameError}
                             label="Username"
                             name="username"
+                            margin="normal"
+                            fullWidth
                             autoComplete="username"
                             autoFocus
                             onChange={(e) => setUsername(e.target.value)}
@@ -104,18 +133,32 @@ const LogIn = () => {
                                 bgcolor: "#FFFFFF",
                             }}
                         />
-                        <TextField
+                        <TextField 
+                            id="password"
+                            error={passwordError && passwordError ? true : false}
+                            helperText={passwordError}
                             margin="normal"
-                            required
                             fullWidth
                             name="password"
                             label="Password"
-                            type="password"
-                            id="password"
+                            type={showPassword ? "text" : "password"}
                             autoComplete="current-password"
                             onChange={(e) => setPassword(e.target.value)}
                             sx={{
                                 bgcolor: "#FFFFFF",
+                            }}
+                            InputProps={{
+                                endAdornment: 
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={e => e.preventDefault()}
+                                            onMouseUp={e => e.preventDefault()}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
                             }}
                         />
                         {errorMessage && (
@@ -134,12 +177,13 @@ const LogIn = () => {
                         </Button>
                         <Grid container>
                             <Grid item>
+                                Don't have an account? &nbsp;
                                 <Link
                                     href="/signup"
                                     underline="hover"
-                                    color="inherit"
+                                    color="#0000EE"
                                 >
-                                    {"Don't have an account? Sign Up"}
+                                    {"Sign Up"}
                                 </Link>
                             </Grid>
                         </Grid>
