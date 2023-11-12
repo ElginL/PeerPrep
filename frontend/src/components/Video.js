@@ -123,7 +123,6 @@ function Video(props) {
     return () => {
       // Stop all media tracks
       console.log(userVideo.current);
-      console.log(streamHolder.current.getTracks());
       if (streamHolder.current) {
         streamHolder.current.getTracks().forEach((track) => track.stop());
       }
