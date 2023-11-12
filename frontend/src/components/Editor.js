@@ -34,7 +34,7 @@ const Editor = ({
                         roomId,
                         template
                     });
-                }, 50)
+                }, 500)
             } else {
                 setQuestionChanged(false);
             }
