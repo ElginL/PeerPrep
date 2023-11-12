@@ -94,7 +94,7 @@ In order to test this assignment correctly, the **user-service**, **question-ser
 To test the functionality of a non-manager, you could just register for an account because by default, registered account does not have the manager role. To test the functionality of a manager, you could use the username and password given on canvas to log in.
 
 ### Assignment 4
-To test this assignment, proceed to the root directory and run **docker-compose up**. This will take quite some time for the containers to start running, and you can visit **http://localhost:3000** and use the application normally.
+To test this assignment, you have to firstly add in the relevant .env files to **user-service**, **question-service**, **matching-service** and **collaboration-service**, found on canvas. Then, proceed to the root directory and run **docker-compose up**. This will take quite some time for the containers to start running, and you can visit **http://localhost:3000** and use the application normally.
 The relevant code can be found in **backend/question-service/Dockerfile**, **backend/user-service/Dockerfile**, and **docker-compose.yml** which is found at the root.
 
 ### Assignment 5
