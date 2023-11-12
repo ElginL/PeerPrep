@@ -1,46 +1,73 @@
 import { useState } from "react";
 import Link from "@mui/material/Link";
-import styles from "../styles/components/Authentication.module.css";
 import { loginUser } from "../api/users";
 import { useRecoilState } from "recoil";
 import { isLoggedInState } from "../recoil/UserAtom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Wallpaper from "../assets/wallpaper.png";
+import UsernameTextField from "../components/UsernameTextField";
+import PasswordTextField from "../components/PasswordTextField";
 
 const LogIn = () => {
     const setIsLoggedIn = useRecoilState(isLoggedInState)[1];
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const validateForm = () => {
+        if (!username) {
+            setUsernameError("Enter a username")
+            return false
+        } else {
+            setUsernameError("")
+        }
+
+        if (!password) {
+            setPasswordError("Enter a password")
+            return false
+        } else {
+            setPasswordError("")
+        }
+
+        return true
+    }
 
     const logInButtonHandler = async (e) => {
         e.preventDefault();
 
-        const res = await loginUser(username, password);
-        if (res.status !== 200) {
-            setErrorMessage(res.message);
-            return;
+        if (validateForm()) {
+            const res = await loginUser(username, password);
+            if (res.status !== 200) {
+                if (res.errorType === "invalid-username") {
+                    setUsernameError(res.message)
+                } else if (res.errorType === "invalid-password") {
+                    setPasswordError(res.message)
+                }
+                return;
+            }
+
+            localStorage.setItem(
+                "credentials",
+                JSON.stringify({
+                    sessionToken: res.token,
+                    username: res.username,
+                    isManager: res.isManager,
+                })
+            );
+
+            setIsLoggedIn(true);
         }
-
-        localStorage.setItem(
-            "credentials",
-            JSON.stringify({
-                sessionToken: res.token,
-                username: res.username,
-                isManager: res.isManager,
-            })
-        );
-
-        setIsLoggedIn(true);
     };
 
     return (
@@ -90,39 +117,18 @@ const LogIn = () => {
                         Sign in
                     </Typography>
                     <Box component="form" noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoComplete="username"
-                            autoFocus
-                            onChange={(e) => setUsername(e.target.value)}
-                            sx={{
-                                bgcolor: "#FFFFFF",
-                            }}
+                        <UsernameTextField 
+                            error={usernameError} 
+                            setUsername={setUsername} 
                         />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
+                        <PasswordTextField 
                             label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            onChange={(e) => setPassword(e.target.value)}
-                            sx={{
-                                bgcolor: "#FFFFFF",
-                            }}
+                            name="password"
+                            error={passwordError}
+                            setPassword={setPassword}
+                            showPassword={showPassword}
+                            setShowPassword={setShowPassword}
                         />
-                        {errorMessage && (
-                            <p className={styles["error-msg"]}>
-                                {errorMessage}
-                            </p>
-                        )}
                         <Button
                             type="submit"
                             fullWidth
@@ -134,12 +140,13 @@ const LogIn = () => {
                         </Button>
                         <Grid container>
                             <Grid item>
+                                Don't have an account? &nbsp;
                                 <Link
                                     href="/signup"
                                     underline="hover"
-                                    color="inherit"
+                                    color="#0000EE"
                                 >
-                                    {"Don't have an account? Sign Up"}
+                                    Sign Up
                                 </Link>
                             </Grid>
                         </Grid>

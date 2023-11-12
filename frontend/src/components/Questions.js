@@ -61,7 +61,7 @@ const Questions = () => {
                     {questions &&
                         questions.map((question) => (
                             <tr key={question._id}>
-                                <td className={styles["title-column"]}>
+                                <td title={question.title} className={styles["title-column"]}>
                                     <Link
                                         to={`/questions/${question._id}`}
                                         className={styles["question-link"]}
@@ -72,11 +72,7 @@ const Questions = () => {
                                 <td className={styles["category-column"]}>
                                     <div className={styles["category-values"]}>
                                         {
-                                            question.categories && question.categories.map(category => (
-                                                <span key={category}>
-                                                    {category},
-                                                </span>
-                                            ))
+                                            question.categories && question.categories.map(category => category).join(', ')
                                         }
                                     </div>
                                 </td>

@@ -17,6 +17,7 @@ const loginUser = (username, password) => {
       status: response.status,
     }))
     .catch((error) => ({
+      errorType: error.response.data.errorType,
       message: error.response.data.msg,
       status: error.response.status,
     }));
@@ -35,7 +36,7 @@ const registerUser = (username, password) => {
       status: response.status,
     }))
     .catch((error) => ({
-      message: error.response.data.msg,
+      message: [error.response.data.usernameError, error.response.data.passwordError],
       status: error.response.status,
     }));
 };
