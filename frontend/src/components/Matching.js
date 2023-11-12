@@ -1,5 +1,5 @@
 import styles from '../styles/components/Matching.module.css';
-import { connectMatchingSocket } from '../sockets/matchingServiceSocket';
+import { socket, connectMatchingSocket } from '../sockets/matchingServiceSocket';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { 
@@ -9,6 +9,7 @@ import {
     queueComplexityState,
     buttonsDisabledState
 } from '../recoil/TimeManagerAtom';
+import Button from '@mui/material/Button';
 
 const maxQueueTime = 30;
 
@@ -52,6 +53,13 @@ const Matching = () => {
         setButtonsDisabled(true);
     };
 
+    const cancelHandler = () => {
+        socket.disconnect();
+        setTimerRunning(false);
+        setButtonsDisabled(false);
+        setSeconds(maxQueueTime);
+    }
+
     return (
         <div className={styles["container"]}>
             <h3 className={styles["header"]}>Match with another user</h3>
@@ -71,6 +79,9 @@ const Matching = () => {
                     <div className={styles["timer-container"]}>
                         <p>Finding {queueComplexity} match...</p>
                         <p className={styles["seconds"]}>{seconds} seconds remaining</p>
+                        <Button variant="outlined" size="medium" onClick={cancelHandler}>
+                            Cancel
+                        </Button>
                     </div>
                 )
             }
