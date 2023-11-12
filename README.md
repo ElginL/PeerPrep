@@ -79,3 +79,25 @@ docker-compose down
 ```
 
 This alternative setup simplifies the deployment process by using Docker and Docker Compose to manage containers for each service. It provides an efficient way to run the PeerPrep application locally.
+
+### Assignment 1
+All directory and files at the tag **Assignment-1** is relevant for this assignment. The **user-service**, **question-service**, and **frontend** has to be up and running to test this.
+
+### Assignment 2
+In order to test this assignment properly, the **user-service**, **question-service**, and **frontend** has to be up and running.
+To be able to see the **Add** button, **Delete** button, and **Update** button, you need to log in to an account with manager rights.
+This account's username and password can be found on the **Sharing Assignment Private Info** folder on canvas.
+The relevant code for this assignment can be found in **backend/question-service** folder. For frontend, it can be found at **/frontend/src/AddQuestionForm.js**, **/frontend/src/UpdateQuestionForm.js**, **/frontend/src/QuestionsNav.js**, **/frontend/src/Questions.js**.
+
+### Assignment 3
+In order to test this assignment correctly, the **user-service**, **question-service**, and **frontend** has to be up and running.
+To test the functionality of a non-manager, you could just register for an account because by default, registered account does not have the manager role. To test the functionality of a manager, you could use the username and password given on canvas to log in.
+
+### Assignment 4
+To test this assignment, proceed to the root directory and run **docker-compose up**. This will take quite some time for the containers to start running, and you can visit **http://localhost:3000** and use the application normally.
+The relevant code can be found in **backend/question-service/Dockerfile**, **backend/user-service/Dockerfile**, and **docker-compose.yml** which is found at the root.
+
+### Assignment 5
+In order to test the matching-service functionality properly, the **user-service**, **question-service**, **matching-service**,**collaboration-service**, and the **frontend** has to be up and running. These can be set up by following the instructions above.
+
+For this particular assignment, the code that are relevant resides in the **backend/matching-service** directory. For frontend, the code that are relevant is in **frontend/src/components/Matching.js**, **frontend/src/components/MatchFoundModal.js**, **frontend/src/components/RetryModal.js**, **frontend/src/components/TimeManager.js**, and the **frontend/src/recoil** directory.
