@@ -35,7 +35,7 @@ const loginUser = async (req, res, next) => {
     const dbUser = await getUserByUsername(username);
 
     if (!dbUser) {
-      return res.status(401).json({ msg: "Username or password is invalid" });
+      return res.status(401).json({ errorType: "invalid-username", msg: "Username does not exist" });
     }
 
     bcrypt
@@ -44,7 +44,7 @@ const loginUser = async (req, res, next) => {
         if (!isCorrect) {
           return res
             .status(401)
-            .json({ msg: "Username or password is invalid" });
+            .json({ errorType: "invalid-password", msg: "Password is incorrect" });
         }
 
         const token = jwt.sign(
