@@ -75,6 +75,7 @@ const changePassword = async (oldPassword, newPassword) => {
     }
   } catch (error) {
     return {
+      errorLoc: error.response.data.errorLoc,
       message: error.response.data.msg,
       status: error.response.status
     };

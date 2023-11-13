@@ -4,6 +4,7 @@ import UnauthenticatedRoutes from "./routes/UnauthenticatedRoutes";
 import { useRecoilState } from "recoil";
 import { isLoggedInState } from './recoil/UserAtom';
 import styles from './styles/app.module.css';
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -28,6 +29,18 @@ const App = () => {
 
     return (
         <div>
+        <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+        />
             {
                 isLoggedIn
                     ? <AuthenticatedRoutes />

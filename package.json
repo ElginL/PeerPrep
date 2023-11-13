@@ -11,7 +11,9 @@
     "user-service": "cd backend/user-service && npm run start-dev",
     "communication-service": "cd backend/communication-service && npm run start-dev",
     "ai-service": "cd backend/ai-service && npm run start-dev",
-    "start-all": "concurrently npm:frontend npm:collaboration-service npm:matching-service npm:question-service npm:user-service npm:communication-service npm:ai-service"
+    "history-service": "cd backend/history-service && npm run start-dev",
+    "code-exec-service": "cd backend/code-exec-service && npm run start-dev",
+    "start-all": "concurrently npm:frontend npm:collaboration-service npm:code-exec-service npm:matching-service npm:question-service npm:user-service npm:communication-service npm:ai-service npm:history-service"
   },
   "repository": {
     "type": "git",
