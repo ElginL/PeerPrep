@@ -24,6 +24,12 @@ const getAllQuestions = (req, res, next) => {
         .catch(err => next(err));
 };
 
+const getAllQuestionsComplexity = (req, res, next) => {
+    Question.find({}, 'complexity')
+        .then(questions => res.status(200).json(questions))
+        .catch(err => next(err));
+}
+
 const addQuestion = async (req, res, next) => {
     const savedTestCases = [];
 
@@ -178,6 +184,7 @@ const getRandomQuestion = (req, res, next) => {
 module.exports = {
     getQuestionById,
     getAllQuestions,
+    getAllQuestionsComplexity,
     addQuestion,
     updateQuestion,
     deleteQuestion,

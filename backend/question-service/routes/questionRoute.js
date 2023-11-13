@@ -10,6 +10,9 @@ questionRouter.get('/questions/:id', authenticateJwt, questionController.getQues
 // Fetch all questions
 questionRouter.get('/', authenticateJwt, questionController.getAllQuestions);
 
+// Fetch all question complexities
+questionRouter.get('/get-complexities', authenticateJwt, questionController.getAllQuestionsComplexity);
+
 // Add a question
 questionRouter.post('/', authenticateJwt, authenticateManager, validateQuestion(), questionController.addQuestion);
 

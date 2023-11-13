@@ -89,9 +89,11 @@ const updatePassword = async (req, res, next) => {
     const isCorrect = await bcrypt.compare(oldPassword, dbUser.password);
 
     if (!isCorrect) {
-      return res
-      .status(401)
-      .json({ msg: "Your old password is incorrect" });
+      return res.status(401)
+        .json({
+          errorLoc: "currentPassword",
+          msg: "Your old password is incorrect"
+        });
     }
   } catch (e) {
     return next(e);
