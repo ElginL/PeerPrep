@@ -51,7 +51,7 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{bgcolor: '#1c1a1a'}}>
             <Container maxWidth="auto">
                 <Toolbar disableGutters>
                     <Link to="/" className={styles["logo-container"]}>
@@ -59,7 +59,6 @@ const Navbar = () => {
                         <Typography
                             variant="h6"
                             noWrap
-                            component="a"
                             sx={{
                                 mr: 2,
                                 display: { xs: "none", md: "flex" },
