@@ -52,18 +52,18 @@ const EditProfile = () => {
   return (
     <div>
       <Navbar />
-      <Box sx={{ width: '95%', minHeight: '90vh', display: 'flex', flexDirection: 'row', margin: 'auto', flexWrap: 'wrap'}}>
+      <Box sx={{ width: '95%', minHeight: '90vh', display: 'flex', margin: 'auto', flexWrap: 'wrap'}}>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            width: '25%',
+            minWidth: '25%',
             bgcolor: '#232323',
             ml: 3,
             my: 3,
             textAlign: 'center',
             borderRadius: 2,
-            flexGrow: 1
+            flexGrow: 1,
           }}
         >
           <Avatar
@@ -123,6 +123,18 @@ const EditProfile = () => {
               borderRadius: 2,
             }}
           >
+            <Typography
+              sx={{
+                mb: 1,
+                mt: 2,
+                ml: 2,
+                fontWeight: 'bold',
+                fontSize: 20,
+                color: '#FFFFFF'
+              }}
+            >
+            Answered Questions
+          </Typography>
             { history ?
               <HistoryTable history={history} />
               : <Skeleton variant="rectangular" width='100%' height="40vh" color='#FFFFFF' sx={{ bgcolor: 'grey' }} />
@@ -136,6 +148,9 @@ const EditProfile = () => {
               borderRadius: 2
             }}
           >
+          <Typography variant="h6" m={2} gutterBottom>
+            Solved Questions
+          </Typography>
             { history
                 ? <ProgressBar userHistory={history} minHeight='50%' />
                 : <Skeleton variant="rectangular" width='100%' height="50%" color='#FFFFFF' sx={{ bgcolor: 'grey' }} />

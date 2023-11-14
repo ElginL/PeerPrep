@@ -29,7 +29,7 @@ const DeregisterAccount = () => {
                 sx={{
                     width: 'auto',
                     mx: 'auto',
-                    mt: 3,
+                    my: 3,
                     bgcolor: '#FF0000',
                     '&:hover': {
                         bgcolor: '#fc3232'
