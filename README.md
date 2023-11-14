@@ -58,13 +58,13 @@ npm run start-dev
 ### Collaboration Service and Matching Service
 1. For both the **/backend/collaboration-service** and **/backend/matching-service** folders, follow the same steps as described in the "User service" section above, create a **'.env'** file with the exact same .env file as user service, and starting the respective services.
 
-## Alternative setup with Docker
+## Alternative setup with Docker (Not recommended)
 This alternative setup utilizes Docker to simplify the deployment process of PeerPrep application. Before you begin, ensure that you have the following prerequisites installed on your system:
 - Node.js (https://nodejs.org/)
 - Npm (Node Package Manager)
 - Docker (https://www.docker.com/)
 
-### Using Docker Compose (Not recommended)
+### Using Docker Compose
 Every service, including the frontend, has a Dockerfile that defines how a container is built. At the root of the project folder, you will find a **docker-compose.yml** file that can be used to build and run all containers, and stop them together.
 
 To use Docker Compose for setup:
