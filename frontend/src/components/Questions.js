@@ -13,8 +13,6 @@ const Questions = () => {
     const [pageNumber, setPageNumber] = useState(0);
     const questionsPerPage = 15;
 
-
-
     useEffect(() => {
         const getQuestions = async () => {
             const res = await fetchAllQuestions();

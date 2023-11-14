@@ -7,7 +7,7 @@
   flex-grow: 1;
   padding-bottom: 6vh;
   position: relative;
-  height: 620px;
+  height: 670px;
 }
 
 .questions-table {
@@ -54,7 +54,7 @@
 }
 
 .category-column {
-  width: 55%;
+  width: 50%;
 }
 
 .complexity-column {

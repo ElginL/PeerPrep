@@ -19,6 +19,8 @@ const categories = [
     "Binary Search Tree",
     "Graph",
     "Depth-First Search (DFS)",
+    "Depth-First Seach",
+    "Breadth-First Search",
     "Breadth-First Search (BFS)",
     "Union Find",
     "Hash Table",
