@@ -28,7 +28,7 @@ This will start the frontend server, and you can access the application in your 
 MONGODB_URL=""
 JWT_SECRET_KEY=""
 ```
-You can find the necessary values in the private folder submitted on canvas, titled **questionService.env**.
+You can find the necessary values in the private folder submitted on canvas.
 
 3. Run the following commands to install the required dependencies and start the Question Service:
 ```
@@ -41,12 +41,13 @@ npm run start-dev
 2. Create a **'.env'** file in this directory with the following key-value pairs:
 ```
 DB="CS3219"
-DB_USERNAME="your_local_db_username"
-DB_PASSWORD="your_db_password"
+DB_USERNAME="{db_username}"
+DB_PASSWORD="{db_password}"
 DB_DIALECT="postgres"
 JWT_SECRET_KEY=""
 ```
-Create a database called **CS3219** and replace **your_local_db_username** with your own database username, and **your_db_password** with your own database password. The JWT_SECRET_KEY can be found in the private folder submitted on canvas, titled **userService.env**
+You can connect to our cloud's database by using the **.env** file given on canvas.
+Alternatively, you can set up your own local database. Create a database called **CS3219** and replace **db_username** with your own database username, and **db_password** with your own database password. The JWT_SECRET_KEY can be found in the private folder submitted on canvas.
 
 3. Run the following commands to install the required dependencies and start the User Service
 ```
@@ -63,7 +64,7 @@ This alternative setup utilizes Docker to simplify the deployment process of Pee
 - Npm (Node Package Manager)
 - Docker (https://www.docker.com/)
 
-### Using Docker Compose
+### Using Docker Compose (Not recommended)
 Every service, including the frontend, has a Dockerfile that defines how a container is built. At the root of the project folder, you will find a **docker-compose.yml** file that can be used to build and run all containers, and stop them together.
 
 To use Docker Compose for setup:
