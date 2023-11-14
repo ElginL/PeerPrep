@@ -19,11 +19,17 @@ const AnsweredQuestion = sequelize.define('AnsweredQuestion', {
     username: {
         type: DataTypes.STRING
     },
+    username2: {
+        type: DataTypes.STRING
+    },
     answeredAt: {
-        type: DataTypes.DATE
+        type: DataTypes.STRING
     },
     isSolved: {
         type: DataTypes.BOOLEAN
+    },
+    roomId: {
+        type: DataTypes.UUID
     }
 }, {
     tableName: 'AnsweredQuestion'

@@ -13,7 +13,6 @@ import { addAnsweredQuestion } from '../api/history';
 const CodeExecutor = ({ 
     socketRef,
     roomId,
-    users,
     codeRef,
     question, 
     language 
@@ -28,6 +27,17 @@ const CodeExecutor = ({
     const [executionResults, setExecutionResults] = useState(null);
     const [codeRunning, setCodeRunning] = useState(false);
 
+    const getNowDateTime = () => {
+        let newDate = new Date()
+        const options = {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        };
+        return newDate.toLocaleDateString(undefined, options) + " " + newDate.toLocaleTimeString()
+    }
+
     const executeCodeHandler = async () => {
         setCodeRunning(true);
         socketRef.current.emit(ACTIONS.CODE_EXECUTING, {
@@ -36,17 +46,12 @@ const CodeExecutor = ({
 
         const result = await runAllTestCases(codeRef.current, language, inputs, outputs);
 
+        const username = JSON.parse(localStorage.getItem("credentials"))["username"]
+
         if (Array.isArray(result)) {
             const allPassed = result.every(item => item.status === "Passed");
             if (allPassed) {
                 setAllPassModalVisible(true);
-                users.forEach(user => {
-                    addAnsweredQuestion(question["_id"], question["title"], question["complexity"], user, new Date(), true)
-                });
-            } else {
-                users.forEach(user => {
-                    addAnsweredQuestion(question["_id"], question["title"], question["complexity"], user, new Date(), false)
-                });
             }
         }
 
@@ -57,7 +62,8 @@ const CodeExecutor = ({
 
         socketRef.current.emit(ACTIONS.EXECUTE_CODE, {
             roomId,
-            result
+            result,
+            username
         });
     };
 
@@ -73,12 +79,19 @@ const CodeExecutor = ({
 
     useEffect(() => {
         if (socketRef.current) {
-            socketRef.current.on(ACTIONS.EXECUTE_CODE, ({ result }) => {
+            socketRef.current.on(ACTIONS.EXECUTE_CODE, ({ result, username }) => {
+                const myUsername = JSON.parse(localStorage.getItem("credentials"))["username"]
+
                 if (Array.isArray(result)) {
                     const allPassed = result.every(item => item.status === "Passed");
                     if (allPassed) {
                         setAllPassModalVisible(true);
+                        addAnsweredQuestion(question["_id"], question["title"], question["complexity"], username, myUsername, getNowDateTime(), true, roomId);
+                    } else {
+                        addAnsweredQuestion(question["_id"], question["title"], question["complexity"], username, myUsername, getNowDateTime(), false, roomId);
                     }
+                } else {
+                    addAnsweredQuestion(question["_id"], question["title"], question["complexity"], username, myUsername, getNowDateTime(), false, roomId);
                 }
                 
                 setExecutionResults(result);
@@ -90,6 +103,11 @@ const CodeExecutor = ({
             socketRef.current.on(ACTIONS.CODE_EXECUTING, () => {
                 setCodeRunning(true);
             })
+        }
+
+        return () => {
+            socketRef.current.off(ACTIONS.EXECUTE_CODE);
+            socketRef.current.off(ACTIONS.CODE_EXECUTING);
         }
     }, [socketRef.current]);
 

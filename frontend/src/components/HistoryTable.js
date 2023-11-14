@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Pagination, PaginationItem, Typography } from '@mui/material';
+import { Pagination, PaginationItem } from '@mui/material';
 import { DataGrid, gridPageCountSelector, gridPageSelector, useGridApiContext, useGridSelector } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -7,29 +7,25 @@ import CheckIcon from '@mui/icons-material/Check';
 
 const HistoryTable = ({ history }) => {
 
-    const PAGE_SIZE = 10;
+    const PAGE_SIZE = 4;
     const [paginationModel, setPaginationModel] = useState({
         pageSize: PAGE_SIZE,
         page: 0,
     });
 
-    const [solvedRowIds, setSolvedRowIds] = useState([]);
-
     function formatDate(inputDate) {
-        const months = [
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December'
-        ];
+      const dateParts = inputDate.split(/[\s,]+/);
+      const day = dateParts[1];
+      const month = String(dateParts[2]).substring(0, 3)
+      const year = dateParts[3];
       
-        const parts = inputDate.split('T')[0].split('-');
-        const year = parts[0];
-        const monthIndex = parseInt(parts[1], 10) - 1; // Adjust month index
-        const day = parts[2];
-      
-        const month = months[monthIndex];
-      
-        return `${day} ${month}, ${year}`;
+      const timeParts = dateParts[4].split(':');
+
+      return `${day} ${month} ${year}, ${timeParts[0]}${timeParts[1]} hrs`;
+    
     }
+
+    const [solvedRowIds, setSolvedRowIds] = useState([]);
 
     useEffect(() => {
         const updateSolvedIds = () => history["data"].forEach(el => {
@@ -92,26 +88,33 @@ const HistoryTable = ({ history }) => {
         }
     }));
 
-    const rows = history["data"].map(entry => ({
+    const uniqueValuesMap = new Map();
+
+    history["data"].map(entry => ({
         id: entry["id"],
         question: entry["questionTitle"],
         answeredAt: formatDate(entry["answeredAt"]),
         isSolved: entry["isSolved"],
+        roomId: entry["roomId"],
         complexity: entry["complexity"]
-    }));
+    })).forEach(item => {
+      const key = `${item.isSolved}_${item.roomId}_${item.question}`;
+      if (!uniqueValuesMap.has(key) || item.id > uniqueValuesMap.get(key).id) {
+          uniqueValuesMap.set(key, item);
+      }
+    });
 
-    
-    
+    const rows = Array.from(uniqueValuesMap.values());
+
     const columns = [
-        { field: 'question', headerName: 'QUESTION', headerClassName: 'theme-header', headerAlign: 'center', flex: 0.4},
-        { field: 'answeredAt', headerName: 'DATE', headerClassName: 'theme-header', headerAlign: 'center', align: 'center', flex: 0.2},
-        { field: 'isSolved', headerName: 'SOLVED', headerClassName: 'theme-header', align: 'center', type: 'boolean', flex: 0.2,
+        { field: 'question', headerName: 'QUESTION', headerClassName: 'theme-header', headerAlign: 'center', disableColumnMenu: true, flex: 0.4},
+        { field: 'answeredAt', headerName: 'DATE', headerClassName: 'theme-header', headerAlign: 'center', align: 'center', disableColumnMenu: true, flex: 0.3},
+        { field: 'isSolved', headerName: 'SOLVED', headerClassName: 'theme-header', align: 'center', type: 'boolean', disableColumnMenu: true, flex: 0.1,
             renderCell: (params) => solvedRowIds.includes(params.id)
                 ? <CheckIcon sx={{ color: '#008000' }} />
                 : <ClearIcon sx={{ color: '#EE4B2B' }} />
         },
-        { field: 'complexity', headerName: 'COMPLEXITY', headerClassName: 'theme-header', headerAlign: 'center', align: 'center', flex: 0.2 }
-                
+        { field: 'complexity', headerName: 'COMPLEXITY', headerClassName: 'theme-header', headerAlign: 'center', align: 'center', disableColumnMenu: true, flex: 0.2 }
     ]
 
     return (

@@ -19,8 +19,10 @@ const addAnsweredQuestion = (questionId, questionTitle, complexity, username, an
         questionTitle,
         complexity,
         username,
+        username2,
         answeredAt,
-        isSolved
+        isSolved,
+        roomId
     }
     return axios
         .post(baseUrl + '/add-answered-question', details, setAuthenticationHeader())
@@ -29,7 +31,7 @@ const addAnsweredQuestion = (questionId, questionTitle, complexity, username, an
             status: response.status,
         }))
         .catch((error) => ({
-            message: error.response.data.msg,
+            message: error.response,
             status: error.response.status,
         }));
 };

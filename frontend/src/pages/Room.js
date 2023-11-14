@@ -253,7 +253,6 @@ const Room = () => {
             <CodeExecutor
               socketRef={socketRef}
               roomId={roomId}
-              users={users}
               codeRef={codeRef}
               question={question}
               language={language}

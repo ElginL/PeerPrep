@@ -1,12 +1,12 @@
 const AnsweredQuestion = require('../db/models/AnsweredQuestion');
 const addAnsweredQuestionInDb = require('../db/repositories/historyRepo');
+const { Op } = require("sequelize");
 
 const createAnsweredQuestion = (req, res) => {
-    const {questionId, questionTitle, complexity, username, answeredAt, isSolved } = req.body;
+    const {questionId, questionTitle, complexity, username, username2, answeredAt, isSolved, roomId } = req.body;
 
     try {
-        console.log(isSolved)
-        addAnsweredQuestionInDb(questionId, questionTitle, complexity, username, answeredAt, isSolved);
+        addAnsweredQuestionInDb(questionId, questionTitle, complexity, username, username2, answeredAt, isSolved, roomId);
 
         res.status(201).json({
             success: "Question added to " + username + "'s history",
@@ -21,7 +21,10 @@ const getAllAnsweredQuestionsByUsername = async (req, res) => {
     
     const answeredQuestions = await AnsweredQuestion.findAll({
         where: {
-            username: username
+            [Op.or]: [
+                { username: username },
+                { username2: username }
+              ]
         },
         raw: true
     })

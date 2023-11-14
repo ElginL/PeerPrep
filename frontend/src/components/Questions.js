@@ -74,15 +74,15 @@ const Questions = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {questions &&
-                        displayedQuestions.map((question) => (
+                    {displayedQuestions &&
+                        displayedQuestions.map((question, index) => (
                             <tr key={question._id}>
                                 <td title={question.title} className={styles["title-column"]}>
                                     <Link
                                         to={`/questions/${question._id}`}
                                         className={styles["question-link"]}
                                     >
-                                        {question.title}
+                                       {index + 1 + pageNumber * questionsPerPage}. {question.title}
                                     </Link>
                                 </td>
                                 <td className={styles["category-column"]}>

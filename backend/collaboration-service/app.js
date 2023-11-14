@@ -118,9 +118,10 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on(ACTIONS.EXECUTE_CODE, ({ roomId, result }) => {
+    socket.on(ACTIONS.EXECUTE_CODE, ({ roomId, result, username }) => {
         socket.in(roomId).emit(ACTIONS.EXECUTE_CODE, {
-            result
+            result,
+            username
         });
     });
 
