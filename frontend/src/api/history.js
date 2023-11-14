@@ -12,7 +12,7 @@ const setAuthenticationHeader = () => {
     };
 };
 
-const addAnsweredQuestion = (questionId, questionTitle, complexity, username, answeredAt, isSolved) => {
+const addAnsweredQuestion = (questionId, questionTitle, complexity, username, username2, answeredAt, isSolved, roomId) => {
     
     const details = {
         questionId,
