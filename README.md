@@ -61,29 +61,7 @@ npm run start-dev
 ### AI Service, Code Execution Service, Communication Service, History Service (Nice to haves)
 1. For all the **/backend/ai-service**, **/backend/code-exec-service**, **/backend/communication-service** and **/backend/history-service** folders, create a **'.env'** file with the corresponding .env file in canvas, and starting the respective services.
 
-## Alternative setup with Docker (Not recommended)
-This alternative setup utilizes Docker to simplify the deployment process of PeerPrep application. Before you begin, ensure that you have the following prerequisites installed on your system:
-- Node.js (https://nodejs.org/)
-- Npm (Node Package Manager)
-- Docker (https://www.docker.com/)
-
-### Using Docker Compose
-Every service, including the frontend, has a Dockerfile that defines how a container is built. At the root of the project folder, you will find a **docker-compose.yml** file that can be used to build and run all containers, and stop them together.
-
-To use Docker Compose for setup:
-1. Navigate to the root folder of the project where the **docker-compose.yml** file is located.
-2. Run the following command to build and start all containers
-```
-docker-compose up
-```
-This command will create and start containers for the frontend, matching service, question service, user service, and collaboration service. The application will be accessible in your web browser at http://localhost:3000.
-
-3. To stop all containers and services, use the following command:
-```
-docker-compose down
-```
-
-This alternative setup simplifies the deployment process by using Docker and Docker Compose to manage containers for each service. It provides an efficient way to run the PeerPrep application locally.
+## Assignment grading instructions
 
 ### Assignment 1
 All directory and files at the tag **Assignment-1** is relevant for this assignment. The **user-service**, **question-service**, and **frontend** has to be up and running to test this.
@@ -118,3 +96,28 @@ For this particular assignment, the code that are relevant resides in the **back
 
 > ⚠️ Attention: .env.development File Setup <br>
 To properly configure your frontend directory, it's crucial to add the .env.development file at the root. You can locate this file on Canvas.
+
+
+## Alternative setup with Docker (Not recommended for grading)
+This alternative setup utilizes Docker to simplify the deployment process of PeerPrep application. Before you begin, ensure that you have the following prerequisites installed on your system:
+- Node.js (https://nodejs.org/)
+- Npm (Node Package Manager)
+- Docker (https://www.docker.com/)
+
+### Using Docker Compose
+Every service, including the frontend, has a Dockerfile that defines how a container is built. At the root of the project folder, you will find a **docker-compose.yml** file that can be used to build and run all containers, and stop them together.
+
+To use Docker Compose for setup:
+1. Navigate to the root folder of the project where the **docker-compose.yml** file is located.
+2. Run the following command to build and start all containers
+```
+docker-compose up
+```
+This command will create and start containers for the frontend, matching service, question service, user service, and collaboration service. The application will be accessible in your web browser at http://localhost:3000.
+
+3. To stop all containers and services, use the following command:
+```
+docker-compose down
+```
+
+This alternative setup simplifies the deployment process by using Docker and Docker Compose to manage containers for each service. It provides an efficient way to run the PeerPrep application locally.
