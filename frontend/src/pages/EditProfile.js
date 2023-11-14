@@ -3,13 +3,14 @@ import Navbar from "../components/Navbar";
 import DeregisterAccount from "../components/DeregisterAccount";
 import ChangePassword from "../components/ChangePassword";
 import { getUsername } from "../api/users";
-import { Avatar, Box, Skeleton, Typography } from "@mui/material";
+import { Avatar, Box, Skeleton, Tooltip, Typography } from "@mui/material";
 import { FaUserGroup } from 'react-icons/fa6';
 import { fetchAllAnsweredQuestionsByUsername } from "../api/history";
 import HistoryTable from "../components/HistoryTable";
 import ProgressBar from "../components/ProgressBar";
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const EditProfile = () => {
   const [history, setHistory] = useState(undefined);
@@ -57,7 +58,6 @@ const EditProfile = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            minWidth: '25%',
             bgcolor: '#232323',
             ml: 3,
             my: 3,
@@ -109,6 +109,7 @@ const EditProfile = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            minWidth: '70%',
             mx: 3,
             mt: 3,
             alignItems: 'stretch',
@@ -123,18 +124,28 @@ const EditProfile = () => {
               borderRadius: 2,
             }}
           >
-            <Typography
-              sx={{
-                mb: 1,
-                mt: 2,
-                ml: 2,
-                fontWeight: 'bold',
-                fontSize: 20,
-                color: '#FFFFFF'
-              }}
+            <Box display='flex' alignItems='center'>
+              <Typography
+                sx={{
+                  mb: 1,
+                  mt: 2,
+                  ml: 2,
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  color: '#FFFFFF'
+                }}
+              >
+              Answered Questions 
+            </Typography>
+            <Tooltip
+              placement="right"
+              mt={2}
+              title="Answered questions are attempts, and will not count towards solved questions if the code 
+                executed did not pass the test cases."
             >
-            Answered Questions
-          </Typography>
+              <InfoOutlinedIcon sx={{ml: 2}}/> 
+            </Tooltip>
+          </Box>
             { history ?
               <HistoryTable history={history} />
               : <Skeleton variant="rectangular" width='100%' height="40vh" color='#FFFFFF' sx={{ bgcolor: 'grey' }} />

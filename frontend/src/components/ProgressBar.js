@@ -25,7 +25,13 @@ const ProgressBar = (userHistory) => {
 
     useEffect(() => {
         const updateData = () => {
-            const answerHistory = userHistory["userHistory"]["data"].filter(el => el.isSolved === true).map(el => ({ _id: el["questionId"], complexity: el["complexity"]}) );
+            let answerHistory = userHistory["userHistory"]["data"].filter(el => el.isSolved === true).map(el => ({ _id: el["questionId"], complexity: el["complexity"]}) );
+            answerHistory = answerHistory.reduce((unique, o) => {
+                if(!unique.some(obj => obj.label === o.label && obj.value === o.value)) {
+                  unique.push(o);
+                }
+                return unique;
+            },[]);
             const allQuestionsArray = Object.keys(allQuestions).map(key => allQuestions[key]);
             const easyQuestions = allQuestionsArray.filter(el => el.complexity === "Easy")
             const easySolved = answerHistory.filter(x => easyQuestions.some(y => y._id === x._id));

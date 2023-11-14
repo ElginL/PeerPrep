@@ -2,15 +2,17 @@ import axios from "axios";
 
 const baseUrl = process.env.REACT_APP_HISTORY_SERVICE_URL + "/history-service";
 
-const addAnsweredQuestion = (questionId, questionTitle, complexity, username, answeredAt, isSolved) => {
+const addAnsweredQuestion = (questionId, questionTitle, complexity, username, username2, answeredAt, isSolved, roomId) => {
     
     const details = {
         questionId,
         questionTitle,
         complexity,
         username,
+        username2,
         answeredAt,
-        isSolved
+        isSolved,
+        roomId
     }
     return axios
         .post(baseUrl + '/add-answered-question', details)
@@ -19,7 +21,7 @@ const addAnsweredQuestion = (questionId, questionTitle, complexity, username, an
             status: response.status,
         }))
         .catch((error) => ({
-            message: error.response.data.msg,
+            message: error.response,
             status: error.response.status,
         }));
 };
