@@ -13,19 +13,16 @@
 .questions-table {
   width: 100%;
   padding-top: 10px;
-  counter-reset: rowNumber;
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 5px;
 }
 
 .questions-table tr > td:first-child {
-  counter-increment: rowNumber;
   padding-right: 15px;
 }
 
 .questions-table tr td:first-child::before {
-  content: counter(rowNumber) ".";
   min-width: 1em;
   margin-right: 0.5em;
 }
