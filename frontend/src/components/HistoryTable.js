@@ -122,17 +122,6 @@ const HistoryTable = ({ history }) => {
             color: '#FFFFFF',
             paddingBottom: 5
         }}>
-          <Typography
-            sx={{
-              my: 1,
-              paddingTop: 1,
-              fontWeight: 'bold',
-              fontSize: 20,
-              color: '#FFFFFF'
-            }}
-          >
-            Answered Questions
-          </Typography>
           <StyledDataGrid
               rows={rows}
               columns={columns}

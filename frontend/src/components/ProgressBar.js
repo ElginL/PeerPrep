@@ -80,11 +80,6 @@ const ProgressBar = (userHistory) => {
 
     return (
         <div>
-            <Box sx={{ display: 'flex', direction: 'column'}}>
-                <Typography variant="h6" m={2} gutterBottom>
-                    Solved Questions
-                </Typography>
-            </Box>
             <Box width='100%' display='flex' flexDirection='row' px={2} pb={2}>
                 <CircularProgress 
                     variant="determinate"
