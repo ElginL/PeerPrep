@@ -99,7 +99,7 @@ const EditProfile = () => {
                 ml: 1,
                 textDecoration: 'underline' 
               }}>
-              {localStorage.getItem("credentials")["isManager"] ? "MANAGER" : "USER"}
+              {JSON.parse(localStorage.getItem("credentials"))["isManager"] ? "MANAGER" : "USER"}
             </Typography>
           </Box>
           <ChangePassword isChangeVisible={isChangeVisible} setIsChangeVisible={setIsChangeVisible} setIsChangeSuccess={setIsChangeSuccess} />
