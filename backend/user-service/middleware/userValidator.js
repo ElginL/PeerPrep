@@ -24,7 +24,7 @@ const validateUser = () => {
                 errorLoc: "password",
                 msg: "Password must be between 8 and 20 characters"
             }),
-        handleErrors
+        handleNewUserErrors
     ];
 };
 
@@ -32,12 +32,12 @@ const validateNewPassword = () => {
     return [
         body('newPassword')
             .notEmpty().withMessage("Password is required")
-            .isLength({ min: 8, max: 20 }).withMessage("Password must be between 8 and 20 characters"),
-        handleErrors
+            .isLength({ min: 8, max: 20 }).withMessage("New password must be between 8 and 20 characters"),
+        handleNewPasswordErrors
     ];
 };
 
-const handleErrors = (req, res, next) => {
+const handleNewUserErrors = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         usernameErrorArray = errors.array().filter(el => el.msg.errorLoc === "username")
@@ -48,6 +48,17 @@ const handleErrors = (req, res, next) => {
         });
     }
 
+    next();
+}
+
+const handleNewPasswordErrors = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errorLoc: 'newPassword',
+            msg: errors.array().map(el => el.msg).join(' ')
+        });
+    }
     next();
 }
 

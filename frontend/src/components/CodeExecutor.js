@@ -8,10 +8,12 @@ import CodeExecutionNavigator from './CodeExecutionNavigator';
 import TestCaseNavigator from './TestCaseNavigator';
 import ACTIONS from '../api/actions';
 import AllPassModal from './AllPassModal';
+import { addAnsweredQuestion } from '../api/history';
 
 const CodeExecutor = ({ 
     socketRef,
     roomId,
+    users,
     codeRef,
     question, 
     language 
@@ -32,6 +34,13 @@ const CodeExecutor = ({
             const allPassed = result.every(item => item.status === "Passed");
             if (allPassed) {
                 setAllPassModalVisible(true);
+                users.forEach(user => {
+                    addAnsweredQuestion(question["_id"], question["title"], question["complexity"], user, new Date(), true)
+                });
+            } else {
+                users.forEach(user => {
+                    addAnsweredQuestion(question["_id"], question["title"], question["complexity"], user, new Date(), false)
+                });
             }
         }
 

@@ -33,6 +33,7 @@ const Room = () => {
   const [question, setQuestion] = useState({});
   const [language, setLanguage] = useState("python");
   const [questionChanged, setQuestionChanged] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
@@ -74,6 +75,9 @@ const Room = () => {
         setClients((prevClients) =>
           prevClients.filter((client) => client.socketId !== socketId)
         );
+        setUsers(prevUsers =>
+          prevUsers.filter(u => username !== username)
+        );
       });
 
       socketRef.current.on("disconnect", () => {
@@ -99,6 +103,7 @@ const Room = () => {
           console.log(`${username} joined the room.`);
 
           setClients(clients);
+          setUsers([...users.filter(u => u.name === username), username]);
 
           socketRef.current.emit(ACTIONS.SYNC_CODE, {
             code: codeRef.current,
@@ -248,6 +253,7 @@ const Room = () => {
             <CodeExecutor
               socketRef={socketRef}
               roomId={roomId}
+              users={users}
               codeRef={codeRef}
               question={question}
               language={language}

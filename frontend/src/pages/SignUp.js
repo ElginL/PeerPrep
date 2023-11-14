@@ -45,7 +45,7 @@ const SignUp = () => {
             setConfirmPasswordError("Enter the same password");
             return false;
         } else {
-            setPasswordError("");
+            setConfirmPasswordError("");
         }
 
         return true;

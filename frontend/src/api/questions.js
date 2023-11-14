@@ -19,6 +19,16 @@ const fetchAllQuestions = async () => {
     }
 };
 
+const fetchAllQuestionsComplexities = async () => {
+    try {
+        const questions = await axios.get(baseUrl + "/get-complexities", setAuthenticationHeader())
+
+        return questions.data;
+    } catch (error) {
+        console.error("Error when trying to fetch question complexities: ", error);
+    }
+}
+
 const fetchQuestionById = async (id) => {
     try {
         const question = await axios.get(baseUrl + `/questions/${id}`, setAuthenticationHeader());
@@ -113,6 +123,7 @@ const getRandomQuestion = async complexity => {
 
 export {
     fetchAllQuestions,
+    fetchAllQuestionsComplexities,
     fetchQuestionById,
     addQuestion,
     deleteQuestionsByIds,
