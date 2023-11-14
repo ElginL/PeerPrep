@@ -67,3 +67,10 @@ spec:
                 name: code-exec-service
                 port:
                   number: 3007
+          - path: /history-service
+            pathType: Prefix
+            backend:
+              service:
+                name: history-service
+                port:
+                  number: 3008
