@@ -12,7 +12,8 @@ const ACTIONS = {
     REQUEST_QUESTION_CHANGE: "request-question-change",
     DECLINE_QUESTION_CHANGE: "decline-question-change",
     CHECK_SYNC: "check-sync",
-    CHANGE_QUESTION: "change-question"
+    CHANGE_QUESTION: "change-question",
+    CODE_EXECUTING: "code-executing"
 };
 
 module.exports = ACTIONS;
