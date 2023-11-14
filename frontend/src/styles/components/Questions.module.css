@@ -5,6 +5,8 @@
   border-radius: 20px;
   align-self: stretch;
   flex-grow: 1;
+  padding-bottom: 6vh;
+  position: relative;
 }
 
 .questions-table {
@@ -85,4 +87,37 @@
 .category-values {
   display: flex;
   gap: 5px;
+}
+
+.pagination {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  list-style: none;
+  padding: 0;
+  background-color: #232323;
+}
+
+.pagination li {
+  margin-right: 5px;
+}
+
+.pagination a {
+  text-decoration: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #232323;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #232323;
+}
+
+.pagination .active a {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.pagination a:hover {
+  background-color: #007bff;
 }

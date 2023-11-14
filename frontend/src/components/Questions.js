@@ -3,12 +3,17 @@ import QuestionsNav from "./QuestionsNav";
 import { Link } from "react-router-dom";
 import { fetchAllQuestions, deleteQuestionsByIds } from "../api/questions";
 import styles from "../styles/components/Questions.module.css";
+import ReactPaginate from 'react-paginate';
 
 const Questions = () => {
     const [questions, setQuestions] = useState([]);
     const [deleteSelections, setDeleteSelections] = useState([]);
     const [addFormVisible, setAddFormVisible] = useState(false);
     const [deleteCheckboxVisible, setDeleteCheckboxVisible] = useState(false);
+    const [pageNumber, setPageNumber] = useState(0);
+    const questionsPerPage = 15;
+
+
 
     useEffect(() => {
         const getQuestions = async () => {
@@ -32,6 +37,19 @@ const Questions = () => {
         setDeleteSelections([]);
         setDeleteCheckboxVisible(false);
     };
+
+    const pageCount = Math.ceil(questions.length / questionsPerPage);
+
+    const changePage = ({ selected }) => {
+        setPageNumber(selected);
+    };
+
+    const displayedQuestions = questions.slice(
+        pageNumber * questionsPerPage,
+        (pageNumber + 1) * questionsPerPage
+    );
+
+    console.log(pageCount);
 
     return (
         <div className={styles["container"]}>
@@ -59,7 +77,7 @@ const Questions = () => {
                 </thead>
                 <tbody>
                     {questions &&
-                        questions.map((question) => (
+                        displayedQuestions.map((question) => (
                             <tr key={question._id}>
                                 <td title={question.title} className={styles["title-column"]}>
                                     <Link
@@ -93,6 +111,18 @@ const Questions = () => {
                         ))}
                 </tbody>
             </table>
+            <ReactPaginate
+                previousLabel={'Previous'}
+                nextLabel={'Next'}
+                breakLabel={'...'}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={changePage}
+                forcePage={pageNumber}
+                containerClassName={styles['pagination']}
+                activeClassName={styles['active']}
+            />
         </div>
     );
 };
