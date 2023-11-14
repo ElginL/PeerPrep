@@ -63,8 +63,9 @@ const Navbar = () => {
                                 mr: 2,
                                 display: { xs: "none", md: "flex" },
                                 fontWeight: "bold",
-                                letterSpacing: ".3rem",
+                                fontSize: '1.5rem',
                                 color: "inherit",
+                                padding: '20px 0'
                             }}
                         >
                             PeerPrep
