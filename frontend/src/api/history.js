@@ -2,7 +2,17 @@ import axios from "axios";
 
 const baseUrl = process.env.REACT_APP_HISTORY_SERVICE_URL + "/history-service";
 
-const addAnsweredQuestion = (questionId, questionTitle, complexity, username, username2, answeredAt, isSolved, roomId) => {
+const setAuthenticationHeader = () => {
+    return {
+      headers: {
+        Authorization: `Bearer ${
+          JSON.parse(localStorage.getItem("credentials")).sessionToken
+        }`,
+      },
+    };
+};
+
+const addAnsweredQuestion = (questionId, questionTitle, complexity, username, answeredAt, isSolved) => {
     
     const details = {
         questionId,
@@ -15,7 +25,7 @@ const addAnsweredQuestion = (questionId, questionTitle, complexity, username, us
         roomId
     }
     return axios
-        .post(baseUrl + '/add-answered-question', details)
+        .post(baseUrl + '/add-answered-question', details, setAuthenticationHeader())
         .then(response => ({
             message: response.data.msg,
             status: response.status,
@@ -29,7 +39,7 @@ const addAnsweredQuestion = (questionId, questionTitle, complexity, username, us
 const fetchAllAnsweredQuestionsByUsername = async (username) => {
     try {
         const finalUrl = baseUrl + `/history/${username}`
-        const answeredQuestions = await axios.get(finalUrl);
+        const answeredQuestions = await axios.get(finalUrl, setAuthenticationHeader());
 
         return answeredQuestions;
     } catch (error) {
