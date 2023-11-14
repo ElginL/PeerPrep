@@ -1,7 +1,6 @@
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from '../styles/components/CodeExecutionBar.module.css';
-import LoadingButton from '@mui/lab/LoadingButton';
 
 const CodeExecutionBar = ({ resultsVisible, setResultsVisible, executeCodeHandler }) => {
     return (
