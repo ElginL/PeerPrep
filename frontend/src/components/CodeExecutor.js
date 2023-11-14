@@ -26,14 +26,8 @@ const CodeExecutor = ({
     const [allPassModalVisible, setAllPassModalVisible] = useState(false);
 
     const [executionResults, setExecutionResults] = useState(null);
-    const [codeRunning, setCodeRunning] = useState(false);
 
     const executeCodeHandler = async () => {
-        setCodeRunning(true);
-        socketRef.current.emit(ACTIONS.CODE_EXECUTING, {
-            roomId
-        });
-
         const result = await runAllTestCases(codeRef.current, language, inputs, outputs);
 
         if (Array.isArray(result)) {
@@ -53,7 +47,6 @@ const CodeExecutor = ({
         setExecutionResults(result);
         setResultsVisible(true);
         setTestCaseBtnSelected(false);
-        setCodeRunning(false);
 
         socketRef.current.emit(ACTIONS.EXECUTE_CODE, {
             roomId,
@@ -84,11 +77,6 @@ const CodeExecutor = ({
                 setExecutionResults(result);
                 setResultsVisible(true);
                 setTestCaseBtnSelected(false);
-                setCodeRunning(false);
-            });
-
-            socketRef.current.on(ACTIONS.CODE_EXECUTING, () => {
-                setCodeRunning(true);
             });
         }
     }, [socketRef.current]);
@@ -137,7 +125,6 @@ const CodeExecutor = ({
                 resultsVisible={resultsVisible}
                 setResultsVisible={setResultsVisible}
                 executeCodeHandler={executeCodeHandler}
-                codeRunning={codeRunning}
             />
             <AllPassModal
                 isVisible={allPassModalVisible}

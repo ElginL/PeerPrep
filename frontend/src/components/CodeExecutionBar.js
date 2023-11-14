@@ -1,9 +1,8 @@
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import styles from '../styles/components/CodeExecutionBar.module.css';
-import LoadingButton from '@mui/lab/LoadingButton';
 
-const CodeExecutionBar = ({ resultsVisible, setResultsVisible, executeCodeHandler, codeRunning }) => {
+const CodeExecutionBar = ({ resultsVisible, setResultsVisible, executeCodeHandler }) => {
     return (
         <div className={styles["execution-bar"]}>
             <p className={styles["results-btn"]} onClick={() => setResultsVisible(!resultsVisible)}>
@@ -14,26 +13,9 @@ const CodeExecutionBar = ({ resultsVisible, setResultsVisible, executeCodeHandle
                         : <KeyboardArrowUpIcon />
                 }
             </p>
-            <LoadingButton
-                loading={codeRunning}
-                variant="outlined"
-                sx={{
-                    backgroundColor: 'orange',
-                    color: 'black',
-                    '&:hover': {
-                        backgroundColor: 'darkorange',
-                    },
-                    borderRadius: '10px',
-                    width: '60px',
-                    height: '30px',
-                    '& .MuiLoadingButton-loadingIndicator': {
-                        color: 'blue',
-                    },
-                }}
-                onClick={executeCodeHandler}
-            >
+            <button className={styles["run-btn"]} onClick={executeCodeHandler}>
                 Run
-            </LoadingButton>
+            </button>
         </div>
     );
 };
