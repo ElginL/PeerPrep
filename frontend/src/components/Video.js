@@ -128,7 +128,7 @@ function Video(props) {
       }
 
       // Destroy all peer connections
-      socketRef.current.emit("disconnect");
+
       peersRef.current.forEach((p) => p.peer.destroy());
      
       // Remove socket event listeners
